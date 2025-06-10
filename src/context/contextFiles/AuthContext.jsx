@@ -13,7 +13,7 @@ const initialstate = {
   notifications: [],
   coursesProgress: [],
   assignments: [],
-  loading :false
+  loading :true
 
 };
 
@@ -25,9 +25,9 @@ export const AuthProvider = ({ children }) => {
     console.log('use effect from authcontext.jsx')
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
-      console.log("uwegfwvqfguwevfilwfliwevlfvwelfhwlhilfvw")
       dispatch({ type: 'LOGIN', payload: user});
     }
+     dispatch({ type: 'SET_LOADING', payload: false });
   }, []);
 
   return (

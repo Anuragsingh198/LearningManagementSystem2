@@ -13,6 +13,9 @@ import VideoUploadPage from './pages/admin/CreateCoursePage/VideoUploadPage';
 import HomePage from './pages/admin/CreateCoursePage/CourseMainPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import CourseDetailPage from './components/CourseCreationComponents.jsx/CourseDetailPage';
+import CourseDetails from './components/CourseDetails/CourseDetailsMainPage';
+import OverviewPage from './pages/employee/CourseOverviewPage';
+import { ModuleDetails } from './pages/employee/ModuleDetails';
 import { useAuth } from './context/contextFiles/AuthContext';
 
 function App() {
@@ -21,6 +24,10 @@ function App() {
     useEffect(() => {
       console.log('use effect from app.jsx')
     })
+
+    if(loading){
+      return <div>Loading... from app.jsx</div>
+    }
     
   return (
       <Routes>
@@ -41,7 +48,8 @@ function App() {
                 <Route path="/teacher/my-courses" element={<CoursesPage />} />
                 <Route path="/teacher/upload-video/:courseId" element={<VideoUploadPage />} />
                 <Route path="/Profile" element={<ProfilePage />} />
-                <Route path="/course/details/:courseId" element={<CourseDetailPage />} />
+                <Route path="/course/details/:courseId" element={<OverviewPage />} />
+                <Route path="/course/module/:moduleId" element={<ModuleDetails />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Layout>
