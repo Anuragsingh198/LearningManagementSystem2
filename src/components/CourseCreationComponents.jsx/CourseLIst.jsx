@@ -68,7 +68,7 @@ const CourseList = () => {
         justifyContent: 'space-between', 
         alignItems: 'center',
         mb: 3,
-        mx: 16
+        mx: 2
       }}>
         <Box>
           <Typography variant="h5" fontWeight="bold" sx={{color: 'black' }}>
@@ -126,7 +126,7 @@ const CourseList = () => {
           <Box sx={{ mt: 3, px: 0, width: '100%' }}>
         <Grid container spacing={3} justifyContent="center">
           {courses?.map((course) => (
-            <Grid item key={course._id || course.id} xs={12} sm={6} lg={4} xl={3}>
+            <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
              
                 <CourseCard course={course} />
       

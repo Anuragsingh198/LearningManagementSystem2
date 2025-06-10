@@ -36,7 +36,7 @@ const Header = () => (
     sx={{
       zIndex: 20,
       backgroundColor: 'background.paper',
-      py: 3, // add padding for spacing
+      paddingTop: 3, // add padding for spacing
     }}
   >
     <Box sx={{ maxWidth: 'lg', mx: 'auto' }}>
@@ -285,7 +285,7 @@ useEffect(() => {
       backgroundColor: 'background.default', py: 3, width: '99%', borderRadius:10 }}>
       <Header />
       
-      <Box sx={{ maxWidth: 'lg', mx: 'auto', mt: '120px' }}>
+      <Box sx={{ maxWidth: 'lg', mx: 'auto', mt: 2 }}>
         <Paper elevation={1} sx={{ borderRadius: 2, overflow: 'hidden' }}>
           <Box sx={{ p: 2 }}>
             {isUploaded && (

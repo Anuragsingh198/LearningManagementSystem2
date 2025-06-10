@@ -31,7 +31,7 @@ const CourseCard = ({ course }) => {
 
   return (
     <Card sx={{
-      width: 360,
+      width: 350,
       // maxWidth: 360,
       height: '100%',
       borderRadius: '12px',
