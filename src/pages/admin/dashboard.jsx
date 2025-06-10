@@ -161,7 +161,7 @@ const TeacherDashboard = () => {
         <Box sx={{ mt: 3, px: 0, width: '100%' }}>
       <Grid container spacing={3} justifyContent="center">
         {courses.map((course, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+          <Grid key={index} xs={12} sm={6} md={4} lg={3}>
             <CourseCard course={course} />
           </Grid>
         ))}

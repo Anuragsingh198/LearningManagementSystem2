@@ -22,8 +22,10 @@ export const AuthProvider = ({ children }) => {
   const [state , dispatch] = useReducer(authReducer , initialstate)
   
   useEffect(() => {
+    console.log('use effect from authcontext.jsx')
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
+      console.log("uwegfwvqfguwevfilwfliwevlfvwelfhwlhilfvw")
       dispatch({ type: 'LOGIN', payload: user});
     }
   }, []);

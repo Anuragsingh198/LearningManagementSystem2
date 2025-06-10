@@ -282,7 +282,8 @@ useEffect(() => {
   return (
     <Box sx={{ 
       
-      backgroundColor: 'background.default', py: 3, width: '99%', borderRadius:10 }}>
+      backgroundColor: 'background.default', py: 3, width: '99%', borderRadius:10, border: '1px solid',
+    borderColor: 'grey.300', }}>
       <Header />
       
       <Box sx={{ maxWidth: 'lg', mx: 'auto', mt: 2 }}>

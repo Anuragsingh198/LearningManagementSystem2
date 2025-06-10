@@ -34,6 +34,8 @@ const CourseCard = ({ course }) => {
       width: 350,
       // maxWidth: 360,
       height: '100%',
+      border: '1px solid',
+    borderColor: 'grey.300',
       borderRadius: '12px',
       overflow: 'hidden',
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
