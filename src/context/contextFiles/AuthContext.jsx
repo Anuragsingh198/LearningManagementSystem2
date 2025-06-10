@@ -13,7 +13,7 @@ const initialstate = {
   notifications: [],
   coursesProgress: [],
   assignments: [],
-  loading :false
+  loading :true
 
 };
 
@@ -22,10 +22,12 @@ export const AuthProvider = ({ children }) => {
   const [state , dispatch] = useReducer(authReducer , initialstate)
   
   useEffect(() => {
+    console.log('use effect from authcontext.jsx')
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
       dispatch({ type: 'LOGIN', payload: user});
     }
+     dispatch({ type: 'SET_LOADING', payload: false });
   }, []);
 
   return (

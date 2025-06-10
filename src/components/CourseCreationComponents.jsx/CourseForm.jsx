@@ -260,6 +260,9 @@ const initialFormState = {
 const mainContainerStyles = {
   display: 'flex',
   flexDirection: 'column',
+  borderRadius: 10,
+  border: '1px solid',
+    borderColor: 'grey.300',
   // minHeight: '100vh',
   backgroundColor: 'background.default'
 };

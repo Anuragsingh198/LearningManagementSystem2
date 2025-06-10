@@ -374,7 +374,7 @@ const RegisterPage = () => {
                     <Box sx={{ marginTop: '1.5rem', textAlign: 'center' }}>
                         <Typography variant="body2" sx={{ color: '#4b5563' }}>
                             Already have an account?{" "}
-                            <a href="/auth/login" style={{ color: '#4f46e5', fontWeight: 'medium', textDecoration: 'none', '&:hover': { color: '#3730a3' } }}>
+                            <a href="/login" style={{ color: '#4f46e5', fontWeight: 'medium', textDecoration: 'none', '&:hover': { color: '#3730a3' } }}>
                                 Sign in
                             </a>
                         </Typography>

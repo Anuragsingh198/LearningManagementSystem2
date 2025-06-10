@@ -13,14 +13,22 @@ export default function Layout({ children }) {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
-  const { state: { user, loading }, dispatch } = useAuth();
+  const { state: { loading, isAuthenticated }, dispatch } = useAuth();
 
-  useEffect(() => {
-    console.log("this is the user from mainLayout:", user);
-    if (!user && !loading) {
-      navigate('/auth/login');
-    }
-  }, [user, loading, navigate]);
+  // useEffect(() => {
+  //   console.log("this is the use effect from mainLayout:");
+  //   if (!isAuthenticated) {
+  //     console.log('this if condition')
+  //     navigate('/login');
+  //   }
+  //   // else{
+  //   //   navigate('/student/dashboard')
+  //   // }
+  // }, [loading, navigate]);
+
+  if(loading){
+    return <div>loading...</div>
+  }
 
     return (
     <Box sx={{ 

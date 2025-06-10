@@ -99,6 +99,7 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
+    console.log('is this running first? login.jsx')
     if (isAuthenticated) {
       const role = user?.role === 'student' ? 'student' : 'teacher';
       navigate(`/${role}/dashboard`);
@@ -109,7 +110,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       await userLogin(formData, dispatch);
-      alert(`Login successful!`);
+      
     } catch (error) {
       alert("Login failed: " + error.message);
     }
@@ -281,7 +282,7 @@ const LoginPage = () => {
             <Typography variant="body2" sx={{ color: '#4b5563' }}>
               Don't have an account?{" "}
               <Link 
-                href="/auth/signup" 
+                href="/signup" 
                 sx={{ 
                   color: '#4f46e5', 
                   fontWeight: 'medium',

@@ -61,14 +61,25 @@ const CourseList = () => {
   }
 
   return (
-    <Container maxWidth="xl">
+    <Container 
+  maxWidth="100%" 
+  sx={{
+    backgroundColor: 'white', 
+    p: 2,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)', // Custom subtle shadow
+    border: '1px solid',
+    borderColor: 'grey.300', // Even lighter border
+    borderRadius: 10, // Smaller radius (4px)
+    width: '100%'
+  }}
+>
     <Box sx={{ p: 1 }}>
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center',
         mb: 3,
-        mx: 16
+        mx: 6
       }}>
         <Box>
           <Typography variant="h5" fontWeight="bold" sx={{color: 'black' }}>
@@ -126,7 +137,7 @@ const CourseList = () => {
           <Box sx={{ mt: 3, px: 0, width: '100%' }}>
         <Grid container spacing={3} justifyContent="center">
           {courses?.map((course) => (
-            <Grid item key={course._id || course.id} xs={12} sm={6} lg={4} xl={3}>
+            <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
              
                 <CourseCard course={course} />
       

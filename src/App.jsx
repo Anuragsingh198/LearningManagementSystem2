@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
+import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 import Layout from './pages/Layouts/MainLayout';
 import LoginPage from './pages/AuthPage/Login';
 import RegisterPage from './pages/AuthPage/Signup';
@@ -15,19 +16,32 @@ import CourseDetailPage from './components/CourseCreationComponents.jsx/CourseDe
 import CourseDetails from './components/CourseDetails/CourseDetailsMainPage';
 import OverviewPage from './pages/employee/CourseOverviewPage';
 import { ModuleDetails } from './pages/employee/ModuleDetails';
+import { useAuth } from './context/contextFiles/AuthContext';
 
 function App() {
+    const { state: { user, loading }, dispatch } = useAuth();
+
+    useEffect(() => {
+      console.log('use effect from app.jsx')
+    })
+
+    if(loading){
+      return <div>Loading... from app.jsx</div>
+    }
+    
   return (
       <Routes>
-        <Route path="/auth/login" element={<LoginPage />} />
-        <Route path="/auth/signup" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<RegisterPage />} />
 
         <Route
           path="/*"
           element={
+            <PrivateRoute>
+
             <Layout>
               <Routes>
-                <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+                <Route path="/student/dashboard" element={<TeacherDashboard />} />
                 <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
                 {/* <Route path="/" element={<HomePage />} /> */}
                 <Route path="/teacher/create-course" element={<CreateCoursePage />} />
@@ -36,9 +50,11 @@ function App() {
                 <Route path="/Profile" element={<ProfilePage />} />
                 <Route path="/course/details/:courseId" element={<OverviewPage />} />
                 <Route path="/course/module/:moduleId" element={<ModuleDetails />} />
-                <Route path="*" element={<Navigate to="/\" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Layout>
+            </PrivateRoute>
+
           }
         />
       </Routes>

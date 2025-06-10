@@ -7,7 +7,7 @@ const ProfileTabs = ({ activeTab, setActiveTab, isTeacher }) => {
   };
 
   return (
-    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <Box sx={{ }}>
       <Tabs value={activeTab} onChange={handleChange} aria-label="profile tabs">
         <Tab label="Details" value="details" />
         <Tab label="Pending Videos" value="pending" />
