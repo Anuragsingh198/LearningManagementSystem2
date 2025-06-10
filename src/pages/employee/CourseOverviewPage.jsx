@@ -96,7 +96,7 @@ const OverviewPage = () => {
 
   return (
     <>
-    <Box sx={{display:'flex' , position:"absolute", width:' 90%' , left:'5%', height:'1000px' , overflowY:'auto'}}>
+    <Box sx={{display:'flex' , position:"absolute", width:' 90%' , left:'5%', height:'80%' , overflowY:'auto'}}>
       <OverviewContent
         chapters={chapters}
         completedChapters={completedChapters}
