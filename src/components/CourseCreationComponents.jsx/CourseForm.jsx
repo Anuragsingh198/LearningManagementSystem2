@@ -2,72 +2,32 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { createCourseAction } from '../../context/Actions/courseActions';
-import {
-  Box,
-  Typography,
-  Button,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  IconButton,
-  Paper,
-  Divider,
-  CircularProgress,
-  Avatar,
-  Input,
-  InputAdornment,
-  FormHelperText
+import { 
+  Box, Typography, Button, TextField, Select, MenuItem, 
+  FormControl, IconButton, Paper, CircularProgress, Avatar, Input,
+  FormHelperText, Container 
 } from '@mui/material';
-import {
-  Upload as UploadIcon,
-  Close as CloseIcon,
-  KeyboardArrowDown as KeyboardArrowDownIcon
-} from '@mui/icons-material';
+import { Upload as UploadIcon, Close as CloseIcon } from '@mui/icons-material';
 
 const HeaderForm = () => (
-  <Box
-    sx={{
-      position: 'fixed',
-      top: '95px',
-      width: '85%',
-      zIndex: 20,
-      backgroundColor: 'background.paper',
-      borderBottom: '1px solid',
-      borderColor: 'divider',
-      boxShadow: 1,
-      left: '265px'
-    }}
-  >
-    <Box sx={{ maxWidth: '8xl', mx: 'auto', px: { xs: 2, sm: 3, md: 4 }, py: 2 }}>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { md: 'center' }, justifyContent: { md: 'space-between' } }}>
-        <Box sx={{ mb: { xs: 2, md: 0 } }}>
-          <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-            Create New Course
-          </Typography>
-          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-            Fill in the details to create your course and upload videos.
-          </Typography>
-        </Box>
+  <Box sx={headerStyles}>
+    <Container maxWidth="xl" sx={headerContentStyles}>
+      <Box sx={headerTextStyles}>
+        <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', color: 'gray' }}>
+          Create New Course
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+          Fill in the details to create your course and upload videos.
+        </Typography>
       </Box>
-    </Box>
+    </Container>
   </Box>
 );
 
 const CourseForm = () => {
   const navigate = useNavigate();
-  const { state: { courses }, dispatch } = useCourseContext();
-
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    instructor: '',
-    category: '',
-    price: 0,
-    thumbnail: '',
-  });
-
+  const { dispatch } = useCourseContext();
+  const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -78,7 +38,6 @@ const CourseForm = () => {
     if (!formData.description.trim()) newErrors.description = 'Description is required';
     if (!formData.instructor.trim()) newErrors.instructor = 'Instructor is required';
     if (!formData.category.trim()) newErrors.category = 'Category is required';
-    if (formData.price < 0) newErrors.price = 'Price cannot be negative';
     if (!thumbnailPreview) newErrors.thumbnail = 'Thumbnail is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -86,279 +45,326 @@ const CourseForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: name === 'price' ? parseFloat(value) || 0 : value,
-    });
-    if (errors[name]) setErrors({ ...errors, [name]: '' });
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  // const handleThumbnailChange = (e) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     const previewUrl = URL.createObjectURL(file);
-  //     setThumbnailPreview(previewUrl);
-  //     setFormData({ ...formData, thumbnail: previewUrl });
-  //     if (errors.thumbnail) setErrors({ ...errors, thumbnail: '' });
-  //   }
-  // };
-
-const handleThumbnailChange = (e) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    const previewUrl = URL.createObjectURL(file);
-    setThumbnailPreview(previewUrl);
-    setFormData({ ...formData, thumbnail: file });  // store file object directly
-    if (errors.thumbnail) setErrors({ ...errors, thumbnail: '' });
-  }
-};
-
-  const clearThumbnail = () => {
-    // if (thumbnailPreview) URL.revokeObjectURL(thumbnailPreview);
-    setThumbnailPreview(null);
-    setFormData({ ...formData, thumbnail: '' });
-  };
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
-  setIsSubmitting(true);
-
-  try {
-    const formDataToSend = new FormData();
-    formDataToSend.append('title', formData.title);
-    formDataToSend.append('description', formData.description);
-    formDataToSend.append('category', formData.category);
-    formDataToSend.append('price', formData.price);
-    formDataToSend.append('thumbnail', formData.thumbnail); // the file object
-
-    const newCourse = await createCourseAction(formDataToSend, dispatch);
-
-    if (newCourse) {
-      setIsSubmitting(false);
-      navigate(`/teacher/upload-video/${newCourse._id}`);
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setThumbnailPreview(previewUrl);
+      setFormData(prev => ({ ...prev, thumbnail: file }));
+      if (errors.thumbnail) setErrors(prev => ({ ...prev, thumbnail: '' }));
     }
-  } catch (error) {
-    console.error('Failed to create course:', error);
-    setIsSubmitting(false);
-  }
-};
-  const categories = [
-    'Programming', 'Design', 'Business', 'Marketing', 'Photography',
-    'Music', 'Health & Fitness', 'Personal Development', 'Other'
-  ];
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    setIsSubmitting(true);
+
+    try {
+      const formDataToSend = new FormData();
+      for (const key in formData) {
+        formDataToSend.append(key, formData[key]);
+      }
+
+      const newCourse = await createCourseAction(formDataToSend, dispatch);
+      if (newCourse) navigate(`/teacher/upload-video/${newCourse._id}`);
+    } catch (error) {
+      console.error('Failed to create course:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <>
+    // <Container>
+
+    
+    <Box sx={mainContainerStyles}>
       <HeaderForm />
-      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default', py: 3, px: { xs: 2, sm: 3, md: 4 }, width: '60%' , mt:'120px' , borderRadius: 5 }}>
-        <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
-          <Paper elevation={1} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-            <Box component="form" onSubmit={handleSubmit} sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>
-              {/* Horizontal layout container */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: 3 }}>
-                {/* Title */}
-                <FormControl fullWidth>
-                  <InputLabel shrink htmlFor="title" sx={{ fontWeight: 'medium', color: 'text.primary', mb: 1 }}>
-                    Title <span style={{ color: 'red' }}>*</span>
-                  </InputLabel>
-                  <TextField
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    error={Boolean(errors.title)}
-                    helperText={errors.title}
-                    placeholder="Course title"
-                    variant="outlined"
-                    fullWidth
-                  />
-                </FormControl>
+      <Container maxWidth="lg" sx={formContainerStyles}>
+        <Paper elevation={1} sx={paperStyles}>
+          <Box component="form" onSubmit={handleSubmit} sx={formStyles}>
+            <Box sx={gridContainerStyles}>
+              <FormField 
+                label="Title" 
+                name="title" 
+                value={formData.title} 
+                error={errors.title}
+                onChange={handleInputChange}
+              />
+              
+              <FormField 
+                label="Instructor" 
+                name="instructor" 
+                value={formData.instructor} 
+                error={errors.instructor}
+                onChange={handleInputChange}
+              />
 
-                {/* Instructor */}
-                <FormControl fullWidth>
-                  <InputLabel shrink htmlFor="instructor" sx={{ fontWeight: 'medium', color: 'text.primary', mb: 1 }}>
-                    Instructor <span style={{ color: 'red' }}>*</span>
-                  </InputLabel>
-                  <TextField
-                    id="instructor"
-                    name="instructor"
-                    value={formData.instructor}
-                    onChange={handleInputChange}
-                    error={Boolean(errors.instructor)}
-                    helperText={errors.instructor}
-                    placeholder="Instructor name"
-                    variant="outlined"
-                    fullWidth
-                  />
-                </FormControl>
-
-                {/* Category */}
-                <FormControl fullWidth error={Boolean(errors.category)}>
-                  <InputLabel shrink htmlFor="category" sx={{ fontWeight: 'medium', color: 'text.primary', mb: 1 }}>
-                    Category <span style={{ color: 'red' }}>*</span>
-                  </InputLabel>
-                  <Select
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    IconComponent={KeyboardArrowDownIcon}
-                    displayEmpty
-                    renderValue={(selected) => selected || 'Select a category'}
-                    variant="outlined"
-                  >
-                    <MenuItem value="" disabled>Select a category</MenuItem>
-                    {categories.map((cat) => (
-                      <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-                    ))}
-                  </Select>
-                  {errors.category && <FormHelperText>{errors.category}</FormHelperText>}
-                </FormControl>
-
-                {/* Price (commented out as in original) */}
-                {/* <FormControl fullWidth>
-                  <InputLabel shrink htmlFor="price" sx={{ fontWeight: 'medium', color: 'text.primary', mb: 1 }}>
-                    Price (USD)
-                  </InputLabel>
-                  <TextField
-                    id="price"
-                    name="price"
-                    type="number"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    error={Boolean(errors.price)}
-                    helperText={errors.price}
-                    placeholder="0.00"
-                    variant="outlined"
-                    fullWidth
-                    inputProps={{ min: "0", step: "0.01" }}
-                  />
-                </FormControl> */}
-              </Box>
-
-              {/* Description */}
-              <FormControl fullWidth>
-                <InputLabel shrink htmlFor="description" sx={{ fontWeight: 'medium', color: 'text.primary', mb: 1 }}>
-                  Description <span style={{ color: 'red' }}>*</span>
-                </InputLabel>
-                <TextField
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  error={Boolean(errors.description)}
-                  helperText={errors.description}
-                  placeholder="Describe your course"
-                  variant="outlined"
-                  fullWidth
-                  multiline
-                  rows={4}
-                />
-              </FormControl>
-
-              {/* Thumbnail Upload */}
-              <FormControl fullWidth error={Boolean(errors.thumbnail)}>
-                <InputLabel shrink sx={{ fontWeight: 'medium', color: 'text.primary', mb: 1 }}>
-                  Thumbnail <span style={{ color: 'red' }}>*</span>
-                </InputLabel>
-                {!thumbnailPreview ? (
-                  <Paper
-                    variant="outlined"
-                    component="label"
-                    htmlFor="thumbnail"
-                    sx={{
-                      p: 4,
-                      border: 2,
-                      borderStyle: 'dashed',
-                      borderColor: errors.thumbnail ? 'error.main' : 'divider',
-                      backgroundColor: errors.thumbnail ? 'error.light' : 'background.paper',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      '&:hover': {
-                        borderColor: 'primary.main'
-                      }
-                    }}
-                  >
-                    <Avatar sx={{ bgcolor: 'primary.light', color: 'primary.main', mb: 1 }}>
-                      <UploadIcon />
-                    </Avatar>
-                    <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                      Click or drag to upload
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      PNG, JPG, GIF up to 10MB
-                    </Typography>
-                    <Input
-                      id="thumbnail"
-                      type="file"
-                      inputProps={{ accept: 'image/*' }}
-                      sx={{ display: 'none' }}
-                      onChange={handleThumbnailChange}
-                    />
-                  </Paper>
-                ) : (
-                  <Box sx={{ position: 'relative', '&:hover .thumbnail-remove-button': { opacity: 1 } }}>
-                    <Box
-                      component="img"
-                      src={thumbnailPreview}
-                      alt="Thumbnail Preview"
-                      sx={{ height: 256, width: '100%', objectFit: 'cover', borderRadius: 2 }}
-                    />
-                    <IconButton
-                      className="thumbnail-remove-button"
-                      onClick={clearThumbnail}
-                      sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                        backgroundColor: 'background.paper',
-                        opacity: 0,
-                        transition: 'opacity 0.2s',
-                        '&:hover': { color: 'error.main' }
-                      }}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  </Box>
-                )}
-                {errors.thumbnail && <FormHelperText>{errors.thumbnail}</FormHelperText>}
-              </FormControl>
-
-              {/* Submit */}
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                  onClick={handleSubmit}
-                  startIcon={
-                    isSubmitting ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : (
-                      <UploadIcon />
-                    )
-                  }
-                  sx={{
-                    background: 'linear-gradient(to right, #2563eb, #4f46e5)',
-                    '&:hover': {
-                      background: 'linear-gradient(to right, #1d4ed8, #4338ca)'
-                    }
-                  }}
-                >
-                  {isSubmitting ? 'Creating...' : 'Create Course & Upload Videos'}
-                </Button>
-              </Box>
+              <CategorySelect 
+                value={formData.category}
+                onChange={handleInputChange}
+                error={errors.category}
+              />
             </Box>
-          </Paper>
-        </Box>
-      </Box>
-    </>
+
+            <FormField 
+              label="Description" 
+              name="description" 
+              value={formData.description} 
+              error={errors.description}
+              onChange={handleInputChange}
+              multiline
+              rows={4}
+            />
+
+            <ThumbnailUpload 
+              thumbnailPreview={thumbnailPreview}
+              onThumbnailChange={handleThumbnailChange}
+              onClearThumbnail={() => setThumbnailPreview(null)}
+              error={errors.thumbnail}
+            />
+
+            <SubmitButton isSubmitting={isSubmitting} />
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
+    // </Container>
   );
+};
+
+// Reusable components
+const FormField = ({ label, name, value, error, onChange, multiline, rows }) => (
+  <FormControl fullWidth>
+    <Typography variant="subtitle2" sx={labelStyles}>
+      {label} <RequiredStar />
+    </Typography>
+    <TextField
+      name={name}
+      value={value}
+      onChange={onChange}
+      error={Boolean(error)}
+      helperText={error}
+      variant="outlined"
+      fullWidth
+      multiline={multiline}
+      rows={rows}
+    />
+  </FormControl>
+);
+
+const CategorySelect = ({ value, onChange, error }) => (
+  <FormControl fullWidth error={Boolean(error)}>
+    <Typography variant="subtitle2" sx={labelStyles}>
+      Category <RequiredStar />
+    </Typography>
+    <Select
+      name="category"
+      value={value}
+      onChange={onChange}
+      displayEmpty
+      renderValue={(selected) => selected || 'Select a category'}
+    >
+      <MenuItem value="" disabled>Select a category</MenuItem>
+      {categories.map((cat) => (
+        <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+      ))}
+    </Select>
+    {error && <FormHelperText>{error}</FormHelperText>}
+  </FormControl>
+);
+
+const ThumbnailUpload = ({ thumbnailPreview, onThumbnailChange, onClearThumbnail, error }) => (
+  <FormControl fullWidth error={Boolean(error)}>
+    <Typography variant="subtitle2" sx={labelStyles}>
+      Thumbnail <RequiredStar />
+    </Typography>
+    {!thumbnailPreview ? (
+      <Paper variant="outlined" component="label" htmlFor="thumbnail" sx={uploadPaperStyles}>
+        <Avatar sx={uploadAvatarStyles}>
+          <UploadIcon />
+        </Avatar>
+        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+          Click or drag to upload
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          PNG, JPG, GIF up to 10MB
+        </Typography>
+        <Input
+          id="thumbnail"
+          type="file"
+          inputProps={{ accept: 'image/*' }}
+          sx={{ display: 'none' }}
+          onChange={onThumbnailChange}
+        />
+      </Paper>
+    ) : (
+      <Box sx={thumbnailPreviewStyles}>
+        <Box 
+          component="img" 
+          src={thumbnailPreview} 
+          alt="Thumbnail Preview" 
+          sx={thumbnailImageStyles} 
+        />
+        <IconButton 
+          onClick={onClearThumbnail} 
+          sx={removeThumbnailButtonStyles}
+          aria-label="Remove thumbnail"
+        >
+          <CloseIcon />
+        </IconButton>
+      </Box>
+    )}
+    {error && <FormHelperText>{error}</FormHelperText>}
+  </FormControl>
+);
+
+const SubmitButton = ({ isSubmitting }) => (
+  <Box sx={submitButtonContainerStyles}>
+    <Button
+      type="submit"
+      variant="contained"
+      disabled={isSubmitting}
+      startIcon={isSubmitting ? <CircularProgress size={20} /> : <UploadIcon />}
+      sx={submitButtonStyles}
+      fullWidth
+    >
+      {isSubmitting ? 'Creating...' : 'Create Course & Upload Videos'}
+    </Button>
+  </Box>
+);
+
+const RequiredStar = () => <span style={{ color: 'red' }}>*</span>;
+
+// Constants
+const categories = [
+  'Programming', 'Design', 'Business', 'Marketing', 'Photography',
+  'Music', 'Health & Fitness', 'Personal Development', 'Other'
+];
+
+const initialFormState = {
+  title: '',
+  description: '',
+  instructor: '',
+  category: '',
+  price: 0,
+  thumbnail: '',
+};
+
+// Responsive styles
+const mainContainerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  // minHeight: '100vh',
+  backgroundColor: 'background.default'
+};
+
+const headerStyles = {
+  width: '100%',
+  maxWidth: 'lg',
+  mx: 'auto',
+  backgroundColor: 'background.paper',
+  // borderBottom: '1px solid',
+  // borderColor: 'divider',
+  // boxShadow: 1,
+  py: 2
+};
+
+const headerContentStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start'
+};
+
+const headerTextStyles = {
+  width: '100%'
+};
+
+const formContainerStyles = {
+  py: 4,
+  flex: 1
+};
+
+const paperStyles = {
+  borderRadius: 2,
+  overflow: 'hidden',
+  width: '100%'
+};
+
+const formStyles = {
+  p: { xs: 2, sm: 3, md: 4 },
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 3
+};
+
+const gridContainerStyles = {
+  display: 'grid',
+  gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' },
+  gap: 3
+};
+
+const labelStyles = {
+  fontWeight: 'medium',
+  color: 'text.primary',
+  mb: 1
+};
+
+const uploadPaperStyles = {
+  p: { xs: 2, sm: 3, md: 4 },
+  border: 2,
+  borderStyle: 'dashed',
+  borderColor: 'divider',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  textAlign: 'center',
+  '&:hover': { borderColor: 'primary.main' }
+};
+
+const uploadAvatarStyles = {
+  bgcolor: 'primary.light',
+  color: 'primary.main',
+  mb: 1
+};
+
+const thumbnailPreviewStyles = {
+  position: 'relative',
+  width: '100%'
+};
+
+const thumbnailImageStyles = {
+  width: '100%',
+  height: { xs: 200, sm: 300 },
+  objectFit: 'cover',
+  borderRadius: 2
+};
+
+const removeThumbnailButtonStyles = {
+  position: 'absolute',
+  top: 8,
+  right: 8,
+  backgroundColor: 'background.paper',
+  '&:hover': { color: 'error.main' }
+};
+
+const submitButtonContainerStyles = {
+  width: '100%',
+  pt: 2
+};
+
+const submitButtonStyles = {
+  background: 'linear-gradient(to right, #2563eb, #4f46e5)',
+  '&:hover': { background: 'linear-gradient(to right, #1d4ed8, #4338ca)' },
+  width: '100%',
+  py: 1.5
 };
 
 export default CourseForm;

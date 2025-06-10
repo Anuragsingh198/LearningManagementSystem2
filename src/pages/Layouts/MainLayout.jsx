@@ -5,6 +5,7 @@ import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { Loader } from 'lucide-react';
+import HorizontalNavBar from '../../components/HorizontalNavBar';
 
 const drawerWidth = 240;
 
@@ -21,49 +22,36 @@ export default function Layout({ children }) {
     }
   }, [user, loading, navigate]);
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Box
-        sx={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 1300,
-        }}
-      >
+    return (
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      minHeight: '100vh', 
+      width: '100vw', // Use viewport width instead of 100%
+      overflowX: 'hidden' // Prevent horizontal scrolling
+    }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        width: '100%'
+      }}>
         <Header />
+        <HorizontalNavBar/>
       </Box>
-      <Box sx={{ display: 'flex', mt: '64px', width: '100%' }}>
-        <Box
-          component="nav"
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            position: 'fixed',
-            top: '64px',
-            left: 0,
-            height: 'calc(100vh - 64px)',
-            bgcolor: '#404042',
-            zIndex: 1200,
-          }}
-        >
-          <Sidebar currentPath={pathname} />
-        </Box>
-
-        {/* Main Content */}
+      
+      <Box sx={{ 
+        display: 'flex', 
+        flex: 1, // Take up remaining space
+        width: '100%'
+      }}>
         <Box
           component="main"
           sx={{
-            display: 'flex',
-            p: 3,
-            justifyContent: 'center',
-            ml: `${drawerWidth}px`,
+            flex: 1,
+            p: 4,
             bgcolor: '#f5f5f5',
-            minHeight: 'calc(100vh - 64px)',
-            width: `calc(100% - ${drawerWidth}px)`,
-            overflowY: 'auto',
-            position: 'fixed'
+            width: '100%',
+            minWidth: 0 // Prevent flex items from overflowing
           }}
         >
           {children}
@@ -71,4 +59,5 @@ export default function Layout({ children }) {
       </Box>
     </Box>
   );
+
 }

@@ -15,18 +15,10 @@ import {
   Divider,
   IconButton,
   Card,
-  CardContent,
-  CardActions,
   Avatar,
   Input,
-  InputAdornment,
   FormHelperText,
-  Snackbar,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
 } from '@mui/material';
 import {
   Upload as UploadIcon,
@@ -42,31 +34,37 @@ import { createModuleAction, createVideoAction, getCourseById, getModulesByCours
 const Header = () => (
   <Box
     sx={{
-      position: 'fixed',
-      top: '95px',
-      width: '87%',
       zIndex: 20,
       backgroundColor: 'background.paper',
-      borderBottom: '1px solid',
-      borderColor: 'divider',
-      boxShadow: 1,
-      left: '265px'
+      py: 3, // add padding for spacing
     }}
   >
-    <Box sx={{ maxWidth: '8xl', mx: 'auto', px: { xs: 2, sm: 3, md: 4 }, py: 2 }}>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { md: 'center' }, justifyContent: { md: 'space-between' } }}>
+    <Box sx={{ maxWidth: 'lg', mx: 'auto' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: { xs: 'flex-start', md: 'center' },
+          justifyContent: 'space-between',
+        }}
+      >
         <Box sx={{ mb: { xs: 2, md: 0 } }}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{ fontWeight: 'bold', color: 'text.primary' }}
+          >
             Upload Video
           </Typography>
           <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-            Get started by Uploading your Course video
+            Get started by uploading your course video
           </Typography>
         </Box>
       </Box>
     </Box>
   </Box>
 );
+
 
 const VideoUploadForm = ({ courseId }) => {
 const { state: { modules }, dispatch } = useCourseContext();
@@ -282,11 +280,14 @@ useEffect(() => {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default', py: 3, px: { xs: 2, sm: 3, md: 4 }, width: '100%' }}>
+    <Box sx={{ 
+      
+      backgroundColor: 'background.default', py: 3, width: '99%', borderRadius:10 }}>
       <Header />
+      
       <Box sx={{ maxWidth: 'lg', mx: 'auto', mt: '120px' }}>
         <Paper elevation={1} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <Box sx={{ p: 3 }}>
+          <Box sx={{ p: 2 }}>
             {isUploaded && (
               <Alert severity="success" sx={{ mb: 3 }}>
                 <Typography fontWeight="medium">Video uploaded successfully!</Typography>

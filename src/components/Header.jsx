@@ -24,17 +24,19 @@ export default function Header() {
   };
 
   return (
-    <AppBar
-      position="fixed"
+    <Box
+      // position="fixed"
       sx={{
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
         boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
         borderBottom: `1px solid ${theme.palette.divider}`,
-        height: 80,
-        display: 'flex',
-        justifyContent: 'center',
-        zIndex: theme.zIndex.drawer + 1,
+        // width: '100%',
+        padding: '5px 0px',
+        // height: 80,
+        // display: 'flex',
+        justifyContent: 'space-evenly',
+        // zIndex: theme.zIndex.drawer + 1,
       }}
     >
       <Toolbar
@@ -102,7 +104,7 @@ export default function Header() {
               backgroundColor: theme.palette.action.hover,
               borderRadius: '8px',
               px: 2,
-              py: 0.5,
+              py: 1,
               width: '100%',
               transition: 'all 0.2s',
               '&:hover': {
@@ -183,6 +185,6 @@ export default function Header() {
           </Box>
         </Box>
       </Toolbar>
-    </AppBar>
+    </Box>
   );
 }
