@@ -229,7 +229,8 @@ export const getCourseById = async (courseId, dispatch) => {
         return null;
       }
       console.log('Course fetched successfully:', data.course);
-      return data.course; // returning single course object
+      dispatch({type:'SET_ONECOURSE' , payload:data.course});
+      return data.course; 
     } else {
       throw new Error(data.message || 'Failed to fetch course');
     }
@@ -240,26 +241,26 @@ export const getCourseById = async (courseId, dispatch) => {
   }
 };
 
-export const getVideosByModuleId = async (moduleId, dispatch) => {
+export const getModulebyModuleId = async (moduleId, dispatch) => {
   const token = getAuthToken();
 
   try {
     dispatch({ type: 'COURSE_LOADING' });
 
-    const response = await axios.get(`${serverurl}/api/courses/videos/${moduleId}`, {
+    const response = await axios.get(`${serverurl}/api/courses/module/${moduleId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     const data = response.data;
     if (data.success) {
-      if (!data.videos || data.videos.length === 0) {
+      if (!data.module || data.module.length === 0) {
         console.log('No videos found');
         return [];
       }
-      console.log('Videos fetched successfully:', data.videos);
-      return data.videos;
+      console.log('module fetched successfully:', data.module);
+      return data.module;
     } else {
-      throw new Error(data.message || 'Failed to fetch videos for module');
+      throw new Error(data.message || 'Failed to fetch  module');
     }
   } catch (error) {
     dispatch({ type: 'COURSE_ERROR', payload: error.message });

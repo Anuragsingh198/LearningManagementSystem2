@@ -33,6 +33,7 @@ import {
     Article as FileTextIcon,
     MenuBook as BookOpenIcon
 } from '@mui/icons-material';
+import { useEffect, useRef, useState } from 'react';
 
 export const VideoContent = ({
     currentVideo,
@@ -45,8 +46,104 @@ export const VideoContent = ({
     setIsPlaying,
     videos
 }) => {
+    const videoRef = useRef(null);
+    const [progress, setProgress] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [isMuted, setIsMuted] = useState(false);
+    const [volume, setVolume] = useState(1);
+    const [showControls, setShowControls] = useState(false);
 
     const currentVideoData = videos[currentVideo];
+
+    // Handle video source change
+useEffect(() => {
+    if (videoRef.current && isPlaying) {
+        videoRef.current.play().catch(error => {
+            console.error("Auto-play was prevented:", error);
+            setIsPlaying(false);
+        });
+    }
+}, [currentVideo, isPlaying]);
+
+
+    const togglePlayPause = () => {
+        if (videoRef.current) {
+            if (videoRef.current.paused) {
+                videoRef.current.play().then(() => setIsPlaying(true));
+            } else {
+                videoRef.current.pause();
+                setIsPlaying(false);
+            }
+        }
+    };
+
+    const handleTimeUpdate = () => {
+        if (videoRef.current) {
+            const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+            setProgress(currentProgress);
+            setCurrentTime(videoRef.current.currentTime);
+        }
+    };
+
+    const handleLoadedMetadata = () => {
+        if (videoRef.current) {
+            setDuration(videoRef.current.duration);
+        }
+    };
+
+    const handleSeek = (e) => {
+        if (videoRef.current) {
+            const seekTime = (e.nativeEvent.offsetX / e.currentTarget.offsetWidth) * videoRef.current.duration;
+            videoRef.current.currentTime = seekTime;
+        }
+    };
+
+    const toggleMute = () => {
+        if (videoRef.current) {
+            videoRef.current.muted = !videoRef.current.muted;
+            setIsMuted(videoRef.current.muted);
+        }
+    };
+    const handleVolumeChange = (e) => {
+        const newVolume = parseFloat(e.target.value);
+        if (videoRef.current) {
+            videoRef.current.volume = newVolume;
+            setVolume(newVolume);
+            setIsMuted(newVolume === 0);
+        }
+    };
+
+    const formatTime = (timeInSeconds) => {
+        const minutes = Math.floor(timeInSeconds / 60);
+        const seconds = Math.floor(timeInSeconds % 60);
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    };
+
+    const toggleFullscreen = () => {
+        if (!isVideoFullscreen) {
+            if (videoRef.current?.requestFullscreen) {
+                videoRef.current.requestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+        setIsVideoFullscreen(!isVideoFullscreen);
+    };
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsVideoFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        };
+    }, []);
+
     return (
         <Box sx={{
             display: 'flex',
@@ -90,19 +187,57 @@ export const VideoContent = ({
                             opacity: 1
                         }
                     }}>
-                        <Box textAlign="center" color="white">
-                            <PlayCircleIcon sx={{ width: 80, height: 80, mx: 'auto', mb: 2, color: 'rgba(255, 255, 255, 0.8)' }} />
-                            <Typography variant="h5" fontWeight="bold" mb={1}>{currentVideoData.title}</Typography>
-                            <Typography color="rgba(255, 255, 255, 0.7)">Duration: {currentVideoData.duration}</Typography>
-                        </Box>
+                        <video
+                            ref={videoRef}
+                            src={currentVideoData.url}
+                            style={{ 
+                                width: '100%', 
+                                height: '100%', 
+                                cursor: 'pointer',
+                                transform: isVideoZoomed && !isVideoFullscreen ? 'scale(1.1)' : 'none',
+                                transition: 'transform 0.3s'
+                            }}
+                            onClick={togglePlayPause}
+                            onTimeUpdate={handleTimeUpdate}
+                            onLoadedMetadata={handleLoadedMetadata}
+                            onPlay={() => setIsPlaying(true)}
+                            onPause={() => setIsPlaying(false)}
+                            onEnded={() => setIsPlaying(false)}
+                            autoPlay={isPlaying}
+                            muted={isMuted}
+                        >
+                            Your browser does not support the video tag.
+                        </video>
+
+                        {!isPlaying && (
+                            <Box sx={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                                color: 'white'
+                            }} onClick={togglePlayPause}>
+                                <PlayCircleIcon sx={{ width: 80, height: 80, mx: 'auto', mb: 2, color: 'rgba(255, 255, 255, 0.8)' }} />
+                                <Typography variant="h5" fontWeight="bold" mb={1}>{currentVideoData.title}</Typography>
+                                <Typography color="rgba(255, 255, 255, 0.7)">Duration: {currentVideoData.duration}</Typography>
+                            </Box>
+                        )}
 
                         <Box className="controls-overlay" sx={{
                             position: 'absolute',
                             inset: 0,
                             backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                            opacity: 0,
-                            transition: 'opacity 0.3s'
-                        }}>
+                            opacity: showControls ? 1 : 0,
+                            transition: 'opacity 0.3s',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between'
+                        }}
+                            onMouseEnter={() => setShowControls(true)}
+                            onMouseLeave={() => setShowControls(false)}
+                        >
                             <Box sx={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: 1 }}>
                                 <IconButton
                                     onClick={() => setIsVideoZoomed(!isVideoZoomed)}
@@ -112,7 +247,7 @@ export const VideoContent = ({
                                     {isVideoZoomed ? <ZoomOutIcon /> : <ZoomInIcon />}
                                 </IconButton>
                                 <IconButton
-                                    onClick={() => setIsVideoFullscreen(!isVideoFullscreen)}
+                                    onClick={toggleFullscreen}
                                     sx={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', color: 'white', '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.7)' } }}
                                     title={isVideoFullscreen ? "Exit Fullscreen" : "Fullscreen"}
                                 >
@@ -130,27 +265,49 @@ export const VideoContent = ({
                             }}>
                                 <Box display="flex" alignItems="center" gap={2}>
                                     <IconButton
-                                        onClick={() => setIsPlaying(!isPlaying)}
+                                        onClick={togglePlayPause}
                                         sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', color: 'white', '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.3)' } }}
                                     >
                                         {isPlaying ? <PauseIcon /> : <PlayIcon />}
                                     </IconButton>
-                                    <IconButton sx={{ color: 'rgba(255, 255, 255, 0.8)', '&:hover': { color: 'white' } }}>
-                                        <SkipBackIcon />
-                                    </IconButton>
-                                    <IconButton sx={{ color: 'rgba(255, 255, 255, 0.8)', '&:hover': { color: 'white' } }}>
-                                        <SkipForwardIcon />
-                                    </IconButton>
-                                    <Box sx={{ flexGrow: 1, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 4, height: 4 }}>
-                                        <Box sx={{ backgroundColor: 'primary.main', borderRadius: 4, height: '100%', width: '33%' }} />
+                                    <Box 
+                                        sx={{ 
+                                            flexGrow: 1, 
+                                            backgroundColor: 'rgba(255, 255, 255, 0.2)', 
+                                            borderRadius: 4, 
+                                            height: 4,
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={handleSeek}
+                                    >
+                                        <Box sx={{ 
+                                            backgroundColor: 'primary.main', 
+                                            borderRadius: 4, 
+                                            height: '100%', 
+                                            width: `${progress}%` 
+                                        }} />
                                     </Box>
-                                    <Typography variant="body2" color="white">2:15 / 6:16</Typography>
-                                    <IconButton sx={{ color: 'rgba(255, 255, 255, 0.8)', '&:hover': { color: 'white' } }}>
+                                    <Typography variant="body2" color="white">
+                                        {formatTime(currentTime)} / {formatTime(duration)}
+                                    </Typography>
+                                    <IconButton 
+                                        onClick={toggleMute}
+                                        sx={{ color: 'rgba(255, 255, 255, 0.8)', '&:hover': { color: 'white' } }}
+                                    >
                                         <VolumeUpIcon />
                                     </IconButton>
-                                    <IconButton sx={{ color: 'rgba(255, 255, 255, 0.8)', '&:hover': { color: 'white' } }}>
-                                        <SettingsIcon />
-                                    </IconButton>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        value={isMuted ? 0 : volume}
+                                        onChange={handleVolumeChange}
+                                        style={{
+                                            width: '80px',
+                                            cursor: 'pointer'
+                                        }}
+                                    />
                                 </Box>
                             </Box>
                         </Box>
@@ -160,7 +317,7 @@ export const VideoContent = ({
                         <Box display="flex" alignItems="center" justifyContent="space-between">
                             <Box display="flex" alignItems="center" gap={2}>
                                 <Button
-                                    onClick={() => setIsPlaying(!isPlaying)}
+                                    onClick={togglePlayPause}
                                     startIcon={isPlaying ? <PauseIcon /> : <PlayIcon />}
                                     variant="contained"
                                     sx={{ textTransform: 'none' }}
@@ -186,6 +343,7 @@ export const VideoContent = ({
                     </Box>
                 </Paper>
             </Box>
+            {/* Rest of your component remains the same */}
             <Box sx={{
                 p: 2,
                 display: 'flex',
@@ -260,37 +418,9 @@ export const VideoContent = ({
                     </Box>
 
                     <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                        {/* Description */}
                         <Box>
                             <Typography variant="h6" fontWeight="semibold" mb={1}>Description</Typography>
                             <Typography color="text.secondary" sx={{ lineHeight: 1.6 }}>{currentVideoData.description}</Typography>
-                        </Box>
-
-                        {/* Key Topics */}
-                        <Box>
-                            <Typography variant="h6" fontWeight="semibold" mb={1}>Key Topics Covered</Typography>
-                            <Grid container spacing={1}>
-                                {currentVideoData.keyTopics.map((topic, index) => (
-                                    <Grid item xs={12} sm={6} key={index}>
-                                        <Box display="flex" alignItems="center" gap={1}>
-                                            <Box sx={{ width: 8, height: 8, backgroundColor: 'primary.main', borderRadius: '50%' }} />
-                                            <Typography color="text.secondary">{topic}</Typography>
-                                        </Box>
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </Box>
-
-                        <Box>
-                            <Typography variant="h6" fontWeight="semibold" mb={1}>Learning Objectives</Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                {currentVideoData.learningObjectives.map((objective, index) => (
-                                    <Box key={index} display="flex" alignItems="flex-start" gap={1}>
-                                        <CheckCircleIcon color="success" sx={{ mt: '2px' }} />
-                                        <Typography color="text.secondary">{objective}</Typography>
-                                    </Box>
-                                ))}
-                            </Box>
                         </Box>
 
                         <Box>
