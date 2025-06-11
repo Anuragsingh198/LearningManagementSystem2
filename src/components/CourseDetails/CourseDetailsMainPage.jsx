@@ -54,6 +54,9 @@ const CourseDetails = () => {
         setQuestions(updatedQuestions);
     };
 
+    // console.log('Updated Questions: ', updatedQuestions);
+    console.log('questions use state: ', questions)
+
     const completedChapters = chapters.filter(c => c.completed).length;
     const totalChapters = chapters.length;
     const progressPercentage = (completedChapters / totalChapters) * 100;

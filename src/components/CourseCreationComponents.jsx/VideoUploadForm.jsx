@@ -370,7 +370,7 @@ useEffect(() => {
                           >
                             <MenuItem value="">-- Select a module --</MenuItem>
                             {existingModules.map((module) => (
-                              <MenuItem key={module.id} value={module.id}>
+                              <MenuItem key={module._id} value={module._id}>
                                 {module.title}
                               </MenuItem>
                             ))}
