@@ -9,7 +9,7 @@ import {
     Chip,
     Avatar
 } from '@mui/material';
-import { Circle, CheckCircle } from '@mui/icons-material';
+import { NoVideosFound } from './NoContentFoundPage';
 
 export const QuizContent = ({
     questions,
@@ -19,6 +19,11 @@ export const QuizContent = ({
 }) => {
 
     const currentQ = questions[currentQuestion];
+    if(questions.length == 0) 
+        {
+            return <NoVideosFound/>
+        }
+
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, position: 'absolute', overflowY: 'auto', width: '100%', top:'10px', height:' 80%' }}>

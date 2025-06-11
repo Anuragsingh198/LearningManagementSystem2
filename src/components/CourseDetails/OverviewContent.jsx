@@ -22,16 +22,18 @@ import {
   ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
 import {  useNavigate } from 'react-router-dom';
+import { NoVideosFound } from './NoContentFoundPage';
 
-export const OverviewContent = ({ chapters, completedChapters, totalChapters, progressPercentage, setSelectedChapter }) => {
 
+
+export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, progressPercentage, setSelectedChapter }) => {
+    const  chapters =  oneCourse.modules;
+    console.log("this is  chapters  from the  overview Content:"  , oneCourse)
     const   navigate = useNavigate()
-
     const handelSubmit=(chapterId)=>{
             setSelectedChapter(chapterId)
             navigate(`/course/module/${chapterId}`)
     }
-
     return (
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 , width:'100%' }}>
     <Paper sx={{
@@ -134,7 +136,7 @@ export const OverviewContent = ({ chapters, completedChapters, totalChapters, pr
     <Box display="flex" flexDirection="column" gap={2}>
       {chapters.map((chapter) => (
         <Paper 
-          key={chapter.id} 
+          key={chapter._id} 
           elevation={0} 
           sx={{ 
             border: '1px solid', 
@@ -153,8 +155,8 @@ export const OverviewContent = ({ chapters, completedChapters, totalChapters, pr
                 sx={{ 
                   width: 48, 
                   height: 48, 
-                  bgcolor: chapter.completed ? 'success.light' : 'primary.light',
-                  color: chapter.completed ? 'success.main' : 'primary.main'
+                  bgcolor: chapter.status === 'completed' ? 'success.light' : 'primary.light',
+                  color: chapter.status === 'completed' ? 'success.main' : 'primary.main'
                 }}
               >
                 {chapter.completed ? <CheckCircleIcon /> : <BookIcon />}
@@ -165,10 +167,10 @@ export const OverviewContent = ({ chapters, completedChapters, totalChapters, pr
                 </Typography>
                 <Box display="flex" alignItems="center" gap={2} mt={0.5}>
                   {[
-                    { icon: <PlayCircleIcon fontSize="small" />, text: `${chapter.videos} Videos` },
-                    { icon: <ArticleIcon fontSize="small" />, text: `${chapter.articles} Articles` },
-                    { icon: <PsychologyIcon fontSize="small" />, text: `${chapter.problems} Problems` },
-                    { icon: <HelpIcon fontSize="small" />, text: `${chapter.mcqs} MCQs` },
+                    { icon: <PlayCircleIcon fontSize="small" />, text: `${chapter.videos.length} Videos` },
+                    // { icon: <ArticleIcon fontSize="small" />, text: `${chapter.articles} Articles` },
+                    // { icon: <PsychologyIcon fontSize="small" />, text: `${chapter.problems} Problems` },
+                    { icon: <HelpIcon fontSize="small" />, text: `${chapter.tests.length} MCQs` },
                     { icon: <AccessTimeIcon fontSize="small" />, text: chapter.duration }
                   ].map((item, index) => (
                     <Box key={index} display="flex" alignItems="center" gap={0.5}>
@@ -182,7 +184,7 @@ export const OverviewContent = ({ chapters, completedChapters, totalChapters, pr
               </Box>
             </Box>
             <Button 
-              onClick={()=> handelSubmit(chapter.id)}
+              onClick={()=> handelSubmit(chapter._id)}
               endIcon={<ChevronRightIcon />}
               sx={{
                 textTransform: 'none',
