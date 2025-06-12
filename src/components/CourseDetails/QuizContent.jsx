@@ -21,7 +21,7 @@ export const QuizContent = ({
     const currentQ = questions[currentQuestion];
     if(questions.length == 0) 
         {
-            return <NoVideosFound/>
+        return <NoVideosFound/>
         }
 
 

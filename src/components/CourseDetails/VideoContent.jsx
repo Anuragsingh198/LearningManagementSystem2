@@ -56,7 +56,6 @@ export const VideoContent = ({
 
     const currentVideoData = videos[currentVideo];
 
-    // Handle video source change
 useEffect(() => {
     if (videoRef.current && isPlaying) {
         videoRef.current.play().catch(error => {

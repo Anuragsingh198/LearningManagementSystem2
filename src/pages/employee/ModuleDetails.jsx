@@ -5,8 +5,6 @@ import CourseDetails from "../../components/CourseDetails/CourseDetailsMainPage"
 import { useParams } from "react-router-dom";
 
 
-
-
 export  const  ModuleDetails =()=>{
       
     const  {moduleId} = useParams();
