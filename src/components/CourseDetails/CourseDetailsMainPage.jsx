@@ -38,7 +38,7 @@ import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { all } from 'axios';
 
 const CourseDetails = ({moduleId}) => {
-
+    
     const [module ,  setModule] =  useState(null);
     const[videos ,  setVideos] =  useState([]);
     const [tests ,  setTests] =  useState([])
@@ -107,7 +107,7 @@ useEffect(() => {
                                 setCurrentQuestion={setCurrentQuestion}
                             />
                         )}
-                        {currentView === 'video' && videos.length !==0 &&(
+                        {currentView === 'video' && videos?.length !==0 &&(
                             <VideoContent
                                 currentVideo={currentVideo}
                                 isVideoZoomed={isVideoZoomed}

@@ -28,7 +28,9 @@ import { NoVideosFound } from './NoContentFoundPage';
 
 export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, progressPercentage, setSelectedChapter }) => {
     const  chapters =  oneCourse.modules;
-    console.log("this is  chapters  from the  overview Content:"  , oneCourse)
+    // console.log("this is  chapters  from the  overview Content:"  , oneCourse)
+    // console.log("this is  chapters "  , chapters)
+
     const   navigate = useNavigate()
     const handelSubmit=(chapterId)=>{
             setSelectedChapter(chapterId)
@@ -167,10 +169,10 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                 </Typography>
                 <Box display="flex" alignItems="center" gap={2} mt={0.5}>
                   {[
-                    { icon: <PlayCircleIcon fontSize="small" />, text: `${chapter.videos.length} Videos` },
+                    { icon: <PlayCircleIcon fontSize="small" />, text: `${chapter.videos?.length} Videos` },
                     // { icon: <ArticleIcon fontSize="small" />, text: `${chapter.articles} Articles` },
                     // { icon: <PsychologyIcon fontSize="small" />, text: `${chapter.problems} Problems` },
-                    { icon: <HelpIcon fontSize="small" />, text: `${chapter.tests.length} MCQs` },
+                    { icon: <HelpIcon fontSize="small" />, text: `${chapter.tests?.length} MCQs` },
                     { icon: <AccessTimeIcon fontSize="small" />, text: chapter.duration }
                   ].map((item, index) => (
                     <Box key={index} display="flex" alignItems="center" gap={0.5}>

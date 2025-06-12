@@ -91,16 +91,16 @@ const HorizontalNavBar = () => {
             <SidebarLink to="/teacher/create-course" icon={<FolderPlus />} label="Create Course" active={isActive('/teacher/create-course')} />
             <Divider orientation="vertical" flexItem sx={{ borderColor: '#e5e7eb', margin: '8px 4px' }} />
             <SidebarLink to="/teacher/my-courses" icon={<Video />} label="Upload Videos" />
-            <SidebarLink to="/profile" icon={<Users />} label="View Profile" />
+            <SidebarLink to="/profile" icon={<Users />} label="View Profile"active={isActive('/profile')} />
           </>
         ) : (
           <>
             <SidebarLink to="/student/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/student/dashboard')} />
-            <SidebarLink to="/student/browse-courses" icon={<Search />} label="Browse Courses" active={isActive('/student/browse-courses')} />
-            <SidebarLink to="/student/my-courses" icon={<Assignment />} label="Assignments" active={isActive('/student/my-courses')} />
+            <SidebarLink to="/student/my-courses" icon={<BookOpen />} label="My Courses" active={isActive('/student/my-courses')} />
+            {/* <SidebarLink to="/student/my-courses" icon={<Assignment />} label="Assignments" active={isActive('/student/my-courses')} /> */}
             <Divider orientation="vertical" flexItem sx={{ borderColor: '#e5e7eb', margin: '8px 4px' }} />
             <SidebarLink to="/student/my-courses" icon={<PlayCircle />} label="Continue Learning" />
-            <SidebarLink to="/profile" icon={<Users />} label="View Profile" />
+            <SidebarLink to="/profile" icon={<Users />} label="View Profile" active={isActive('/profile')}/>
           </>
         )}
       </Nav>

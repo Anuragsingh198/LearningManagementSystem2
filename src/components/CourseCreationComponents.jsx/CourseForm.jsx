@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { createCourseAction } from '../../context/Actions/courseActions';
-import { 
-  Box, Typography, Button, TextField, Select, MenuItem, 
+import {
+  Box, Typography, Button, TextField, Select, MenuItem,
   FormControl, IconButton, Paper, CircularProgress, Avatar, Input,
-  FormHelperText, Container 
+  FormHelperText, Container, Switch
 } from '@mui/material';
 import { Upload as UploadIcon, Close as CloseIcon } from '@mui/icons-material';
 
@@ -60,16 +60,21 @@ const CourseForm = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log('submit button clicked')
     e.preventDefault();
     if (!validateForm()) return;
     setIsSubmitting(true);
 
     try {
       const formDataToSend = new FormData();
-      for (const key in formData) {
-        formDataToSend.append(key, formData[key]);
-      }
+     for (const key in formData) {
+  const value = formData[key];
+  formDataToSend.append(key, typeof value === 'boolean' ? String(value) : value);
+}
 
+for (let pair of formDataToSend.entries()) {
+  console.log(pair[0], pair[1]);
+}
       const newCourse = await createCourseAction(formDataToSend, dispatch);
       if (newCourse) navigate(`/teacher/upload-video/${newCourse._id}`);
     } catch (error) {
@@ -82,47 +87,65 @@ const CourseForm = () => {
   return (
     // <Container>
 
-    
+
     <Box sx={mainContainerStyles}>
       <HeaderForm />
       <Container maxWidth="lg" sx={formContainerStyles}>
+
         <Paper elevation={1} sx={paperStyles}>
+
+          <FormControl sx={{ mt: 2, mx: 4 }} component="fieldset">
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              Compulsory Course?
+            </Typography>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography variant="body2">No</Typography>
+              <Switch
+                checked={formData.compulsory}
+                onChange={(e) => setFormData(prev => ({ ...prev, compulsory: e.target.checked }))}
+                color="primary"
+              />
+              <Typography variant="body2">Yes</Typography>
+            </Box>
+          </FormControl>
+
           <Box component="form" onSubmit={handleSubmit} sx={formStyles}>
             <Box sx={gridContainerStyles}>
-              <FormField 
-                label="Title" 
-                name="title" 
-                value={formData.title} 
+              <FormField
+                label="Title"
+                name="title"
+                value={formData.title}
                 error={errors.title}
                 onChange={handleInputChange}
               />
-              
-              <FormField 
-                label="Instructor" 
-                name="instructor" 
-                value={formData.instructor} 
+
+
+              <FormField
+                label="Instructor"
+                name="instructor"
+                value={formData.instructor}
                 error={errors.instructor}
                 onChange={handleInputChange}
               />
 
-              <CategorySelect 
+              <CategorySelect
                 value={formData.category}
                 onChange={handleInputChange}
                 error={errors.category}
               />
             </Box>
 
-            <FormField 
-              label="Description" 
-              name="description" 
-              value={formData.description} 
+            <FormField
+              label="Description"
+              name="description"
+              value={formData.description}
               error={errors.description}
               onChange={handleInputChange}
               multiline
               rows={4}
             />
 
-            <ThumbnailUpload 
+            <ThumbnailUpload
               thumbnailPreview={thumbnailPreview}
               onThumbnailChange={handleThumbnailChange}
               onClearThumbnail={() => setThumbnailPreview(null)}
@@ -205,14 +228,14 @@ const ThumbnailUpload = ({ thumbnailPreview, onThumbnailChange, onClearThumbnail
       </Paper>
     ) : (
       <Box sx={thumbnailPreviewStyles}>
-        <Box 
-          component="img" 
-          src={thumbnailPreview} 
-          alt="Thumbnail Preview" 
-          sx={thumbnailImageStyles} 
+        <Box
+          component="img"
+          src={thumbnailPreview}
+          alt="Thumbnail Preview"
+          sx={thumbnailImageStyles}
         />
-        <IconButton 
-          onClick={onClearThumbnail} 
+        <IconButton
+          onClick={onClearThumbnail}
           sx={removeThumbnailButtonStyles}
           aria-label="Remove thumbnail"
         >
@@ -254,6 +277,7 @@ const initialFormState = {
   category: '',
   price: 0,
   thumbnail: '',
+  compulsory: false
 };
 
 // Responsive styles
@@ -262,7 +286,7 @@ const mainContainerStyles = {
   flexDirection: 'column',
   borderRadius: 10,
   border: '1px solid',
-    borderColor: 'grey.300',
+  borderColor: 'grey.300',
   // minHeight: '100vh',
   backgroundColor: 'background.default'
 };

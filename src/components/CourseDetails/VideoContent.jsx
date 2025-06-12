@@ -54,7 +54,11 @@ export const VideoContent = ({
     const [volume, setVolume] = useState(1);
     const [showControls, setShowControls] = useState(false);
 
-    const currentVideoData = videos[currentVideo];
+    // const currentVideoData = videos[currentVideo];
+    const currentVideoData = Array.isArray(videos) && videos.length > currentVideo && currentVideo >= 0
+  ? videos[currentVideo]
+  : null;
+
 
     // Handle video source change
 useEffect(() => {
@@ -189,7 +193,7 @@ useEffect(() => {
                     }}>
                         <video
                             ref={videoRef}
-                            src={currentVideoData.url}
+                            src={currentVideoData?.url}
                             style={{ 
                                 width: '100%', 
                                 height: '100%', 
@@ -220,8 +224,8 @@ useEffect(() => {
                                 color: 'white'
                             }} onClick={togglePlayPause}>
                                 <PlayCircleIcon sx={{ width: 80, height: 80, mx: 'auto', mb: 2, color: 'rgba(255, 255, 255, 0.8)' }} />
-                                <Typography variant="h5" fontWeight="bold" mb={1}>{currentVideoData.title}</Typography>
-                                <Typography color="rgba(255, 255, 255, 0.7)">Duration: {currentVideoData.duration}</Typography>
+                                <Typography variant="h5" fontWeight="bold" mb={1}>{currentVideoData?.title}</Typography>
+                                <Typography color="rgba(255, 255, 255, 0.7)">Duration: {currentVideoData?.duration}</Typography>
                             </Box>
                         )}
 
@@ -372,16 +376,16 @@ useEffect(() => {
 
                     <Box textAlign="center">
                         <Typography variant="body2" color="text.secondary">
-                            Video {currentVideo + 1} of {videos.length}
+                            Video {currentVideo + 1} of {videos?.length}
                         </Typography>
                         <Typography variant="caption" color="text.disabled">
-                            {videos.filter(v => v.completed).length} completed
+                            {videos?.filter(v => v.completed).length} completed
                         </Typography>
                     </Box>
 
                     <Button
-                        onClick={() => setCurrentVideo(Math.min(videos.length - 1, currentVideo + 1))}
-                        disabled={currentVideo === videos.length - 1}
+                        onClick={() => setCurrentVideo(Math.min(videos?.length - 1, currentVideo + 1))}
+                        disabled={currentVideo === videos?.length - 1}
                         endIcon={<SkipForwardIcon />}
                         variant="contained"
                         sx={{ textTransform: 'none' }}
@@ -409,9 +413,9 @@ useEffect(() => {
 
                 <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, overflow: 'hidden' }}>
                     <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
-                        <Typography variant="h4" fontWeight="bold" mb={1}>{currentVideoData.title}</Typography>
+                        <Typography variant="h4" fontWeight="bold" mb={1}>{currentVideoData?.title}</Typography>
                         <Box display="flex" alignItems="center" gap={2}>
-                            <Chip icon={<ClockIcon />} label={currentVideoData.duration} size="small" />
+                            <Chip icon={<ClockIcon />} label={currentVideoData?.duration} size="small" />
                             <Chip icon={<UsersIcon />} label="12,543 students" size="small" />
                             <Chip icon={<AwardIcon />} label="Beginner Level" size="small" />
                         </Box>
@@ -420,7 +424,7 @@ useEffect(() => {
                     <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <Box>
                             <Typography variant="h6" fontWeight="semibold" mb={1}>Description</Typography>
-                            <Typography color="text.secondary" sx={{ lineHeight: 1.6 }}>{currentVideoData.description}</Typography>
+                            <Typography color="text.secondary" sx={{ lineHeight: 1.6 }}>{currentVideoData?.description}</Typography>
                         </Box>
 
                         <Box>

@@ -3,6 +3,7 @@ import { courseReducer } from '../reducers/courseReducer';
 
 const initialState = {
   courses: [],
+  myCourses: [],
   modules: [],
   videos: [],
 };

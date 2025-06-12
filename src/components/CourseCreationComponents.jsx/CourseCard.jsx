@@ -10,8 +10,12 @@ import {
   Typography,
   Chip
 } from '@mui/material';
+import { useAuth } from '../../context/contextFiles/AuthContext';
 
 const CourseCard = ({ course }) => {
+
+    const { state: { user } } = useAuth();
+    const role = user?.role;
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
@@ -146,7 +150,7 @@ const CourseCard = ({ course }) => {
 
 
         {/* Action Button */}
-        <Button
+        { role != 'instructor' ? '': <Button
           fullWidth
           variant="contained"
           onClick={handleUploadClick}
@@ -167,7 +171,7 @@ const CourseCard = ({ course }) => {
           }}
         >
           Manage Content
-        </Button>
+        </Button>}
         <Button
           fullWidth
           variant="contained"

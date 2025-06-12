@@ -1,5 +1,5 @@
 import axios from 'axios';
-const serverurl = 'http://localhost:5000';
+const serverurl = import.meta.env.VITE_SERVER_URL;
 
 const getAuthToken = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -171,7 +171,7 @@ export const getCoursesAction = async (dispatch) => {
         return [];
       }
       dispatch({ type: 'SET_COURSES', payload: data.courses });
-      console.log('Courses fetched successfully:', data.courses);
+      // console.log('Courses fetched successfully:', data.courses);
       return data.courses;
     } else {
       throw new Error(data.message || 'Failed to fetch courses');
@@ -181,6 +181,49 @@ export const getCoursesAction = async (dispatch) => {
     console.error('Get courses error:', error);
     throw error;
   }
+}
+
+export const getMyCoursesAction = async (dispatch) => {
+     const user = JSON.parse(localStorage.getItem('user'));
+
+  if (!user || !user._id) {
+    throw new Error('User not authenticated');
+  }
+
+  const token = user.token;
+
+  if (!token) {
+    throw new Error('User token not found');
+  }
+
+  const userId = user._id
+
+    try {
+    dispatch({ type: 'COURSE_LOADING' });
+    const response = await axios.get(`${serverurl}/api/users/${userId}` , {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = response.data;
+    if (data.success) {
+      if(!data.courses || data.courses.length === 0) {
+        dispatch({ type: 'SET_MY_COURSES', payload: [] });
+        console.log('No courses found');
+        return [];
+      }
+      dispatch({ type: 'SET_MY_COURSES', payload: data.courses });
+      // console.log('My Courses fetched:', data.courses);
+      return data.courses;
+    } else {
+      throw new Error(data.message || 'Failed to fetch my courses');
+    }
+  } catch (error) {
+    dispatch({ type: 'COURSE_ERROR', payload: error.message });
+    console.error('Get courses error:', error);
+    throw error;
+  }
+
 }
 
 

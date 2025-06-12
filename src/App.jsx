@@ -17,6 +17,7 @@ import CourseDetails from './components/CourseDetails/CourseDetailsMainPage';
 import OverviewPage from './pages/employee/CourseOverviewPage';
 import { ModuleDetails } from './pages/employee/ModuleDetails';
 import { useAuth } from './context/contextFiles/AuthContext';
+import MuiLoading from './pages/common/Loading';
 
 function App() {
     const { state: { user, loading }, dispatch } = useAuth();
@@ -26,7 +27,7 @@ function App() {
     })
 
     if(loading){
-      return <div>Loading... from app.jsx</div>
+      return <MuiLoading/>
     }
     
   return (
@@ -46,6 +47,7 @@ function App() {
                 {/* <Route path="/" element={<HomePage />} /> */}
                 <Route path="/teacher/create-course" element={<CreateCoursePage />} />
                 <Route path="/teacher/my-courses" element={<CoursesPage />} />
+                <Route path="/student/my-courses" element={<CoursesPage />} />
                 <Route path="/teacher/upload-video/:courseId" element={<VideoUploadPage />} />
                 <Route path="/Profile" element={<ProfilePage />} />
                 <Route path="/course/details/:courseId" element={<OverviewPage />} />

@@ -98,7 +98,7 @@ export const Sidebar = ({
             <ListItemIcon sx={{ color: 'inherit' }}>
               <PlayCircleIcon />
             </ListItemIcon>
-            <ListItemText primary={`Videos (${videos.length})`} />
+            <ListItemText primary={`Videos (${videos?.length})`} />
           </ListItemButton>
         </ListItem>
 
@@ -129,7 +129,7 @@ export const Sidebar = ({
             Videos
           </Typography>
           <List>
-            {videos.map((video, index) => (
+            {videos?.map((video, index) => (
               <ListItem key={video.id} disablePadding>
                 <ListItemButton
                   selected={currentVideo === index}

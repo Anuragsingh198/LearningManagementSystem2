@@ -9,6 +9,14 @@ export const courseReducer = (state, action) => {
         error: null
       };
       
+      case 'SET_MY_COURSES':
+      return {
+        ...state,
+        myCourses: action.payload,
+        loading: false,
+        error: null
+      };
+
     case 'ADD_COURSE':
       console.log('Adding course: course  reducer', action.payload);
       return {

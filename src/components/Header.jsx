@@ -73,7 +73,7 @@ export default function Header() {
                 fontSize: { xs: '1.25rem', sm: '1.5rem' },
               }}
             >
-              EDULearn
+              DigiVidya
             </Typography>
             <Typography
               variant="caption"

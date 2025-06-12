@@ -26,7 +26,7 @@ const VideoUploadPage = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h5" mb={2}>
+      <Typography variant="h5" mb={2} color='black'>
         {course ? `Course: ${course.title}` : 'Course not found'}
       </Typography>
 
