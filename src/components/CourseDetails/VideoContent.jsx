@@ -56,18 +56,18 @@ export const VideoContent = ({
 
     // const currentVideoData = videos[currentVideo];
     const currentVideoData = Array.isArray(videos) && videos.length > currentVideo && currentVideo >= 0
-  ? videos[currentVideo]
-  : null;
+        ? videos[currentVideo]
+        : null;
 
 
-useEffect(() => {
-    if (videoRef.current && isPlaying) {
-        videoRef.current.play().catch(error => {
-            console.error("Auto-play was prevented:", error);
-            setIsPlaying(false);
-        });
-    }
-}, [currentVideo, isPlaying]);
+    useEffect(() => {
+        if (videoRef.current && isPlaying) {
+            videoRef.current.play().catch(error => {
+                console.error("Auto-play was prevented:", error);
+                setIsPlaying(false);
+            });
+        }
+    }, [currentVideo, isPlaying]);
 
 
     const togglePlayPause = () => {
@@ -148,13 +148,23 @@ useEffect(() => {
     }, []);
 
     return (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '1000px',
-            position: 'absolute',
-            overflowY: 'scroll',
-        }}>
+        <Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'column',
+    height: '1000px',        // or use a dynamic height if needed
+    overflowY: 'scroll',
+    // ✅ Hide scrollbar for Chrome, Edge, Safari
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+
+    // ✅ Hide scrollbar for Firefox
+    scrollbarWidth: 'none',
+    msOverflowStyle: 'none',
+  }}
+>
+
             <Box sx={{
                 height: '80%',
                 display: 'flex',
@@ -193,9 +203,9 @@ useEffect(() => {
                         <video
                             ref={videoRef}
                             src={currentVideoData?.url}
-                            style={{ 
-                                width: '100%', 
-                                height: '100%', 
+                            style={{
+                                width: '100%',
+                                height: '100%',
                                 cursor: 'pointer',
                                 transform: isVideoZoomed && !isVideoFullscreen ? 'scale(1.1)' : 'none',
                                 transition: 'transform 0.3s'
@@ -273,27 +283,27 @@ useEffect(() => {
                                     >
                                         {isPlaying ? <PauseIcon /> : <PlayIcon />}
                                     </IconButton>
-                                    <Box 
-                                        sx={{ 
-                                            flexGrow: 1, 
-                                            backgroundColor: 'rgba(255, 255, 255, 0.2)', 
-                                            borderRadius: 4, 
+                                    <Box
+                                        sx={{
+                                            flexGrow: 1,
+                                            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                                            borderRadius: 4,
                                             height: 4,
                                             cursor: 'pointer'
                                         }}
                                         onClick={handleSeek}
                                     >
-                                        <Box sx={{ 
-                                            backgroundColor: 'primary.main', 
-                                            borderRadius: 4, 
-                                            height: '100%', 
-                                            width: `${progress}%` 
+                                        <Box sx={{
+                                            backgroundColor: 'primary.main',
+                                            borderRadius: 4,
+                                            height: '100%',
+                                            width: `${progress}%`
                                         }} />
                                     </Box>
                                     <Typography variant="body2" color="white">
                                         {formatTime(currentTime)} / {formatTime(duration)}
                                     </Typography>
-                                    <IconButton 
+                                    <IconButton
                                         onClick={toggleMute}
                                         sx={{ color: 'rgba(255, 255, 255, 0.8)', '&:hover': { color: 'white' } }}
                                     >

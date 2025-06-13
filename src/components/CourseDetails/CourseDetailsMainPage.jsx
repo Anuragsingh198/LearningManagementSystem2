@@ -70,15 +70,28 @@ const CourseDetails = ({ moduleId }) => {
             console.log("this is the data from CourseDetails:", allModule);
             setModule(allModule || []);
             setVideos(allModule.videos || []);
-            setTests(allModule.tests || sampleTests);
+            // setTests(allModule.tests || sampleTests);
         };
         fetchdata();
     }, []);
 
 
     return (
-        <Box sx={{ bgcolor: 'background.default', height: '1000px', width: '100%', display: 'flex', justifyContent: 'center', gap: 6, position: 'absolute', overflowY: 'auto' }}>
-            <Box sx={{ width: '30%', position: 'relative' }}>
+        <Box sx={{
+            bgcolor: 'background.default',
+            height: '100vh',  // or '100%' if parent has a defined height
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 6,
+            overflowY: 'hidden',
+            '&::-webkit-scrollbar': {
+                display: 'none',
+            },
+            scrollbarWidth: 'none',
+        }}>
+
+            <Box sx={{ width: '30%' }}>
                 <Sidebar
                     currentView={currentView}
                     setCurrentView={setCurrentView}
@@ -114,17 +127,19 @@ const CourseDetails = ({ moduleId }) => {
                 )}
                 {currentView === 'video' && (
                     videos.length !== 0 ? (
-                        <VideoContent
-                            currentVideo={currentVideo}
-                            isVideoZoomed={isVideoZoomed}
-                            isVideoFullscreen={isVideoFullscreen}
-                            isPlaying={isPlaying}
-                            setCurrentVideo={setCurrentVideo}
-                            setIsVideoZoomed={setIsVideoZoomed}
-                            setIsVideoFullscreen={setIsVideoFullscreen}
-                            setIsPlaying={setIsPlaying}
-                            videos={videos}
-                        />
+                        <Box sx={{ mt: 1 }}>
+                            <VideoContent
+                                currentVideo={currentVideo}
+                                isVideoZoomed={isVideoZoomed}
+                                isVideoFullscreen={isVideoFullscreen}
+                                isPlaying={isPlaying}
+                                setCurrentVideo={setCurrentVideo}
+                                setIsVideoZoomed={setIsVideoZoomed}
+                                setIsVideoFullscreen={setIsVideoFullscreen}
+                                setIsPlaying={setIsPlaying}
+                                videos={videos}
+                            />
+                        </Box>
                     ) : (
                         <NoContentPage
                             title="Videos"
