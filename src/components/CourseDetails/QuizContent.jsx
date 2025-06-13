@@ -26,7 +26,27 @@ export const QuizContent = ({
 
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', width: '100%', mt: 2, height:' 80%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', width: '100%', mt: 2, height:' 80%' ,
+// Scrollbar styling for Chrome, Edge, Safari
+    '&::-webkit-scrollbar': {
+      width: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: '#ffffff', // white track
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#c0c0c0', // gray thumb
+      borderRadius: '4px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: '#a0a0a0', // slightly darker gray on hover
+    },
+
+    // Firefox
+    scrollbarColor: '#c0c0c0 #ffffff', // thumb and track
+    scrollbarWidth: 'thin',
+            
+        }}>
             <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, p: 3 }}>
                 <Typography variant="h6" fontWeight="semibold" mb={2}>
                     Quiz Statistics
