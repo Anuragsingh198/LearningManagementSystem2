@@ -127,7 +127,7 @@ const CourseDetails = ({ moduleId }) => {
                 )}
                 {currentView === 'video' && (
                     videos.length !== 0 ? (
-                        <Box sx={{ mt: 1 }}>
+                        <Box>
                             <VideoContent
                                 currentVideo={currentVideo}
                                 isVideoZoomed={isVideoZoomed}

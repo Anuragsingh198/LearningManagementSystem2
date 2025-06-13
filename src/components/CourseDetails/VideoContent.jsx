@@ -149,21 +149,21 @@ export const VideoContent = ({
 
     return (
         <Box
-  sx={{
-    display: 'flex',
-    flexDirection: 'column',
-    height: '1000px',        // or use a dynamic height if needed
-    overflowY: 'scroll',
-    // ✅ Hide scrollbar for Chrome, Edge, Safari
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
-
-    // ✅ Hide scrollbar for Firefox
-    scrollbarWidth: 'none',
-    msOverflowStyle: 'none',
-  }}
->
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100vh',        // or use a dynamic height if needed
+                overflowY: 'auto',
+            // Hide scrollbar for Webkit browsers (Chrome, Safari, etc.)
+            '&::-webkit-scrollbar': {
+                display: 'none',
+            },
+            // Hide scrollbar for Firefox
+            scrollbarWidth: 'none',
+            // Hide scrollbar for IE and Edge
+            msOverflowStyle: 'none',
+            }}
+        >
 
             <Box sx={{
                 height: '80%',
