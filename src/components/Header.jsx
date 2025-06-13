@@ -9,15 +9,34 @@ import {
   InputBase,
   Badge,
   useTheme,
+  Menu, MenuItem
 } from '@mui/material';
 import {
   Notifications as NotificationsIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
+import { useAuth } from '../context/contextFiles/AuthContext';
+import logo from '../assets/logo.png'
 
 export default function Header() {
   const theme = useTheme();
+  const { state: { user, loading }, dispatch } = useAuth();
+
+  const { name, email, role} = user;
+  
   const [searchText, setSearchText] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+const handleAvatarClick = (event) => {
+  setAnchorEl(event.currentTarget);
+};
+const handleMenuClose = () => {
+  setAnchorEl(null);
+};
+const handleLogout = () => {
+  console.log("Logout clicked");
+  handleMenuClose();
+};
+
 
   const handleSearchChange = (event) => {
     setSearchText(event.target.value);
@@ -57,7 +76,7 @@ export default function Header() {
           }}
           component="a"
           href="/"
-        >
+        > <img src={logo} style={{height: 60, marginRight: 10 }} />
           <Box
             sx={{
               display: 'flex',
@@ -135,6 +154,7 @@ export default function Header() {
             display: 'flex',
             alignItems: 'center',
             gap: { xs: 1, sm: 2 },
+            marginRight: 2
           }}
         >
           <IconButton
@@ -150,39 +170,81 @@ export default function Header() {
               <NotificationsIcon fontSize="medium" />
             </Badge>
           </IconButton>
-
+              {/* here add one logout button */}
           <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.5,
-              ml: 1,
-              cursor: 'pointer',
-              '&:hover': {
-                opacity: 0.9,
-              },
-            }}
-          >
-            <Avatar
-              alt="User Profile"
-              src="/profile.jpg"
-              sx={{
-                width: 36,
-                height: 36,
-                border: '2px solid',
-                borderColor: theme.palette.divider,
-              }}
-            />
-            <Typography
-              variant="subtitle2"
-              sx={{
-                fontWeight: 500,
-                display: { xs: 'none', sm: 'block' },
-              }}
-            >
-              John Doe
-            </Typography>
-          </Box>
+  onClick={handleAvatarClick}
+  sx={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1,
+    ml: 1,
+    cursor: 'pointer',
+    '&:hover': {
+      opacity: 0.9,
+    },
+  }}
+>
+  <Avatar
+    alt="User Profile"
+    src="/profile.jpg"
+    sx={{
+      width: 36,
+      height: 36,
+      border: '2px solid',
+      borderColor: theme.palette.divider,
+    }}
+  />
+  <Typography
+    variant="subtitle2"
+    sx={{
+      fontWeight: 500,
+      display: { xs: 'none', sm: 'block' },
+    }}
+  >
+    {name}
+  </Typography>
+</Box>
+<Menu
+  anchorEl={anchorEl}
+  open={Boolean(anchorEl)}
+  onClose={handleMenuClose}
+  anchorOrigin={{
+    vertical: 'bottom',
+    horizontal: 'right',
+  }}
+  transformOrigin={{
+    vertical: 'top',
+    horizontal: 'right',
+  }}
+  slotProps={{
+    paper: {
+      sx: {
+        borderRadius: 2,
+        mt: 1,
+        ml: 4,
+        border: '1px solid #ccc', // light gray border
+        minWidth: 150,
+        boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
+        transition: 'background-color 0.2s ease',
+        '&:hover': {
+          backgroundColor: '#f5f5f5', // light gray on hover
+        },
+      },
+    },
+  }}
+>
+  <MenuItem
+  sx={{
+    '&:hover': { backgroundColor: 'transparent' },
+    '&.Mui-focusVisible': { backgroundColor: 'transparent' },
+
+  }}
+   onClick={handleLogout}>Logout</MenuItem>
+</Menu>
+
+
+
+
         </Box>
       </Toolbar>
     </Box>
