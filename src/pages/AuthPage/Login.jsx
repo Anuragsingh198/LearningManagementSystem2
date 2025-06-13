@@ -140,7 +140,7 @@ const LoginPage = () => {
         <RightSection>
           <Box sx={{ textAlign: 'center', marginBottom: '2rem' }}>
             <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#3730a3' }}>
-              EduHub
+              DigiVidya
             </Typography>
             <Typography sx={{ color: '#4b5563', marginTop: '0.5rem' }}>
               Sign in to your account
@@ -160,7 +160,7 @@ const LoginPage = () => {
                 required
                 fullWidth
                 variant="outlined"
-                placeholder="you@example.com"
+                placeholder="you@ielektron.com"
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     backgroundColor: '#f9fafb',

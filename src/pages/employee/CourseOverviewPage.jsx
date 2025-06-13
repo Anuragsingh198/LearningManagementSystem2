@@ -122,7 +122,7 @@ const OverviewPage = () => {
 
   return (
     <>
-    <Box sx={{display:'flex' , position:"absolute", width:' 90%' , left:'5%', height:'80%' , overflowY:'auto'}}>
+    <Box sx={{display:'flex' , width:' 99%' , height:'100vh' , overflowY:'auto'}}>
         {courseData && (
         <OverviewContent
             oneCourse={courseData}

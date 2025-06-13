@@ -63,7 +63,7 @@ const CourseDetails = ({ moduleId }) => {
         updatedQuestions[questionIndex].answered = answerIndex;
         setQuestions(updatedQuestions);
     };
-    console.log("this  are the  sample tests  : ", sampleTests)
+    // console.log("this  are the  sample tests  : ", sampleTests)
     useEffect(() => {
         const fetchdata = async () => {
             const allModule = await getModulebyModuleId(moduleId, dispatch);

@@ -52,11 +52,11 @@ const Header = () => (
           <Typography
             variant="h4"
             component="h1"
-            sx={{ fontWeight: 'bold', color: 'text.primary' }}
+            sx={{ fontWeight: 'bold', color: 'gray' }}
           >
             Upload Video
           </Typography>
-          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary',  }}>
             Get started by uploading your course video
           </Typography>
         </Box>

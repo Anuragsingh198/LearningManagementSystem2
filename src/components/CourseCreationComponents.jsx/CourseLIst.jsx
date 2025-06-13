@@ -175,8 +175,8 @@ const CourseList = () => {
 </Paper>
 
         ) : (
-          <Box sx={{ mt: 3, px: 0, width: '100%' }}>
-            <Grid container spacing={3} justifyContent="center">
+          <Box sx={{ mt: 3, px: 5, width: '100%' , }}>
+            <Grid container spacing={3} justifyContent="flex-start" >
               {myCourses?.map((course) => (
                 <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
 

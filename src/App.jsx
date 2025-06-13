@@ -42,8 +42,8 @@ function App() {
 
             <Layout>
               <Routes>
-                <Route path="/student/dashboard" element={<TeacherDashboard />} />
-                <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+                <Route path="/dashboard" element={<TeacherDashboard />} />
+                <Route path="/dashboard" element={<TeacherDashboard />} />
                 {/* <Route path="/" element={<HomePage />} /> */}
                 <Route path="/teacher/create-course" element={<CreateCoursePage />} />
                 <Route path="/teacher/my-courses" element={<CoursesPage />} />
@@ -52,7 +52,7 @@ function App() {
                 <Route path="/Profile" element={<ProfilePage />} />
                 <Route path="/course/details/:courseId" element={<OverviewPage />} />
                 <Route path="/course/module/:moduleId" element={<ModuleDetails />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Layout>
             </PrivateRoute>

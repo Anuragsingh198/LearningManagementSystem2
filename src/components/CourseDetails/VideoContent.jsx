@@ -61,16 +61,56 @@ export const VideoContent = ({
 
 
     useEffect(() => {
+        // console.log('the current time is: ', currentTime)
         if (videoRef.current && isPlaying) {
             videoRef.current.play().catch(error => {
                 console.error("Auto-play was prevented:", error);
                 setIsPlaying(false);
             });
         }
-    }, [currentVideo, isPlaying]);
+    }, [currentTime, currentVideo, isPlaying]);
+
+useEffect(() => {
+    const handleKeyDown = (event) => {
+        if (!videoRef.current) return;
+
+        switch (event.code) {
+            case 'Space':
+                event.preventDefault();
+                console.log("Key pressed:", event.code);
+                togglePlayPause();
+                break;
+            case 'ArrowRight':
+                event.preventDefault(); // Optional: Prevent scroll on some browsers
+                console.log("Key pressed:", event.code);
+                videoRef.current.currentTime = Math.min(
+                    videoRef.current.currentTime + 10,
+                    videoRef.current.duration
+                );
+                break;
+            case 'ArrowLeft':
+                event.preventDefault(); // Optional
+                console.log("Key pressed:", event.code);
+                videoRef.current.currentTime = Math.max(
+                    videoRef.current.currentTime - 5,
+                    0
+                );
+                break;
+            default:
+                break;
+        }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+    };
+}, []);
+
 
 
     const togglePlayPause = () => {
+        
         if (videoRef.current) {
             if (videoRef.current.paused) {
                 videoRef.current.play().then(() => setIsPlaying(true));
@@ -227,6 +267,7 @@ export const VideoContent = ({
                                 position: 'absolute',
                                 top: '50%',
                                 left: '50%',
+                                zIndex: 100,
                                 transform: 'translate(-50%, -50%)',
                                 cursor: 'pointer',
                                 textAlign: 'center',

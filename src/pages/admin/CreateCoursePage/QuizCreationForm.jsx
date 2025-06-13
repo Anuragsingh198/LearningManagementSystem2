@@ -293,7 +293,7 @@ function QuizCreationForm({ courseId }) {
                         flexWrap: 'wrap',
                         gap: 1
                     }}>
-                        <Typography variant="h6" fontWeight="600">
+                        <Typography variant="h6" fontWeight="600" color='gray'>
                             {showModuleForm ? "Create New Module" : "Select Module"}
                         </Typography>
                         <Button
@@ -457,7 +457,7 @@ function QuizCreationForm({ courseId }) {
             <Box sx={{display: 'flex', width: '50%', flexDirection: 'column', justifyContent: 'space-evenly'}}>
                 <TextField
                     fullWidth
-                    label="Test Title"
+                    label="Quiz Title"
                     id="testTitle"
                     name="testTitle"
                     value={testTitle}
@@ -484,7 +484,7 @@ function QuizCreationForm({ courseId }) {
                 />
                       <TextField
                     fullWidth
-                    label="Test Description"
+                    label="Quiz Description"
                     id="testDescription"
                     name="testDescription"
                     value={testDescription}

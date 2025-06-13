@@ -48,7 +48,7 @@ export const Sidebar = ({
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    console.log("this is the  tedsts : ", tests)
+    // console.log("this is the  tedsts : ", tests)
     return (
         <Box sx={{
             width: '100%',

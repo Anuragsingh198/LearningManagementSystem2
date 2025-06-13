@@ -171,7 +171,7 @@ export const getCoursesAction = async (dispatch) => {
         return [];
       }
       dispatch({ type: 'SET_COURSES', payload: data.courses });
-      // console.log('Courses fetched successfully:', data.courses);
+      console.log('Courses fetched successfully in get course action:', data.courses);
       return data.courses;
     } else {
       throw new Error(data.message || 'Failed to fetch courses');

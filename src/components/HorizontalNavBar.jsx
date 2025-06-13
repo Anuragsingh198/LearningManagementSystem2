@@ -86,7 +86,7 @@ const HorizontalNavBar = () => {
       <Nav component="nav">
         {role === 'instructor' ? (
           <>
-            <SidebarLink to="/teacher/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/teacher/dashboard')} />
+            <SidebarLink to="/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/dashboard')} />
             <SidebarLink to="/teacher/my-courses" icon={<BookOpen />} label="My Courses" active={isActive('/teacher/my-courses')} />
             <SidebarLink to="/teacher/create-course" icon={<FolderPlus />} label="Create Course" active={isActive('/teacher/create-course')} />
             <Divider orientation="vertical" flexItem sx={{ borderColor: '#e5e7eb', margin: '8px 4px' }} />
@@ -95,7 +95,7 @@ const HorizontalNavBar = () => {
           </>
         ) : (
           <>
-            <SidebarLink to="/student/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/student/dashboard')} />
+            <SidebarLink to="/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/dashboard')} />
             <SidebarLink to="/student/my-courses" icon={<BookOpen />} label="My Courses" active={isActive('/student/my-courses')} />
             {/* <SidebarLink to="/student/my-courses" icon={<Assignment />} label="Assignments" active={isActive('/student/my-courses')} /> */}
             <Divider orientation="vertical" flexItem sx={{ borderColor: '#e5e7eb', margin: '8px 4px' }} />
