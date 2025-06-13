@@ -84,7 +84,8 @@ const CourseDetails = ({ moduleId }) => {
             display: 'flex',
             justifyContent: 'center',
             gap: 6,
-            overflowY: 'hidden',
+            // overflowY: 'hidden',
+            overflow: 'hidden',
             '&::-webkit-scrollbar': {
                 display: 'none',
             },
@@ -108,7 +109,7 @@ const CourseDetails = ({ moduleId }) => {
                 />
             </Box>
 
-            <Box sx={{ width: '60%', overflowY: 'auto', position: 'relative' }}>
+            <Box sx={{ width: '60%', overflow: 'hidden' }}>
                 {currentView === 'quiz' && (
                     tests.length !== 0 ? (
                         <QuizContent

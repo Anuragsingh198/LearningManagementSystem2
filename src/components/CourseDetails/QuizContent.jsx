@@ -26,7 +26,7 @@ export const QuizContent = ({
 
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, position: 'absolute', overflowY: 'auto', width: '100%', top:'10px', height:' 80%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', width: '100%', mt: 2, height:' 80%' }}>
             <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, p: 3 }}>
                 <Typography variant="h6" fontWeight="semibold" mb={2}>
                     Quiz Statistics
