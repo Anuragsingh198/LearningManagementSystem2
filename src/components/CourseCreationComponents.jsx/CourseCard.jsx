@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Video, Users, Calendar, Clock, Book } from 'lucide-react';
+import { Video, Users, Calendar, Clock, Book, Trash2 } from 'lucide-react';
 import {
   Box,
   Button,
@@ -8,15 +8,49 @@ import {
   CardContent,
   CardMedia,
   Typography,
-  Chip
+  Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import { useAuth } from '../../context/contextFiles/AuthContext';
+import IconButton from '@mui/material/IconButton';
 
 const CourseCard = ({ course }) => {
 
-    const { state: { user } } = useAuth();
-    const role = user?.role;
+  const { state: { user } } = useAuth();
+  const role = user?.role;
   const navigate = useNavigate();
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
+
+    const handleDelete = (courseId) => {
+    setCourseToDelete(courseId);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      // Call your API to delete the course
+      // await api.delete(`/courses/${courseToDelete}`);
+      
+      // Handle successful deletion (update state, show notification, etc.)
+      console.log(`Course ${courseToDelete} deleted successfully`);
+      
+      setDeleteDialogOpen(false);
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      // Handle error (show error notification)
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setCourseToDelete(null);
+  };
 
   const handleUploadClick = () => {
     navigate(`/teacher/upload-video/${course._id}`);
@@ -26,6 +60,12 @@ const CourseCard = ({ course }) => {
     navigate(`/course/details/${course._id}`)
 
   }
+
+  const handleViewEmployeesClick = () => {
+    navigate(`/teacher/employees/${course._id}`)
+
+  }
+
 
   const formattedDate = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
@@ -39,7 +79,7 @@ const CourseCard = ({ course }) => {
       // maxWidth: 360,
       height: '100%',
       border: '1px solid',
-    borderColor: 'grey.300',
+      borderColor: 'grey.300',
       borderRadius: '12px',
       overflow: 'hidden',
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
@@ -51,6 +91,74 @@ const CourseCard = ({ course }) => {
     }}>
       {/* Header with Image */}
       <Box sx={{ position: 'relative' }}>
+        {role === 'instructor' && (
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(course._id);
+            }}
+            sx={{
+              position: 'absolute',
+              zIndex: 100,
+              top: 8,
+              right: 8,
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 1)',
+                color: 'error.main'
+              }
+            }}
+          >
+            <Trash2 size={18} color="#ef4444" />
+          </IconButton>
+        )}
+         <Dialog
+        open={deleteDialogOpen}
+        onClose={cancelDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        slotProps={{
+          paper: {
+            sx: {
+              width: 600,
+              maxHeight: 600,
+              borderRadius: 3,
+              boxShadow: 10,
+            }
+          }
+        }}
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+        <DialogContent>
+          <Box id="alert-dialog-description">
+  <Typography variant="body1" color="textSecondary" gutterBottom>
+    Deleting this course will permanently remove:
+  </Typography>
+  <ul style={{ paddingLeft: '1.5rem', marginTop: 0, marginBottom: 0 }}>
+    <li>The course and all its content</li>
+    <li>All uploaded modules and videos</li>
+    <li>Employee completion records</li>
+  </ul>
+  <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+    This action cannot be undone. Are you sure you want to continue?
+  </Typography>
+</Box>
+        </DialogContent>
+        <DialogActions sx={{mb: 1, mr:1}}
+        >
+          <Button onClick={cancelDelete} color="primary">
+            Cancel
+          </Button>
+          <Button 
+            onClick={confirmDelete} 
+            color="error"
+            autoFocus
+            variant="contained"
+          >
+            Delete Permanently
+          </Button>
+        </DialogActions>
+      </Dialog>
         <CardMedia
           component="img"
           height="200"
@@ -96,6 +204,7 @@ const CourseCard = ({ course }) => {
             />
           )}
         </Box>
+
       </Box>
 
       {/* Card Content */}
@@ -150,7 +259,7 @@ const CourseCard = ({ course }) => {
 
 
         {/* Action Button */}
-        { role != 'instructor' ? '': <Button
+        {role != 'instructor' ? '' : <Button
           fullWidth
           variant="contained"
           onClick={handleUploadClick}
@@ -196,6 +305,30 @@ const CourseCard = ({ course }) => {
         >
           View Course
         </Button>
+        {role != 'instructor' ? '' : <Button
+          fullWidth
+          variant="contained"
+          onClick={handleViewEmployeesClick} // Replace with your view handler
+          startIcon={<Users size={16} />}
+          sx={{
+            background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+            borderRadius: '8px',
+            py: 1,
+            marginTop: 2,
+            fontSize: '0.875rem',
+            fontWeight: 600,
+            letterSpacing: '0.5px',
+            textTransform: 'none',
+            color: 'white',
+            boxShadow: 'none',
+            '&:hover': {
+              background: 'linear-gradient(135deg,rgb(115, 43, 239) 0%, #6d28d9 100%)',
+              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)'
+            }
+          }}
+        >
+          View Enrolled Employees
+        </Button>}
 
       </CardContent>
     </Card>

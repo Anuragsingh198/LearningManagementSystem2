@@ -35,9 +35,15 @@ const VideoUploadPage = () => {
 
   return (
     <Box sx={{ p: 3 }}>
+      <Box sx={{background: '#F0F0F0', padding: 1, mb: 2, borderRadius: 2}}>
+
       <Typography variant="h5" mb={2} color='black'>
         {course ? `Course: ${course.title}` : 'Course not found'}
       </Typography>
+      <Typography mb={2} color='black'>
+        {course ? `Description: ${course.description}` : 'Course not found'}
+      </Typography>
+      </Box>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 1, alignItems: 'center' }}>
         <Button

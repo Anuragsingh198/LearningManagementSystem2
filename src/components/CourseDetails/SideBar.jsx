@@ -53,7 +53,6 @@ export const Sidebar = ({
         <Box sx={{
             width: '100%',
             bgcolor: 'background.paper',
-            borderRadius: 2,
             p: 2,
             mt: 2,
             border: '1px solid #ccc', // light gray border
@@ -181,7 +180,7 @@ export const Sidebar = ({
                                         selected={currentVideo === index}
                                         onClick={() => setCurrentVideo(index)}
                                         sx={{
-                                            borderRadius: 1,
+                                            
                                             borderLeft: video.completed ? '4px solid' : 'none',
                                             borderColor: 'success.main',
                                             border: '1px solid #ccc', // light gray border
@@ -268,7 +267,7 @@ export const Sidebar = ({
                                         selected={currentTest === index}
                                         onClick={() => setCurrentTest(index)}
                                         sx={{
-                                            borderRadius: 1,
+                                            
                                             borderLeft: quiz.completed ? '4px solid' : 'none',
                                             borderColor: 'success.main',
                                             border: '1px solid #ccc', // light gray border

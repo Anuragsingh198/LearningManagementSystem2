@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -17,12 +17,28 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../context/contextFiles/AuthContext';
 import logo from '../assets/logo.png'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import MuiLoading from '../pages/common/Loading';
+import axios from 'axios';
+import { userLogout } from '../context/Actions/AuthActions';
+
 
 export default function Header() {
   const theme = useTheme();
   const { state: { user, loading }, dispatch } = useAuth();
+  const serverurl = import.meta.env.VITE_SERVER_URL;
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const token = user?.token;
+  // const { name, email, role } = user || {};
 
-  const { name, email, role} = user;
+  // console.log('the user in header is: ', user?.user?.name)
+  console.log('the name in header is: ', user?.user?.name)
+
+  const name = user?.name || user?.user?.name || 'User';
+
+
+
   
   const [searchText, setSearchText] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -32,15 +48,34 @@ const handleAvatarClick = (event) => {
 const handleMenuClose = () => {
   setAnchorEl(null);
 };
-const handleLogout = () => {
-  console.log("Logout clicked");
-  handleMenuClose();
+const handleLogout = async () => {
+  try {
+    console.log('logout button clicked')
+    setIsLoading(true)
+    await userLogout(dispatch); 
+
+   navigate('/auth/login');
+
+   setIsLoading(false)
+   handleMenuClose();
+   
+  } catch (error) {
+  console.error('Enrollment failed:', error?.response?.data || error.message);
+  } finally {
+      setIsLoading(false);
+    }
 };
 
 
   const handleSearchChange = (event) => {
     setSearchText(event.target.value);
   };
+
+  if(isLoading){
+    return <MuiLoading/>
+  }
+
+  
 
   return (
     <Box
@@ -202,6 +237,7 @@ const handleLogout = () => {
     }}
   >
     {name}
+
   </Typography>
 </Box>
 <Menu

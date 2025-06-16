@@ -2,13 +2,14 @@ import axios from 'axios';
 const serverurl = 'http://localhost:5000';
 
 export const userLogin = async (user, dispatch) => {
-  console.log('Logging in user:', user);
+  // console.log('Logging in user:', user);
   try {
     dispatch({type:'SET_LOADING' , payload:true})
     const response = await axios.post(`${serverurl}/api/users/login`, user);
     const data = response.data;
     if (data.success) {
-      dispatch({ type: 'LOGIN', payload: { user: data.user } });
+      // dispatch({ type: 'LOGIN', payload: { user: data.user } });
+      dispatch({ type: 'LOGIN', payload: data.user });
       console.log('this is  the   Login  action  user ' , data.user)
       localStorage.setItem('user', JSON.stringify(data.user));
     } else {
@@ -23,9 +24,10 @@ export const userLogin = async (user, dispatch) => {
   }
 };
 
-export const userLogout = () => async (dispatch) => {
+export const userLogout = async (dispatch) => {
   try {
-    await axios.post('/api/users/logout');
+    console.log('logout in action: ');
+    await axios.post(`${serverurl}/api/users/logout`);
     dispatch({ type: 'LOGOUT' });
     localStorage.removeItem('user');
   } catch (error) {
@@ -33,6 +35,7 @@ export const userLogout = () => async (dispatch) => {
     throw error;
   }
 };
+
 
 export const userRegister = async (user, dispatch) => {
   console.log('Registering user:', user);

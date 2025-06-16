@@ -192,7 +192,13 @@ const UserDetails = () => {
       </Grid>
 
       {/* Edit Modal */}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm"  slotProps={{
+    paper: {
+      sx: {
+        borderRadius: 4,
+      },
+    },
+  }}>
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
           <Typography>

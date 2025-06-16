@@ -24,7 +24,7 @@ const TeacherDashboard = () => {
     fetchCourses();
   }, [dispatch]);
 
-  console.log('courses fetched in dashboard: ', courses)
+  // console.log('courses fetched in dashboard: ', courses)
 
   // Separate courses based on the 'compulsory' flag
   const compulsoryCourses = courses.filter(course => course.compulsory);

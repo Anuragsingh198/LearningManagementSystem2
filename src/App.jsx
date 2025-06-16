@@ -18,6 +18,7 @@ import OverviewPage from './pages/employee/CourseOverviewPage';
 import { ModuleDetails } from './pages/employee/ModuleDetails';
 import { useAuth } from './context/contextFiles/AuthContext';
 import MuiLoading from './pages/common/Loading';
+import EnrolledEmployees from './pages/admin/EnrolledEmployees';
 
 function App() {
     const { state: { user, loading }, dispatch } = useAuth();
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/teacher/my-courses" element={<CoursesPage />} />
                 <Route path="/student/my-courses" element={<CoursesPage />} />
                 <Route path="/teacher/upload-video/:courseId" element={<VideoUploadPage />} />
+                <Route path="/teacher/employees/:courseId" element={<EnrolledEmployees />} />
                 <Route path="/Profile" element={<ProfilePage />} />
                 <Route path="/course/details/:courseId" element={<OverviewPage />} />
                 <Route path="/course/module/:moduleId" element={<ModuleDetails />} />

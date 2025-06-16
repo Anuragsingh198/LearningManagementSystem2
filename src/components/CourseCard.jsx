@@ -43,7 +43,7 @@ export const CourseCard = ({ course }) => {
     const fetchCourses = async () => {
       try {
         await getMyCoursesAction(dispatch);
-        console.log('my courses are: ', myCourses)
+        // console.log('my courses are: ', myCourses)
       } catch (error) {
         console.error('Failed to fetch courses:', error);
       }
