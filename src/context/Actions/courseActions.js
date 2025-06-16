@@ -311,3 +311,54 @@ export const getModulebyModuleId = async (moduleId, dispatch) => {
     throw error;
   }
 };
+export const SubmitTest = async ({testId , userAnswers, moduleId , progressId, dispatch}) => {
+  const token = getAuthToken();
+  console.log("  submit action data is  : " , progressId , moduleId)
+  try {
+    dispatch({ type: 'COURSE_LOADING' });
+    const response = await axios.post(`${serverurl}/api/users/test-submit`,{testId , userAnswers , moduleId , progressId}, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log("this the test score from  action submittest: ", response);
+    const data = response.data;
+    if (data.success) {
+      // console.log("this the test score from  action submittest: ", response);
+      console.log('test Score action fetched successfully:', data.score);
+      return data.score;
+    } else {
+      throw new Error(data.message || 'Failed to submit  test');
+    }
+  } catch (error) {
+    dispatch({ type: 'COURSE_ERROR', payload: error.message });
+    console.error('Get videos error:', error);
+    throw error;
+  }
+};
+
+export const getCourseProgress = async (courseId, userId, dispatch) => {
+  const token = getAuthToken();
+  try {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    const response = await axios.post(`${serverurl}/api/users/course-progress`, {
+      courseId,
+      userId
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = response.data;
+    if (data.success) {
+      dispatch({ type: 'COURSE_PROGRESS', payload: data.progress });
+      return data.progress; 
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in fetch course progress', error);
+    return null;
+  } finally {
+    dispatch({ type: 'SET_LOADING', payload: false });
+  }
+};

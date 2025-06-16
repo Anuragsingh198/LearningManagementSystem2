@@ -78,6 +78,7 @@ const TestsDisplay = ({ tests }) => {
 };
 export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, progressPercentage, setSelectedChapter }) => {
   const chapters = oneCourse.modules;
+    const courseId = oneCourse._id;
   const [totalVideos, setTotalVideos] = useState(0);
   const [totalTests, setTotalTests] = useState(0);
   const navigate = useNavigate();
@@ -87,10 +88,12 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
     const role = user?.role;
   const token = user?.token;
 
-  const handleSubmit = (chapterId) => {
-    setSelectedChapter(chapterId);
-    navigate(`/course/module/${chapterId}`);
-  };
+    const handleSubmit = (chapterId) => {
+        setSelectedChapter(chapterId);
+        // navigate(`/course/module/${chapterId}`);
+        navigate(`/course/module/${courseId}/${chapterId}`);
+
+    };
 
   useEffect(() => {
     setTotalVideos(0);

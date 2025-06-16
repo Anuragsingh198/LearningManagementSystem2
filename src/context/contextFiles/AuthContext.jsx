@@ -7,14 +7,9 @@ const  AuthContext =createContext();
 const initialstate = {
   isAuthenticated: false,
   user: null,
-  students: [],
-  Teachers: [],
-  courses: [],
   notifications: [],
-  coursesProgress: [],
-  assignments: [],
+  courseProgress:null,
   loading :true
-
 };
 
 
@@ -25,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     console.log('use effect from authcontext.jsx')
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
-      dispatch({ type: 'LOGIN', payload: user});
+      dispatch({ type: 'LOGIN', payload:user});
     }
      dispatch({ type: 'SET_LOADING', payload: false });
   }, []);

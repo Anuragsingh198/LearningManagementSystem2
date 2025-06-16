@@ -53,7 +53,7 @@ function App() {
                 <Route path="/teacher/employees/:courseId" element={<EnrolledEmployees />} />
                 <Route path="/Profile" element={<ProfilePage />} />
                 <Route path="/course/details/:courseId" element={<OverviewPage />} />
-                <Route path="/course/module/:moduleId" element={<ModuleDetails />} />
+                <Route path="/course/module/:courseId/:moduleId" element={<ModuleDetails />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Layout>
