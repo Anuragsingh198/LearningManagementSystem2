@@ -7,7 +7,14 @@ export const TestResult = ({ score, totalQuestions, onRetake }) => {
   const passed = percentage >= 70; 
 
   return (
-    <Paper sx={{ p: 4, borderRadius: 3, textAlign: "center" }}>
+    <Paper sx={{ p: 4,
+        borderRadius: 4, 
+      textAlign: "center",
+      maxWidth: 600,
+      mx: "auto",
+      // my: 8,
+      boxShadow: "0px 40px 40px rgba(0, 0, 0, 0.1)", 
+     mb:40}}>
       <Box sx={{ mb: 4 }}>
         <Avatar
           sx={{

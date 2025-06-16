@@ -300,7 +300,7 @@ export const getModulebyModuleId = async (moduleId, dispatch) => {
         console.log('No videos found');
         return [];
       }
-      console.log('module fetched successfully:', data.module);
+      // console.log('module fetched successfully:', data.module);
       return data.module;
     } else {
       throw new Error(data.message || 'Failed to fetch  module');

@@ -28,37 +28,38 @@ export const QuizContent = ({
   currentTest,
   tests,
 }) => {
-  const {state: { user}} = useAuth();
-  const   moduleId = useParams().moduleId;
-  const courseId =   useParams().courseId;
-const [userId , setUserId] =  useState(null)
-const [progressId , setProgressId] =  useState(null); 
+  const { state: { user } } = useAuth();
+  const moduleId = useParams().moduleId;
+  const courseId = useParams().courseId;
+  const [userId, setUserId] = useState(null)
+  const [progressId, setProgressId] = useState(null);
   const [userAnswers, setUserAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
-  const {state: { loading , courseProgress},dispatch,} = useCourseContext();
-  console.log("loading true  Quiz Content: ," , loading)
+  const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
+  console.log("loading true  Quiz Content: ,", loading)
   const currentQ = questions && questions[currentQuestion];
-  console.log("this is the  course  id  from setewg testcontent" , courseProgress);
+  console.log("this is the  course  id  from setewg testcontent", courseProgress);
 
   if (!questions || questions.length === 0) {
     return <NoVideosFound />;
   }
-  const  handleCourseProgress = async(courseId , userId)=>{
-    return await getCourseProgress(courseId , userId , dispatch);
+  const handleCourseProgress = async (courseId, userId) => {
+    return await getCourseProgress(courseId, userId, dispatch);
   }
 
-useEffect(() => {
-  const fetchdata = async () => {
-    const courseProg = await handleCourseProgress(courseId, user._id);
-    console.log("this is the data from CourseDetails:", courseProg);
-  };
-  if (user?._id && courseId) fetchdata();
-  setUserId(user._id);
-//   setProgressId(courseProgress._id);
+  useEffect(() => {
+    const fetchdata = async () => {
+      const courseProg = await handleCourseProgress(courseId, user._id);
+      console.log("this is the data from quiz content:", courseProg);
+    };
+    if (user?._id && courseId) fetchdata();
+    setUserId(user._id);
+    //   setProgressId(courseProgress._id);
 
-}, [user?._id, courseId ]);
-console.log("quizcontetn course Content data is  : " , courseProgress)
+  }, [user?._id, courseId]);
+
+  console.log("quiz contetn course Content data is  : ", courseProgress)
   const handleSubmit = async () => {
     let correctAnswers = 0;
     questions.forEach((q, index) => {
@@ -71,8 +72,9 @@ console.log("quizcontetn course Content data is  : " , courseProgress)
 
     try {
       const testId = tests[currentTest]._id;
-      const result = await SubmitTest({testId, userAnswers,moduleId,progressId:courseProgress._id,  dispatch});
-      console.log("Test submission result:", result );
+      const result = await SubmitTest({ testId, userAnswers, moduleId, progressId: courseProgress?._id, dispatch });
+      console.log("Test submission result:", result);
+      await getCourseProgress(courseId, user._id, dispatch)
       setSubmitted(true);
     } catch (error) {
       console.error("Error submitting test:", error);
@@ -95,28 +97,28 @@ console.log("quizcontetn course Content data is  : " , courseProgress)
 
   if (submitted) {
     return (
-    //   <>
-    //     {loading ? (
-    //       <Loader />
-    //     ) : (
-          <Box
-            sx={{
-              position: "relative",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-              p: 3,
-            }}
-          >
-            <TestResult
-              score={score}
-              totalQuestions={questions.length}
-              onRetake={handleRetake}
-            />
-          </Box>
-    //     )}
-    //   </>
+      //   <>
+      //     {loading ? (
+      //       <Loader />
+      //     ) : (
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+          p: 3,
+        }}
+      >
+        <TestResult
+          score={score}
+          totalQuestions={questions.length}
+          onRetake={handleRetake}
+        />
+      </Box>
+      //     )}
+      //   </>
     );
   }
 

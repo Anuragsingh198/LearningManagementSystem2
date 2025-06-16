@@ -9,7 +9,7 @@ export const ModuleDetails = () => {
 
     const { moduleId } = useParams();
 
-    console.log("this is the  module id from ModuleDetails : ", moduleId);
+    // console.log("this is the  module id from ModuleDetails : ", moduleId);
 
     return (
 

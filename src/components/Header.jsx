@@ -23,6 +23,7 @@ import axios from 'axios';
 import { userLogout } from '../context/Actions/AuthActions';
 
 
+  
 export default function Header() {
   const theme = useTheme();
   const { state: { user, loading }, dispatch } = useAuth();
@@ -33,7 +34,7 @@ export default function Header() {
   // const { name, email, role } = user || {};
 
   // console.log('the user in header is: ', user?.user?.name)
-  console.log('the name in header is: ', user?.user?.name)
+  // console.log('the name in header is: ', user?.user?.name)
 
   const name = user?.name || user?.user?.name || 'User';
 

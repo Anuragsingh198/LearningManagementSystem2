@@ -36,6 +36,7 @@ import { Sidebar } from "./SideBar";
 import { getModulebyModuleId } from "../../context/Actions/courseActions";
 import { useCourseContext } from "../../context/contextFiles/CourseContext";
 import NoContentPage from "./NoContentPage";
+import QuizHistory from "./QuizHistory";
 
 const CourseDetails = ({ moduleId }) => {
   const [module, setModule] = useState(null);
@@ -64,7 +65,7 @@ const CourseDetails = ({ moduleId }) => {
   useEffect(() => {
     const fetchdata = async () => {
       const allModule = await getModulebyModuleId(moduleId, dispatch);
-      console.log("this is the data from CourseDetails:", allModule);
+      // console.log("this is the data from CourseDetails:", allModule);
       setModule(allModule || []);
       setVideos(allModule.videos || []);
       setTests(allModule.tests || []);
@@ -88,7 +89,7 @@ const CourseDetails = ({ moduleId }) => {
         scrollbarWidth: "none",
       }}
     >
-      <Box sx={{ width: "30%" }}>
+      <Box sx={{ width: "30%", display: 'flex', flexDirection: 'column' }}>
         <Sidebar
           currentView={currentView}
           setCurrentView={setCurrentView}
@@ -103,6 +104,9 @@ const CourseDetails = ({ moduleId }) => {
           currentQuestion={currentQuestion}
           setCurrentQuestion={setCurrentQuestion}
         />
+         {tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
+  <QuizHistory questions={tests[currentQuiz]?.questions || []} />
+) : null}
       </Box>
 
       <Box sx={{ width: "60%", overflow: "hidden" }}>
