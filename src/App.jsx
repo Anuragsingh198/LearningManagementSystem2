@@ -51,7 +51,7 @@ function App() {
                 <Route path="/teacher/upload-video/:courseId" element={<VideoUploadPage />} />
                 <Route path="/Profile" element={<ProfilePage />} />
                 <Route path="/course/details/:courseId" element={<OverviewPage />} />
-                <Route path="/course/module/:moduleId" element={<ModuleDetails />} />
+                <Route path="/course/module/:courseId/:moduleId" element={<ModuleDetails />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Layout>

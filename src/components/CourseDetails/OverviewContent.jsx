@@ -76,13 +76,16 @@ const TestsDisplay = ({ tests }) => {
 };
 export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, progressPercentage, setSelectedChapter }) => {
     const chapters = oneCourse.modules;
+    const courseId = oneCourse._id;
     const [totalVideos, setTotalVideos] = useState(0);
     const [totalTests, setTotalTests] = useState(0);
     const navigate = useNavigate();
 
     const handleSubmit = (chapterId) => {
         setSelectedChapter(chapterId);
-        navigate(`/course/module/${chapterId}`);
+        // navigate(`/course/module/${chapterId}`);
+        navigate(`/course/module/${courseId}/${chapterId}`);
+
     };
 
     useEffect(() => {

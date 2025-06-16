@@ -1,6 +1,18 @@
 import axios from 'axios';
 const serverurl = 'http://localhost:5000';
 
+const getAuthToken = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user || !user._id) {
+    throw new Error('User not authenticated');
+  }
+  if (!user.token) {
+    throw new Error('User token not found');
+  }
+  return user.token;
+};
+
+
 export const userLogin = async (user, dispatch) => {
   console.log('Logging in user:', user);
   try {
@@ -8,7 +20,7 @@ export const userLogin = async (user, dispatch) => {
     const response = await axios.post(`${serverurl}/api/users/login`, user);
     const data = response.data;
     if (data.success) {
-      dispatch({ type: 'LOGIN', payload: { user: data.user } });
+      dispatch({ type: 'LOGIN', payload:  data.user });
       console.log('this is  the   Login  action  user ' , data.user)
       localStorage.setItem('user', JSON.stringify(data.user));
     } else {
@@ -41,7 +53,7 @@ export const userRegister = async (user, dispatch) => {
     const response = await axios.post(`${serverurl}/api/users/register`, user);
     const data = response.data;
     if (data.success) {
-      dispatch({ type: 'REGISTER', payload: { user: data.user } });
+      dispatch({ type: 'REGISTER', payload:  data.user });
       localStorage.setItem('user', JSON.stringify(data.user));
     } else {
       throw new Error(data.message || 'Registration failed');
@@ -53,3 +65,4 @@ export const userRegister = async (user, dispatch) => {
     dispatch({type:'SET_LOADING' , payload:false})
   }
 };
+
