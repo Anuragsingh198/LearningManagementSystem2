@@ -207,6 +207,11 @@ const [existingModules, setExistingModules] = useState([]);
       setSelectedModule(createdModule._id);
       console.log("this is   createed module id  from videoUploadform: ", createdModule._id )
       setModuleData({ title: '', description: '' });
+
+      getModulesByCourseId(courseId, dispatch)
+      .then((fetchedModules) => setExistingModules(fetchedModules))
+      .catch((err) => console.error(err));
+      
       setShowModuleForm(false);
     } catch (error) {
       console.error("Failed to create module:", error);

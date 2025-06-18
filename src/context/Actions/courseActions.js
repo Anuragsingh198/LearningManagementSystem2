@@ -362,3 +362,36 @@ export const getCourseProgress = async (courseId, userId, dispatch) => {
     dispatch({ type: 'SET_LOADING', payload: false });
   }
 };
+
+export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatch) => {
+  const token = getAuthToken();
+  try {
+    dispatch({ type: 'SET_LOADING', payload: true });
+
+    const response = await axios.post(`${serverurl}/api/users/video-progress`, {
+      courseId,
+      videoId,
+      moduleId
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = response.data;
+
+    if (data.success) {
+      dispatch({ type: 'COURSE_PROGRESS', payload: data.progress });
+      const updatedData = data.progress;
+      console.log('so the automatic update as soon as the video is 90% complete is: ', updatedData)
+      return data.progress;
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in updating video progress:', error);
+    return null;
+  } finally {
+    dispatch({ type: 'SET_LOADING', payload: false });
+  }
+};

@@ -30,6 +30,7 @@ import {
     Close as CloseIcon
 } from '@mui/icons-material';
 import NoContentPage from './NoContentPage';
+import { useCourseContext } from '../../context/contextFiles/CourseContext';
 
 
 export const Sidebar = ({
@@ -44,11 +45,27 @@ export const Sidebar = ({
     currentTest,
     setCurrentTest,
     currentQuestion,
-    setCurrentQuestion
+    setCurrentQuestion,
+    moduleId
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    // console.log("this is the  tedsts : ", tests)
+    const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
+    const moduleProgress = courseProgress?.moduleProgress.find(
+        (mod) => mod.module === moduleId
+    );
+
+    const videoStatusMap = {};
+
+    if (moduleProgress) {
+        moduleProgress.videoProgress.forEach((vp) => {
+            videoStatusMap[vp.video] = vp.status;
+             console.log('videoStatusMap is: ', videoStatusMap)
+
+        });
+    }
+
+
     return (
         <Box sx={{
             width: '100%',
@@ -174,68 +191,67 @@ export const Sidebar = ({
                             }}
                         />
                         <List >
-                            {videos.map((video, index) => (
-                                <ListItem key={video.id} disablePadding>
-                                    <ListItemButton
-                                        selected={currentVideo === index}
-                                        onClick={() => setCurrentVideo(index)}
-                                        sx={{
-                                            
-                                            borderLeft: video.completed ? '4px solid' : 'none',
-                                            borderColor: 'success.main',
-                                            border: '1px solid #ccc', // light gray border
-                                            mb: '4px',
-                                            borderRadius: '8px',
+                            {videos.map((video, index) => {
+                                const status = videoStatusMap[video._id]; // or video.id depending on your ID type
 
-
-                                            '&.Mui-selected': {
-                                                bgcolor: 'primary.main',
-                                                color: 'primary.contrastText',
-                                            },
-
-                                            '&.Mui-selected:hover': {
-                                                bgcolor: '#003c8f', // deeper blue for better contrast
-                                                color: 'white',
-                                            },
-
-
-                                            '&:hover': {
-                                                bgcolor: 'grey.100',
-                                            },
-                                        }}
-                                    >
-                                        <ListItemIcon
+                                return (
+                                    <ListItem key={video._id} disablePadding>
+                                        <ListItemButton
+                                            selected={currentVideo === index}
+                                            onClick={() => setCurrentVideo(index)}
                                             sx={{
-                                                color: currentVideo === index ? 'primary.contrastText' : 'black',
+                                                borderLeft: status === 'completed' ? '4px solid' : 'none',
+                                                borderColor: 'success.main',
+                                                border: '1px solid #ccc',
+                                                mb: '4px',
+                                                borderRadius: '8px',
+                                                '&.Mui-selected': {
+                                                    bgcolor: 'primary.main',
+                                                    color: 'primary.contrastText',
+                                                },
+                                                '&.Mui-selected:hover': {
+                                                    bgcolor: '#003c8f',
+                                                    color: 'white',
+                                                },
+                                                '&:hover': {
+                                                    bgcolor: 'grey.100',
+                                                },
                                             }}
                                         >
-                                            {video.status === 'completed' ? (
-                                                <CheckCircleIcon color="success" />
-                                            ) : (
-                                                <PlayCircleIcon color="action" />
-                                            )}
-                                        </ListItemIcon>
-                                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                                            <Typography
-                                                noWrap
+                                            <ListItemIcon
                                                 sx={{
                                                     color: currentVideo === index ? 'primary.contrastText' : 'black',
                                                 }}
                                             >
-                                                {video.title}
-                                            </Typography>
-                                            <Typography
-                                                variant="caption"
-                                                sx={{
-                                                    color: currentVideo === index ? 'primary.contrastText' : 'text.secondary',
-                                                }}
-                                            >
-                                                {video.duration}
-                                            </Typography>
-                                        </Box>
-                                    </ListItemButton>
-                                </ListItem>
-                            ))}
+                                                {status === 'completed' ? (
+                                                    <CheckCircleIcon color="success" />
+                                                ) : (
+                                                    <PlayCircleIcon color="action" />
+                                                )}
+                                            </ListItemIcon>
+                                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Typography
+                                                    noWrap
+                                                    sx={{
+                                                        color: currentVideo === index ? 'primary.contrastText' : 'black',
+                                                    }}
+                                                >
+                                                    {video.title}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                    sx={{
+                                                        color: currentVideo === index ? 'primary.contrastText' : 'text.secondary',
+                                                    }}
+                                                >
+                                                    {video.duration}
+                                                </Typography>
+                                            </Box>
+                                        </ListItemButton>
+                                    </ListItem>
+                                );
+                            })}
+
 
                         </List>
                     </Box>
@@ -267,7 +283,7 @@ export const Sidebar = ({
                                         selected={currentTest === index}
                                         onClick={() => setCurrentTest(index)}
                                         sx={{
-                                            
+
                                             borderLeft: quiz.completed ? '4px solid' : 'none',
                                             borderColor: 'success.main',
                                             border: '1px solid #ccc', // light gray border

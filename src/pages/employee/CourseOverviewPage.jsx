@@ -9,7 +9,7 @@ import { useCourseContext } from "../../context/contextFiles/CourseContext";
 import { useAuth } from "../../context/contextFiles/AuthContext";
 const OverviewPage = () => {
   const {state: { user}} = useAuth();
-  console.log("the user data  from overviewPage  is : " , user._id)
+  // console.log("the user data  from overviewPage  is : " , user._id)
   const { courseId } = useParams();
   const { state :{courseProgress}, dispatch } = useCourseContext();
   const [courseData, setCourseData] = useState(null);
@@ -56,7 +56,7 @@ const OverviewPage = () => {
   }, [user?._id, courseId ]); 
 
 
-  console.log("the data for the state is courseData:", courseProgress);
+  // console.log("the data for the state is courseData:", courseProgress);
   return (
     <>
       <Box

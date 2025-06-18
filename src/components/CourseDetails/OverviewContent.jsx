@@ -27,6 +27,7 @@ import { NoVideosFound } from './NoContentFoundPage';
 import { useEffect, useState } from 'react';
 import NoContentPage from './NoContentPage';
 import { useAuth } from '../../context/contextFiles/AuthContext';
+import { useCourseContext } from '../../context/contextFiles/CourseContext';
 
 
 
@@ -78,22 +79,36 @@ const TestsDisplay = ({ tests }) => {
 };
 export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, progressPercentage, setSelectedChapter }) => {
   const chapters = oneCourse.modules;
-    const courseId = oneCourse._id;
+  const courseId = oneCourse._id;
   const [totalVideos, setTotalVideos] = useState(0);
   const [totalTests, setTotalTests] = useState(0);
   const navigate = useNavigate();
+  // console.log('chapters are: ', chapters)
+  const { state: { user, loading }, dispatch } = useAuth();
 
-  const { state: {user, loading} , dispatch} = useAuth();
-
-    const role = user?.role;
+  const role = user?.role;
   const token = user?.token;
 
-    const handleSubmit = (chapterId) => {
-        setSelectedChapter(chapterId);
-        // navigate(`/course/module/${chapterId}`);
-        navigate(`/course/module/${courseId}/${chapterId}`);
+  const { state: { courseProgress }, dispatch: courseDispatch } = useCourseContext();
 
-    };
+
+  const moduleProgressMap = {};
+  courseProgress?.moduleProgress?.forEach((module) => {
+    moduleProgressMap[module.module] = module.status;
+    // so this function will give you
+    // moduleProgressMap = { "68418edaacce3e3b7adc1f0f": "completed", ... }
+  });
+
+
+
+  const handleSubmit = (chapterId) => {
+    setSelectedChapter(chapterId);
+    // navigate(`/course/module/${chapterId}`);
+    navigate(`/course/module/${courseId}/${chapterId}`);
+
+  };
+
+
 
   useEffect(() => {
     setTotalVideos(0);
@@ -235,20 +250,33 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
               >
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                   <Box display="flex" alignItems="center" gap={2}>
-                    <Avatar
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        bgcolor: chapter.status === 'completed' ? 'success.light' : 'primary.light',
-                        color: chapter.status === 'completed' ? 'success.main' : 'primary.main'
-                      }}
-                    >
-                      {chapter.completed ? <CheckCircleIcon /> : <BookIcon />}
-                    </Avatar>
+                    {(() => {
+                      const progressStatus = moduleProgressMap[chapter._id] || 'not-started';
+                      const isCompleted = progressStatus === 'completed';
+
+                      return (
+                        <Avatar
+                          sx={{
+                            width: 48,
+                            height: 48,
+                            bgcolor: isCompleted ? 'success.light' : 'primary.light',
+                            color: isCompleted ? 'success.main' : 'primary.main'
+                          }}
+                        >
+                          {isCompleted ? <CheckCircleIcon /> : <BookIcon />}
+                        </Avatar>
+                      );
+                    })()}
                     <Box>
-                      <Typography variant="h6" fontWeight={600} color="text.primary">
-                        {chapter.title}
-                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-arounds', alignItems: 'center' }}>
+
+                        <Typography variant="h6" fontWeight={600} color="text.primary">
+                          {chapter.title}
+                        </Typography>
+                        <Typography variant="body2" fontWeight={400} sx={{ ml: 1 }} color="text.secondary">
+                          ( Status: {moduleProgressMap[chapter._id] || 'Not Started'} )
+                        </Typography>
+                      </Box>
                       <Box display="flex" alignItems="center" gap={2} mt={0.5}>
                         {[
                           {
@@ -292,9 +320,9 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                         }
                       }}
                     >
-                      {chapter.completed ? 'Review' : 'Start'}
+                       {(moduleProgressMap[chapter._id] === 'completed') ? 'Review' : 'Start'}
                     </Button>
-                   { role === 'instructor' ? <IconButton
+                    {role === 'instructor' ? <IconButton
                       color="error"
                       onClick={() => handleDeleteChapter(chapter._id)}
                       sx={{ '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' } }}

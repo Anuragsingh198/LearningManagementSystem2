@@ -38,7 +38,7 @@ import { useCourseContext } from "../../context/contextFiles/CourseContext";
 import NoContentPage from "./NoContentPage";
 import QuizHistory from "./QuizHistory";
 
-const CourseDetails = ({ moduleId }) => {
+const CourseDetails = ({ courseId, moduleId }) => {
   const [module, setModule] = useState(null);
   const [videos, setVideos] = useState([]);
   const [tests, setTests] = useState([]);
@@ -103,10 +103,11 @@ const CourseDetails = ({ moduleId }) => {
           setCurrentTest={setCurrentQuiz}
           currentQuestion={currentQuestion}
           setCurrentQuestion={setCurrentQuestion}
+          moduleId={moduleId}
         />
-         {tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
-  <QuizHistory questions={tests[currentQuiz]?.questions || []} />
-) : null}
+        {tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
+          <QuizHistory questions={tests[currentQuiz]?.questions || []} />
+        ) : null}
       </Box>
 
       <Box sx={{ width: "60%", overflow: "hidden" }}>
@@ -139,6 +140,8 @@ const CourseDetails = ({ moduleId }) => {
                 setIsVideoFullscreen={setIsVideoFullscreen}
                 setIsPlaying={setIsPlaying}
                 videos={videos}
+                courseId={courseId}
+                moduleId={moduleId}
               />
             </Box>
           ) : (

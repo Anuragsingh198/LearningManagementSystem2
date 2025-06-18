@@ -34,6 +34,9 @@ import {
     MenuBook as BookOpenIcon
 } from '@mui/icons-material';
 import { useEffect, useRef, useState } from 'react';
+import { getCourseProgress, updateVideoCompletion } from '../../context/Actions/courseActions';
+import { useCourseContext } from '../../context/contextFiles/CourseContext';
+import { useAuth } from '../../context/contextFiles/AuthContext';
 
 export const VideoContent = ({
     currentVideo,
@@ -44,7 +47,9 @@ export const VideoContent = ({
     setIsVideoZoomed,
     setIsVideoFullscreen,
     setIsPlaying,
-    videos
+    videos,
+    courseId,
+    moduleId
 }) => {
     const videoRef = useRef(null);
     const [progress, setProgress] = useState(0);
@@ -53,7 +58,10 @@ export const VideoContent = ({
     const [isMuted, setIsMuted] = useState(false);
     const [volume, setVolume] = useState(1);
     const [showControls, setShowControls] = useState(false);
-
+    const [hasMarkedComplete, setHasMarkedComplete] = useState(false);
+    const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
+    const { state: {user} } = useAuth();
+    const userId = user._id;
     // const currentVideoData = videos[currentVideo];
     const currentVideoData = Array.isArray(videos) && videos.length > currentVideo && currentVideo >= 0
         ? videos[currentVideo]
@@ -62,6 +70,8 @@ export const VideoContent = ({
 
     useEffect(() => {
         // console.log('the current time is: ', currentTime)
+            // console.log('the duration of the video is: ', duration)
+
         if (videoRef.current && isPlaying) {
             videoRef.current.play().catch(error => {
                 console.error("Auto-play was prevented:", error);
@@ -70,47 +80,65 @@ export const VideoContent = ({
         }
     }, [currentTime, currentVideo, isPlaying]);
 
-useEffect(() => {
-    const handleKeyDown = (event) => {
-        if (!videoRef.current) return;
+    useEffect(() => {
+    setHasMarkedComplete(false); // this function is there to reset has marked completed when video changes so we can make api call for completed video
+    }, [currentVideo]);
 
-        switch (event.code) {
-            case 'Space':
-                event.preventDefault();
-                console.log("Key pressed:", event.code);
-                togglePlayPause();
-                break;
-            case 'ArrowRight':
-                event.preventDefault(); // Optional: Prevent scroll on some browsers
-                console.log("Key pressed:", event.code);
-                videoRef.current.currentTime = Math.min(
-                    videoRef.current.currentTime + 10,
-                    videoRef.current.duration
-                );
-                break;
-            case 'ArrowLeft':
-                event.preventDefault(); // Optional
-                console.log("Key pressed:", event.code);
-                videoRef.current.currentTime = Math.max(
-                    videoRef.current.currentTime - 5,
-                    0
-                );
-                break;
-            default:
-                break;
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (!videoRef.current) return;
+
+            switch (event.code) {
+                case 'Space':
+                    event.preventDefault();
+                    // console.log("Key pressed:", event.code);
+                    togglePlayPause();
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault(); // Optional: Prevent scroll on some browsers
+                    // console.log("Key pressed:", event.code);
+                    videoRef.current.currentTime = Math.min(
+                        videoRef.current.currentTime + 10,
+                        videoRef.current.duration
+                    );
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault(); // Optional
+                    // console.log("Key pressed:", event.code);
+                    videoRef.current.currentTime = Math.max(
+                        videoRef.current.currentTime - 5,
+                        0
+                    );
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+    
+    console.log('latest course progress is from video content: ', courseProgress)
+
+
+    useEffect(() => {
+     if (progress >= 90 && !hasMarkedComplete ) {
+        setHasMarkedComplete(true);
+        const videoId = currentVideoData._id
+        // console.log('api call to backend to make video as completed with current video id: ', currentVideoData._id)
+        updateVideoCompletion(courseId, videoId, moduleId, dispatch);
+        
+        getCourseProgress(courseId, userId, dispatch);
+        console.log('latest course progress is from video content: ', courseProgress)
         }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-    };
-}, []);
-
+        }, [progress]);
 
 
     const togglePlayPause = () => {
-        
+
         if (videoRef.current) {
             if (videoRef.current.paused) {
                 videoRef.current.play().then(() => setIsPlaying(true));
@@ -125,6 +153,7 @@ useEffect(() => {
         if (videoRef.current) {
             const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
             setProgress(currentProgress);
+            // console.log('the current duration is: ', duration)
             setCurrentTime(videoRef.current.currentTime);
         }
     };
@@ -194,14 +223,14 @@ useEffect(() => {
                 flexDirection: 'column',
                 height: '100vh',        // or use a dynamic height if needed
                 overflowY: 'auto',
-            // Hide scrollbar for Webkit browsers (Chrome, Safari, etc.)
-            '&::-webkit-scrollbar': {
-                display: 'none',
-            },
-            // Hide scrollbar for Firefox
-            scrollbarWidth: 'none',
-            // Hide scrollbar for IE and Edge
-            msOverflowStyle: 'none',
+                // Hide scrollbar for Webkit browsers (Chrome, Safari, etc.)
+                '&::-webkit-scrollbar': {
+                    display: 'none',
+                },
+                // Hide scrollbar for Firefox
+                scrollbarWidth: 'none',
+                // Hide scrollbar for IE and Edge
+                msOverflowStyle: 'none',
             }}
         >
 
@@ -382,7 +411,7 @@ useEffect(() => {
                                     You must watch the entire video for progress
                                 </Typography>
                             </Box>
-                            <Box display="flex" alignItems="center" gap={1}>
+                            {/* <Box display="flex" alignItems="center" gap={1}>
                                 <Button startIcon={<ThumbsUpIcon />} sx={{ color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: 'white' } }}>
                                     2168
                                 </Button>
@@ -392,7 +421,7 @@ useEffect(() => {
                                 <Button startIcon={<FlagIcon />} sx={{ color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: 'white' } }}>
                                     Report
                                 </Button>
-                            </Box>
+                            </Box> */}
                         </Box>
                     </Box>
                 </Paper>
@@ -477,7 +506,7 @@ useEffect(() => {
                             <Typography color="text.secondary" sx={{ lineHeight: 1.6 }}>{currentVideoData?.description}</Typography>
                         </Box>
 
-                        <Box>
+                        {/* <Box>
                             <Typography variant="h6" fontWeight="semibold" mb={1}>Additional Resources</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={4}>
@@ -529,7 +558,7 @@ useEffect(() => {
                                     </Button>
                                 </Grid>
                             </Grid>
-                        </Box>
+                        </Box> */}
                     </Box>
                 </Paper>
             </Box>

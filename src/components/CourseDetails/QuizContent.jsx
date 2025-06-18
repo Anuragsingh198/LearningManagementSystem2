@@ -37,9 +37,9 @@ export const QuizContent = ({
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
-  console.log("loading true  Quiz Content: ,", loading)
+  // console.log("loading true  Quiz Content: ,", loading)
   const currentQ = questions && questions[currentQuestion];
-  console.log("this is the  course  id  from setewg testcontent", courseProgress);
+  // console.log("this is the  course  id  from setewg testcontent", courseProgress);
 
   if (!questions || questions.length === 0) {
     return <NoVideosFound />;
@@ -51,7 +51,7 @@ export const QuizContent = ({
   useEffect(() => {
     const fetchdata = async () => {
       const courseProg = await handleCourseProgress(courseId, user._id);
-      console.log("this is the data from quiz content:", courseProg);
+      // console.log("this is the data from quiz content:", courseProg);
     };
     if (user?._id && courseId) fetchdata();
     setUserId(user._id);
@@ -59,7 +59,7 @@ export const QuizContent = ({
 
   }, [user?._id, courseId]);
 
-  console.log("quiz contetn course Content data is  : ", courseProgress)
+  // console.log("quiz contetn course Content data is  : ", courseProgress)
   const handleSubmit = async () => {
     let correctAnswers = 0;
     questions.forEach((q, index) => {
@@ -73,7 +73,7 @@ export const QuizContent = ({
     try {
       const testId = tests[currentTest]._id;
       const result = await SubmitTest({ testId, userAnswers, moduleId, progressId: courseProgress?._id, dispatch });
-      console.log("Test submission result:", result);
+      // console.log("Test submission result:", result);
       await getCourseProgress(courseId, user._id, dispatch)
       setSubmitted(true);
     } catch (error) {

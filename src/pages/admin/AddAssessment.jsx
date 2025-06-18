@@ -305,7 +305,7 @@ function AddAssessment({courseId}) {
                                               color="success"
                                               endIcon={<SendIcon />}
                                           >
-                                              Upload Quiz
+                                              Upload Assessment
                                           </Button>
                                       </Box>
                                   </form>

@@ -17,7 +17,7 @@ function QuizHistory({ questions }) {
 
     const totalQuestions = questions?.length || 2; // Avoid division by 0
 
-    console.log('the total number of questions are: ', questions)
+    // console.log('the total number of questions are: ', questions)
 
     useEffect(() => {
         const fetchdata = async () => {
@@ -44,7 +44,7 @@ function QuizHistory({ questions }) {
             }}
         >
             <Typography variant="h6" gutterBottom>
-                Test History
+                Quiz History
             </Typography>
             <Divider sx={{ mb: 2 }} />
             <Typography  gutterBottom>

@@ -7,9 +7,7 @@ import { useParams } from "react-router-dom";
 
 export const ModuleDetails = () => {
 
-    const { moduleId } = useParams();
-
-    // console.log("this is the  module id from ModuleDetails : ", moduleId);
+    const { courseId, moduleId } = useParams();
 
     return (
 
@@ -30,7 +28,7 @@ export const ModuleDetails = () => {
                 scrollbarWidth: 'none', // Hide scrollbar on Firefox
             }}
         >
-            <CourseDetails moduleId={moduleId} />
+            <CourseDetails moduleId={moduleId} courseId={courseId} />
         </Box>
 
     );

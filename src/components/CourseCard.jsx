@@ -73,7 +73,7 @@ export const CourseCard = ({ course }) => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `${serverurl}/api/users/enrollCourse`,
+        `${serverurl}/api/users/enroll-course`,
         { courseId: course._id },
         {
           headers: {
