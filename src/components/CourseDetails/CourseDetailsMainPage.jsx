@@ -89,7 +89,25 @@ const CourseDetails = ({ courseId, moduleId }) => {
         scrollbarWidth: "none",
       }}
     >
-      <Box sx={{ width: "30%", display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ width: "30%", display: 'flex', flexDirection: 'column', px: 6,
+
+          maxHeight: '100vh', 
+    overflowY: 'auto',
+    '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'white',
+      borderRadius: '8px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+
+       }}>
         <Sidebar
           currentView={currentView}
           setCurrentView={setCurrentView}
@@ -104,9 +122,12 @@ const CourseDetails = ({ courseId, moduleId }) => {
           currentQuestion={currentQuestion}
           setCurrentQuestion={setCurrentQuestion}
           moduleId={moduleId}
+          courseId={courseId}
         />
         {tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
-          <QuizHistory questions={tests[currentQuiz]?.questions || []} />
+          <QuizHistory questions={tests[currentQuiz]?.questions || []} moduleId={moduleId} 
+          currentTest={currentQuiz}
+          />
         ) : null}
       </Box>
 

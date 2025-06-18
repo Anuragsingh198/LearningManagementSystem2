@@ -28,6 +28,7 @@ import { useEffect, useState } from 'react';
 import NoContentPage from './NoContentPage';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
+import { checkProgress } from '../../context/Actions/courseActions';
 
 
 
@@ -99,11 +100,17 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
     // moduleProgressMap = { "68418edaacce3e3b7adc1f0f": "completed", ... }
   });
 
+  // console.log('progress percentage in overview content is: ', progressPercentage)
 
 
-  const handleSubmit = (chapterId) => {
+
+  const handleSubmit = async (chapterId) => {
     setSelectedChapter(chapterId);
     // navigate(`/course/module/${chapterId}`);
+    //here we have to call the function to update user Progress in backend
+    console.log('the course id is: ', courseId)
+    console.log('the chapter id is: ', chapterId)
+    await checkProgress(courseId, chapterId, courseDispatch);
     navigate(`/course/module/${courseId}/${chapterId}`);
 
   };
@@ -125,7 +132,25 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%',
+
+       overflowY: 'auto', // Ensure scrolling is possible
+    // maxHeight: '400px', // or any max height you need
+    '&::-webkit-scrollbar': {
+      width: '6px', // small width
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'lightGray',
+      borderRadius: '8px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+
+     }}>
       <Paper sx={{
         background: 'linear-gradient(to right, #2563eb, #9333ea)',
         borderRadius: 3,
@@ -300,11 +325,11 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                           </Box>
                         ))}
                       </Box>
-                      {chapter.tests?.length > 0 && (
+                      {/* {chapter.tests?.length > 0 && (
                         <Box mt={1}>
                           <TestsDisplay tests={chapter.tests} />
                         </Box>
-                      )}
+                      )} */}
                     </Box>
                   </Box>
                   <Box display="flex" alignItems="center" gap={1}>

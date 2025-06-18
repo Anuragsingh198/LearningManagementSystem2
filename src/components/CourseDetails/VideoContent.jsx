@@ -121,7 +121,7 @@ export const VideoContent = ({
         };
     }, []);
     
-    console.log('latest course progress is from video content: ', courseProgress)
+    // console.log('latest course progress is from video content: ', courseProgress)
 
 
     useEffect(() => {
@@ -132,7 +132,7 @@ export const VideoContent = ({
         updateVideoCompletion(courseId, videoId, moduleId, dispatch);
         
         getCourseProgress(courseId, userId, dispatch);
-        console.log('latest course progress is from video content: ', courseProgress)
+        // console.log('latest course progress is from video content: ', courseProgress)
         }
         }, [progress]);
 

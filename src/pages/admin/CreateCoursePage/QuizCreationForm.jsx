@@ -32,8 +32,11 @@ import {
     KeyboardArrowDown as KeyboardArrowDownIcon,
     CloudUpload as CloudUploadIcon
 } from '@mui/icons-material';
+import axios from 'axios';
+
 import { useCourseContext } from '../../../context/contextFiles/CourseContext';
 import { createModuleAction, createVideoAction, getCourseById, getModulesByCourseId } from '../../../context/Actions/courseActions';
+import { useAuth } from '../../../context/contextFiles/AuthContext';
 
 
 function QuizCreationForm({ courseId }) {
@@ -51,7 +54,12 @@ function QuizCreationForm({ courseId }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeQuestion, setActiveQuestion] = useState(0);
     const [testTitle, setTestTitle] = useState('');
+    const serverurl = import.meta.env.VITE_SERVER_URL;
     const [testDescription, setTestDescription] = useState('');
+
+      const { state: { user } } = useAuth();
+      const role = user?.role;
+      const token = user?.token;
 
 
     useEffect(() => {
@@ -153,10 +161,10 @@ function QuizCreationForm({ courseId }) {
         ));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-          if (!selectedModule || !selectedModule || !testTitle ) {
+        if (!selectedModule || !selectedModule || !testTitle) {
             alert("Please add Module, test title and description");
             return;
         }
@@ -177,8 +185,22 @@ function QuizCreationForm({ courseId }) {
 
             };
             console.log("Quiz Submission Data:", submissionData);
+            try {
+
+                const response = await axios.post(
+                    `${serverurl}/api/courses/addtest`,
+                    { testData: submissionData },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+            } catch (error) {
+                console.error('question upload failed:', error?.response?.data || error.message);
+            }
             alert("Quiz submitted successfully!");
-            // Here you would typically send the data to your backend
+            
         } else {
             alert("Please fill all fields and select correct answers for all questions!");
         }
@@ -236,15 +258,15 @@ function QuizCreationForm({ courseId }) {
             });
         }
     };
-  const handleTitleAndDescriptionChange = (e) => {
-  const { name, value } = e.target;
+    const handleTitleAndDescriptionChange = (e) => {
+        const { name, value } = e.target;
 
-  if (name === 'testTitle') {
-    setTestTitle(value);
-  } else if (name === 'testDescription') {
-    setTestDescription(value);
-  }
-};
+        if (name === 'testTitle') {
+            setTestTitle(value);
+        } else if (name === 'testDescription') {
+            setTestDescription(value);
+        }
+    };
 
 
 
@@ -454,7 +476,7 @@ function QuizCreationForm({ courseId }) {
                 </Box>
             </Box>
 
-            <Box sx={{display: 'flex', width: '50%', flexDirection: 'column', justifyContent: 'space-evenly'}}>
+            <Box sx={{ display: 'flex', width: '50%', flexDirection: 'column', justifyContent: 'space-evenly' }}>
                 <TextField
                     fullWidth
                     label="Quiz Title"
@@ -482,7 +504,7 @@ function QuizCreationForm({ courseId }) {
                         },
                     }}
                 />
-                      <TextField
+                <TextField
                     fullWidth
                     label="Quiz Description"
                     id="testDescription"
@@ -531,7 +553,7 @@ function QuizCreationForm({ courseId }) {
                 </Tabs>
             </Box>
 
-            <form onSubmit={handleSubmit} style={{width: '50%'}}>
+            <form onSubmit={handleSubmit} style={{ width: '50%' }}>
                 {/* Only show the active question */}
                 {questions.length > 0 && (
                     <Card key={questions[activeQuestion].id} sx={{ mb: 3, borderRadius: 4 }}>
