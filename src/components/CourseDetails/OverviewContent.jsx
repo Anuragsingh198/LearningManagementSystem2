@@ -29,6 +29,8 @@ import NoContentPage from './NoContentPage';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { checkProgress } from '../../context/Actions/courseActions';
+import axios from 'axios';
+
 
 
 
@@ -78,19 +80,26 @@ const TestsDisplay = ({ tests }) => {
     </Box>
   );
 };
-export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, progressPercentage, setSelectedChapter }) => {
+export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, progressPercentage, setSelectedChapter, courseProgressData }) => {
   const chapters = oneCourse.modules;
   const courseId = oneCourse._id;
+  const courseTitle = oneCourse.title;
+  const certificateType = 'completion'
   const [totalVideos, setTotalVideos] = useState(0);
   const [totalTests, setTotalTests] = useState(0);
   const navigate = useNavigate();
-  // console.log('chapters are: ', chapters)
+  const percentageCompleted = oneCourse.percentageCompleted;
+
   const { state: { user, loading }, dispatch } = useAuth();
 
   const role = user?.role;
   const token = user?.token;
+  const name = user?.name;
+
+  const serverurl = import.meta.env.VITE_SERVER_URL;
 
   const { state: { courseProgress }, dispatch: courseDispatch } = useCourseContext();
+
 
 
   const moduleProgressMap = {};
@@ -103,17 +112,48 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   // console.log('progress percentage in overview content is: ', progressPercentage)
 
 
+  console.log('progress percentage completed is: ', progressPercentage)
 
   const handleSubmit = async (chapterId) => {
     setSelectedChapter(chapterId);
     // navigate(`/course/module/${chapterId}`);
     //here we have to call the function to update user Progress in backend
-    console.log('the course id is: ', courseId)
-    console.log('the chapter id is: ', chapterId)
+
     await checkProgress(courseId, chapterId, courseDispatch);
     navigate(`/course/module/${courseId}/${chapterId}`);
 
   };
+
+  const handleGenerateCertificate = async () => {
+    const newTab = window.open('', '_blank'); // open immediately in response to user click
+
+    try {
+      const response = await axios.post(
+        `${serverurl}/api/courses/generate-certificate`,
+        { name, courseId, courseTitle, empId: 'Random', certificateType },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        const certUrl = response.data.certificate?.certificateUrl;
+        if (certUrl) {
+          newTab.location.href = certUrl; // redirect already opened tab
+        } else {
+          newTab.close();
+          alert('Certificate URL not found');
+        }
+      }
+    } catch (error) {
+      newTab.close();
+      console.error('Certificate generation failed:', error?.response?.data || error.message);
+      alert('Failed to generate certificate');
+    }
+  };
+
 
 
 
@@ -132,25 +172,26 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%',
+    <Box sx={{
+      display: 'flex', flexDirection: 'column', gap: 4, width: '100%',
 
-       overflowY: 'auto', // Ensure scrolling is possible
-    // maxHeight: '400px', // or any max height you need
-    '&::-webkit-scrollbar': {
-      width: '6px', // small width
-    },
-    '&::-webkit-scrollbar-track': {
-      background: 'transparent',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'lightGray',
-      borderRadius: '8px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: '#e0e0e0',
-    },
+      overflowY: 'auto', // Ensure scrolling is possible
+      // maxHeight: '400px', // or any max height you need
+      '&::-webkit-scrollbar': {
+        width: '6px', // small width
+      },
+      '&::-webkit-scrollbar-track': {
+        background: 'transparent',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'lightGray',
+        borderRadius: '8px',
+      },
+      '&::-webkit-scrollbar-thumb:hover': {
+        backgroundColor: '#e0e0e0',
+      },
 
-     }}>
+    }}>
       <Paper sx={{
         background: 'linear-gradient(to right, #2563eb, #9333ea)',
         borderRadius: 3,
@@ -237,12 +278,14 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
               <Button
                 variant="contained"
                 color="primary"
+                onClick={handleGenerateCertificate}
                 startIcon={<DownloadIcon />}
                 sx={{ textTransform: 'none' }}
+                // disabled={percentageCompleted < 90}  // Disable if less than 90
               >
                 Generate Certificate
               </Button>
-              <Button
+              {/* <Button
                 variant="outlined"
                 color="inherit"
                 startIcon={<ShareIcon />}
@@ -253,7 +296,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                 }}
               >
                 Share Progress
-              </Button>
+              </Button> */}
             </Box>
           </Box>
 
@@ -345,7 +388,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                         }
                       }}
                     >
-                       {(moduleProgressMap[chapter._id] === 'completed') ? 'Review' : 'Start'}
+                      {(moduleProgressMap[chapter._id] === 'completed') ? 'Review' : 'Start'}
                     </Button>
                     {role === 'instructor' ? <IconButton
                       color="error"

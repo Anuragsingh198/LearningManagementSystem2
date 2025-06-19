@@ -1,0 +1,129 @@
+{
+    "_id": "684a61e9e4770a17f40af9dc",
+    "title": "Effective Communication",
+    "description": "This course focuses on building essential communication skills that enhance collaboration, reduce misunderstandings, and improve overall workplace dynamics. You’ll learn how to communicate clearly and confidently across different mediums—verbal, non-verbal, and written—while adapting your style for diverse audiences and situations. Key topics include active listening, assertive communication, giving and receiving feedback, conflict resolution, and crafting professional emails and reports. Whether you're speaking in meetings, writing to clients, or collaborating with colleagues, this course equips you with practical techniques to express ideas effectively, foster stronger relationships, and boost your professional presence.",
+    "instructorName": "Anurag singh bisen ",
+    "instructor": "6841228eb362ef5fa17c545b",
+    "category": "Personal Development",
+    "thumbnail": "https://res.cloudinary.com/dnz7suj59/image/upload/v1749705193/course_thumbnails/vlj6wmckunzpukcozvhy.jpg",
+    "modules": [
+        {
+            "_id": "6852a6a8875165c2a5464d36",
+            "title": "Basics of Communication",
+            "description": "This module introduces the fundamental concepts of communication within an organization. It covers the key elements, types, and processes of communication, emphasizing how clear and effective exchange of information forms the foundation for successful teamwork and organizational efficiency. Learners will gain an understanding of how communication shapes relationships and drives collaboration in the workplace.",
+            "course": "684a61e9e4770a17f40af9dc",
+            "videos": [
+                "6852a6b5875165c2a5464d3e",
+                "6852a6dc875165c2a5464d45"
+            ],
+            "tests": [
+                "6852a7a7875165c2a5464d66"
+            ],
+            "currentVideoIndex": 0,
+            "status": "not-started",
+            "percentageCompleted": 0,
+            "createdAt": "2025-06-18T11:44:40.433Z",
+            "updatedAt": "2025-06-18T11:48:55.610Z",
+            "__v": 3
+        },
+        {
+            "_id": "6852a7e9875165c2a5464d91",
+            "title": "Nonverbal Communication in the Workplace",
+            "description": "This module delves into the powerful role of nonverbal communication in professional settings. Learners will explore various forms of nonverbal cues such as body language, facial expressions, gestures, and tone of voice, and how these can impact workplace interactions. Understanding and mastering nonverbal signals can enhance clarity, build rapport, and prevent misunderstandings in organizational communication.",
+            "course": "684a61e9e4770a17f40af9dc",
+            "videos": [
+                "6852a81f875165c2a5464d9a",
+                "6852a839875165c2a5464da1"
+            ],
+            "tests": [
+                "6852a8a0875165c2a5464dae"
+            ],
+            "currentVideoIndex": 0,
+            "status": "not-started",
+            "percentageCompleted": 0,
+            "createdAt": "2025-06-18T11:50:01.464Z",
+            "updatedAt": "2025-06-18T11:53:04.667Z",
+            "__v": 3
+        }
+    ],
+    "students": [
+        "684fdf554d7560f1bd518e04",
+        "6852ad61875165c2a5465372"
+    ],
+    "percentageCompleted": 0,
+    "certificate": "",
+    "compulsory": true,
+    "createdAt": "2025-06-12T05:13:13.596Z",
+    "updatedAt": "2025-06-18T12:13:54.889Z",
+    "__v": 4
+}
+
+{
+    "_id": "6852ad82875165c2a54653c6",
+    "user": "6852ad61875165c2a5465372",
+    "course": "684a61e9e4770a17f40af9dc",
+    "moduleProgress": [
+        {
+            "module": "6852a6a8875165c2a5464d36",
+            "status": "completed",
+            "videoIndex": 0,
+            "percentageCompleted": 100,
+            "videoProgress": [
+                {
+                    "video": "6852a6b5875165c2a5464d3e",
+                    "status": "completed",
+                    "_id": "6852ad82875165c2a54653c8"
+                },
+                {
+                    "video": "6852a6dc875165c2a5464d45",
+                    "status": "completed",
+                    "_id": "6852ad82875165c2a54653c9"
+                }
+            ],
+            "testStatus": [
+                {
+                    "test": "6852a7a7875165c2a5464d66",
+                    "isCompleted": true,
+                    "retakeCount": 1,
+                    "marksScored": 3,
+                    "_id": "6852ad82875165c2a54653ca"
+                }
+            ],
+            "_id": "6852ad82875165c2a54653c7"
+        },
+        {
+            "module": "6852a7e9875165c2a5464d91",
+            "status": "completed",
+            "videoIndex": 0,
+            "percentageCompleted": 100,
+            "videoProgress": [
+                {
+                    "video": "6852a81f875165c2a5464d9a",
+                    "status": "completed",
+                    "_id": "6852ad82875165c2a54653cc"
+                },
+                {
+                    "video": "6852a839875165c2a5464da1",
+                    "status": "completed",
+                    "_id": "6852ad82875165c2a54653cd"
+                }
+            ],
+            "testStatus": [
+                {
+                    "test": "6852a8a0875165c2a5464dae",
+                    "isCompleted": true,
+                    "retakeCount": 1,
+                    "marksScored": 2,
+                    "_id": "6852ad82875165c2a54653ce"
+                }
+            ],
+            "_id": "6852ad82875165c2a54653cb"
+        }
+    ],
+    "overallPercentage": 0,
+    "status": "enrolled",
+    "isCourseCompleted": false,
+    "createdAt": "2025-06-18T12:13:54.847Z",
+    "updatedAt": "2025-06-18T12:17:17.255Z",
+    "__v": 0
+}

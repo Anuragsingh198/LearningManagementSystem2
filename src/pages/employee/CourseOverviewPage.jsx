@@ -18,7 +18,7 @@ const OverviewPage = () => {
   const [ProgressPercentage, setProgressPercentage] = useState(0);
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [courseProgressData, setCourseProgressData] = useState(null)
   const handelgetCourseById = async (courseId) => {
     return await getCourseById(courseId, dispatch);
   };
@@ -37,6 +37,7 @@ const OverviewPage = () => {
         // console.log("overviewPage courseData is:", course);
         // console.log("overviewPage courseProgress data is :", courseProg);
         setCourseData(course);
+        setCourseProgressData(courseProg)
 
       const completed = courseProg.moduleProgress.filter(
   (m) => m.status === "completed"
@@ -48,6 +49,8 @@ const OverviewPage = () => {
         setCompleteChapters(completed);
 
         const completedPercentage = courseProg.overallPercentage
+        console.log('the course overview file courseProg backend data is: ', courseProg)
+        console.log('the completed percentage from above level is', completedPercentage)
         setProgressPercentage(completedPercentage);
         setTotalChapters(total);
 
@@ -78,6 +81,7 @@ const OverviewPage = () => {
             totalChapters={totalChaptes}
             progressPercentage={ProgressPercentage}
             setSelectedChapter={setSelectedChapter}
+            courseProgressData={courseProgressData}
           />
         )}
 
