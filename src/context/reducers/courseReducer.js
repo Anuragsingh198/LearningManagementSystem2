@@ -1,3 +1,4 @@
+
 export const courseReducer = (state, action) => {
   switch (action.type) {
     case "SET_COURSES":
@@ -20,7 +21,7 @@ export const courseReducer = (state, action) => {
       console.log("Adding course: course  reducer", action.payload);
       return {
         ...state,
-
+        
         courses: [action.payload, ...state.courses],
         loading: false,
         error: null,
