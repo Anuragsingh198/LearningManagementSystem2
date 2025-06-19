@@ -271,7 +271,7 @@ export const getCourseById = async (courseId, dispatch) => {
         console.log('Course not found');
         return null;
       }
-      console.log('Course fetched successfully:', data.course);
+      // console.log('Course fetched successfully:', data.course);
       dispatch({type:'SET_ONECOURSE' , payload:data.course});
       return data.course; 
     } else {
@@ -391,6 +391,70 @@ export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatc
   } catch (error) {
     console.error('Error in updating video progress:', error);
     return null;
+  } finally {
+    dispatch({ type: 'SET_LOADING', payload: false });
+  }
+};
+
+export const checkProgress = async (courseId, chapterId, dispatch) => {
+  const token = getAuthToken();
+
+  try{
+    dispatch({ type: 'SET_LOADING', payload: true });
+
+    const response = await axios.post(`${serverurl}/api/users/check-progress`, {
+      courseId, chapterId,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    const data = response.data;
+
+    if(data.success){
+     dispatch({ type: 'COURSE_PROGRESS', payload: data.progress });
+      return data.progress;
+
+    }else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('error in checking progress', error);
+    return null;
+  } finally {
+    dispatch({ type: 'SET_LOADING', payload: false });
+  }
+}
+
+
+export const checkVideoOrTestInUserProgressAction = async ({ videoId, testId, moduleId, courseId }, dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'SET_LOADING', payload: true });
+
+    const payload = { moduleId, courseId };
+    if (videoId) payload.videoId = videoId;
+    if (testId) payload.testId = testId;
+
+    const response = await axios.post(`${serverurl}/api/users/check-video-progress`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = response.data;
+
+    if (data.success) {
+      dispatch({ type: 'COURSE_PROGRESS', payload: data.progress });
+      console.log('Progress updated:', data.progress);
+      return data.progress;
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in checking video/test progress:', error);
   } finally {
     dispatch({ type: 'SET_LOADING', payload: false });
   }

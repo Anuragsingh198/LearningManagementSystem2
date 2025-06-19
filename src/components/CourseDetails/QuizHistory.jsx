@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
     Box,
     Typography,
@@ -10,14 +10,12 @@ import { useParams } from "react-router-dom";
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { getCourseProgress } from '../../context/Actions/courseActions';
 
-function QuizHistory({ questions }) {
+function QuizHistory({ questions, moduleId, currentTest }) {
     const { state: { loading, courseProgress }, dispatch } = useCourseContext();
     const { state: { user } } = useAuth();
     const { courseId } = useParams();
 
     const totalQuestions = questions?.length || 2; // Avoid division by 0
-
-    // console.log('the total number of questions are: ', questions)
 
     useEffect(() => {
         const fetchdata = async () => {
@@ -26,8 +24,28 @@ function QuizHistory({ questions }) {
         if (user?._id && courseId) fetchdata();
     }, [user?._id, courseId]);
 
-    const testStatuses =
-        courseProgress?.moduleProgress?.flatMap((mod) => mod.testStatus || []) || [];
+    const currentTestStatus = useMemo(() => {
+        if (!courseProgress?.moduleProgress) return null;
+
+        const currentModule = courseProgress.moduleProgress.find(
+            (mod) => mod.module === moduleId
+        );
+
+        if (!currentModule || !currentModule.testStatus?.length) return null;
+
+        return currentModule.testStatus[currentTest] || null;
+    }, [courseProgress, moduleId, currentTest]);
+
+    const percentage = useMemo(() => {
+        if (
+            currentTestStatus &&
+            currentTestStatus.retakeCount > 0 &&
+            typeof currentTestStatus.marksScored === 'number'
+        ) {
+            return Math.round((currentTestStatus.marksScored / totalQuestions) * 100);
+        }
+        return null;
+    }, [currentTestStatus, totalQuestions]);
 
     return (
         <Box
@@ -44,53 +62,50 @@ function QuizHistory({ questions }) {
             }}
         >
             <Typography variant="h6" gutterBottom>
-                Quiz History
+                Assessment History
             </Typography>
             <Divider sx={{ mb: 2 }} />
-            <Typography  gutterBottom>
-                The quiz only needs to be passed once, though multiple attempts are permitted.
+            <Typography gutterBottom>
+                The Assessment only needs to be passed once, though multiple attempts are permitted.
             </Typography>
             <Divider sx={{ mb: 2 }} />
-            {testStatuses.length === 0 ? (
-                <Typography>No test history available.</Typography>
+
+            {!currentTestStatus ? (
+                <Typography>No test history available for this module/test index.</Typography>
             ) : (
-                testStatuses.map((test, index) => {
-                    const percentage = test.retakeCount > 0
-                        ? Math.round((test.marksScored / totalQuestions) * 100)
-                        : null;
+                <Box sx={{ mb: 2 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={4}>
+                            <Typography>Status:</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={8}>
+                            <Typography color={currentTestStatus.isCompleted ? "green" : "red"}>
+                                {currentTestStatus.isCompleted
+                                    ? "Assessment Passed"
+                                    : currentTestStatus.retakeCount === 0
+                                        ? "-"
+                                        : "Failed"}
+                            </Typography>
 
-                    return (
-                        <Box key={test._id || index} sx={{ mb: 2 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={4}>
-                                    <Typography>Status:</Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={8}>
-                                    <Typography color={test.isCompleted ? "green" : "red"}>
-                                        {test.isCompleted ? "Quiz Cleared" : "Not Cleared"}
-                                    </Typography>
-                                </Grid>
+                        </Grid>
 
-                                <Grid item xs={12} sm={4}>
-                                    <Typography>Retake Count:</Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={8}>
-                                    <Typography>{test.retakeCount}</Typography>
-                                </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <Typography>No. of Attempts:</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={8}>
+                            <Typography>{currentTestStatus.retakeCount}</Typography>
+                        </Grid>
 
-                                <Grid item xs={12} sm={4}>
-                                    <Typography>Prior Test Percentage:</Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={8}>
-                                    <Typography>
-                                        {percentage !== null ? `${percentage}%` : "Nil"}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                            {index !== testStatuses.length - 1 && <Divider sx={{ my: 2 }} />}
-                        </Box>
-                    );
-                })
+                        <Grid item xs={12} sm={4}>
+                            <Typography>Prior Score:</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={8}>
+                            <Typography>
+                                {percentage !== null ? `${percentage}%` : "Nil"}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Box>
             )}
         </Box>
     );

@@ -18,12 +18,12 @@ const OverviewPage = () => {
   const [ProgressPercentage, setProgressPercentage] = useState(0);
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [courseProgressData, setCourseProgressData] = useState(null)
   const handelgetCourseById = async (courseId) => {
     return await getCourseById(courseId, dispatch);
   };
  const handleCourseProgress = async(courseId , userId)=>{
-    console.log("userId from   handleCourseProgress  is : ", userId);
+    // console.log("userId from   handleCourseProgress  is : ", userId);
     return  await getCourseProgress(courseId , userId , dispatch)
  }
   useEffect(() => {
@@ -33,20 +33,27 @@ const OverviewPage = () => {
         setIsLoading(true);
         const course = await handelgetCourseById(courseId);
         const courseProg = await handleCourseProgress(courseId , user._id , dispatch) 
-        
-        console.log("overviewPage courseData is:", course);
-        console.log("overviewPage courseProgress data is :", courseProg);
+        // console.log('course progress in main course overview page', courseProg)
+        // console.log("overviewPage courseData is:", course);
+        // console.log("overviewPage courseProgress data is :", courseProg);
         setCourseData(course);
+        setCourseProgressData(courseProg)
 
-        const completed = course.modules.filter(
-          (c) => c.status === "completed"
-        ).length;
+      const completed = courseProg.moduleProgress.filter(
+  (m) => m.status === "completed"
+).length;
+
         const total = course.modules.length;
-        const percent = (completed / total) * 100;
+        
 
         setCompleteChapters(completed);
-        setProgressPercentage(percent);
+
+        const completedPercentage = courseProg.overallPercentage
+        console.log('the course overview file courseProg backend data is: ', courseProg)
+        console.log('the completed percentage from above level is', completedPercentage)
+        setProgressPercentage(completedPercentage);
         setTotalChapters(total);
+
       } catch (error) {
         console.error("Error fetching course data:", error);
       }
@@ -74,6 +81,7 @@ const OverviewPage = () => {
             totalChapters={totalChaptes}
             progressPercentage={ProgressPercentage}
             setSelectedChapter={setSelectedChapter}
+            courseProgressData={courseProgressData}
           />
         )}
 

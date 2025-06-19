@@ -56,19 +56,19 @@ const VideoUploadPage = () => {
           variant={activeTab === 'quiz' ? 'contained' : 'outlined'}
           onClick={() => setActiveTab('quiz')}
         >
-          Add Quiz
+          Add Assessment
         </Button>
-        <Button
+        {/* <Button
           variant={activeTab === 'assessment' ? 'contained' : 'outlined'}
           onClick={() => setActiveTab('assessment')}
         >
-          Add Assessment 
-        </Button>
+          Add Overall Assessment 
+        </Button> */}
 
         {/* Conditional Note */}
         {activeTab === 'quiz' && (
           <Typography variant="body2" color="gray" sx={{ ml: 2 }}>
-            *Quizzes are for a particular module.
+            *It will be necessary for enrolled users to take the test
           </Typography>
         )}
         {activeTab === 'assessment' && (

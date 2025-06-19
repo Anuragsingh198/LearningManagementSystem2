@@ -31,6 +31,7 @@ import {
 } from '@mui/icons-material';
 import NoContentPage from './NoContentPage';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
+import { checkVideoOrTestInUserProgressAction } from '../../context/Actions/courseActions';
 
 
 export const Sidebar = ({
@@ -46,7 +47,8 @@ export const Sidebar = ({
     setCurrentTest,
     currentQuestion,
     setCurrentQuestion,
-    moduleId
+    moduleId,
+    courseId
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -60,9 +62,28 @@ export const Sidebar = ({
     if (moduleProgress) {
         moduleProgress.videoProgress.forEach((vp) => {
             videoStatusMap[vp.video] = vp.status;
-             console.log('videoStatusMap is: ', videoStatusMap)
+            //  console.log('videoStatusMap is: ', videoStatusMap)
 
         });
+    }
+
+    const checkVideoInUserProgress = async (videoId, moduleId, courseId) => {
+        await checkVideoOrTestInUserProgressAction({
+            videoId: videoId,
+            moduleId: moduleId,
+            courseId: courseId
+        }, dispatch);
+
+    }
+
+        const checkTestInUserProgress = async (testId, moduleId, courseId) => {
+            console.log('the test id and module id and course id is: ', testId, moduleId, courseId)
+            await checkVideoOrTestInUserProgressAction({
+            testId: testId,
+            moduleId: moduleId,
+            courseId: courseId
+        }, dispatch);
+
     }
 
 
@@ -183,7 +204,7 @@ export const Sidebar = ({
                         <Box
                             sx={{
                                 height: '1px',
-                                width: '8%',
+                                width: '9%',
                                 mb: 2,
                                 background: 'gray',
                                 borderRadius: 1,
@@ -198,7 +219,10 @@ export const Sidebar = ({
                                     <ListItem key={video._id} disablePadding>
                                         <ListItemButton
                                             selected={currentVideo === index}
-                                            onClick={() => setCurrentVideo(index)}
+                                            onClick={() => {
+                                                setCurrentVideo(index)
+                                                checkVideoInUserProgress(video._id, moduleId, courseId)
+                                            }}
                                             sx={{
                                                 borderLeft: status === 'completed' ? '4px solid' : 'none',
                                                 borderColor: 'success.main',
@@ -281,7 +305,9 @@ export const Sidebar = ({
                                 <ListItem key={quiz.id} disablePadding>
                                     <ListItemButton
                                         selected={currentTest === index}
-                                        onClick={() => setCurrentTest(index)}
+                                        onClick={() => {setCurrentTest(index)
+                                            checkTestInUserProgress(quiz._id, moduleId, courseId)
+                                        }}
                                         sx={{
 
                                             borderLeft: quiz.completed ? '4px solid' : 'none',

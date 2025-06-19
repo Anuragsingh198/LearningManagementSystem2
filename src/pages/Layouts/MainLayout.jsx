@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
@@ -64,6 +64,19 @@ export default function Layout({ children }) {
         >
           {children}
         </Box>
+      </Box>
+       <Box
+        component="footer"
+        sx={{
+          textAlign: 'center',
+          py: 2,
+          bgcolor: '#DCDCDC',
+          borderTop: '1px solid #e0e0e0'
+        }}
+      >
+        <Typography variant="body2" color="text.secondary" >
+          © 2025 DigiVidya | Built with ❤ by Gopal, Anurag, and Adi
+        </Typography>
       </Box>
     </Box>
   );
