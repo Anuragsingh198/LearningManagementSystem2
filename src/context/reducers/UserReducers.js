@@ -25,6 +25,11 @@ export const authReducer = (state, action) => {
         user: action.payload,
         loading:false
       };
+      case "ENROLLED_EMPLOYEES":
+        return {
+          ...state , 
+          enrolledEmployees : action.payload
+        }
     case 'UPDATE_PROFILE':
       return {
         ...state,

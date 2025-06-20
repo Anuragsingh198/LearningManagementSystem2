@@ -10,6 +10,7 @@ const ProgressTable = () => {
     { id: 4, name: 'Node.js Basics', date: '2023-08-05', score: 68, total: 100, status: 'Completed' },
     { id: 5, name: 'Database Design', date: '2023-09-18', score: null, total: 100, status: 'Pending' },
   ];
+  
 
   return (
     <Box>

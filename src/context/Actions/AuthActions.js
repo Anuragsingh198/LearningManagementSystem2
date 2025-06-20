@@ -69,3 +69,31 @@ export const userRegister = async (user, dispatch) => {
   }
 };
 
+
+export const enrolledStudentsAction = async (courseId, dispatch) => {
+  console.log("the course id from enrolledStudentsAction :  ", courseId);
+  const token = getAuthToken();
+  
+  try {
+    // dispatch({ type: 'SET_LOADING', payload: true });
+    const response = await axios.get(`${serverurl}/api/users/${courseId}/enrolled-employees`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    
+    const data = response.data;
+    if (data.success) {
+      // dispatch({ type: 'ENROLLED_EMPLOYEES', payload: data.enrollStudents });
+      return data.enrollStudents;
+    } else {
+      throw new Error(data.message || 'Enrolled employees fetch failed');
+    }
+  } catch (error) {
+    console.error('Enrolled employees fetch error:', error);
+  } finally {
+    dispatch({ type: 'SET_LOADING', payload: false });
+  }
+};
+
+
+
+
