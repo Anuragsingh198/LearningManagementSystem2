@@ -104,71 +104,70 @@ const UserTypeButton = styled(ToggleButton)({
     }
 });
 
-const RegisterPage = () => {
+const ForgotPasswordPage = () => {
     const { state: { isAuthenticated, user }, dispatch } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-      
-    const role = user?.role;
+     const role = user?.role;
     const token = user?.token;
-    const serverurl = import.meta.env.VITE_SERVER_URL;
 
     const [formData, setFormData] = useState({
         email: "",
         password: "",
         confirmPassword: "",
         userType: "employee",
-        employeeId: "",
-        name: ""
     });
 
     const [otp, setOtp] = useState("")
-    const [countdown, setCountdown] = useState(0);
+    const serverurl = import.meta.env.VITE_SERVER_URL;
 
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const [emailError, setEmailError] = useState("");
-    const [isOtpVerified, setIsOtpVerified] = useState(false)
+    const [isOtpVerified, setIsOtpVerified] = useState(false);
+    const [countdown, setCountdown] = useState(0);
     const [disableSendOtp, setDisableSendOtp] = useState(false)
+    
+    
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+const handleChange = (e) => {
+    const { name, value } = e.target;
 
-        if (name === "otp") {
-            setOtp(value);
-            return; // prevent adding otp to formData
+    if (name === "otp") {
+        setOtp(value);
+        return; // prevent adding otp to formData
+    }
+
+    setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+    }));
+
+    if (name === "email") {
+        if (value && !value.endsWith("@ielektron.com")) {
+            setEmailError("Please use an @ielektron.com email address");
+        } else {
+            setEmailError("");
         }
+    }
+};
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
 
-        if (name === "email") {
-            if (value && !value.endsWith("@ielektron.com")) {
-                setEmailError("Please use an @ielektron.com email address");
-            } else {
-                setEmailError("");
-            }
+    const handleUserTypeChange = (event, newUserType) => {
+        if (newUserType !== null) {
+            setFormData({ ...formData, userType: newUserType });
         }
     };
 
     useEffect(() => {
-        let timer;
-        if (disableSendOtp && countdown > 0) {
-            timer = setTimeout(() => {
-                setCountdown((prev) => prev - 1);
-            }, 1000);
-        } else if (countdown === 0) {
-            setDisableSendOtp(false);
+        if (isAuthenticated) {
+            const role = user?.role === 'employee' ? 'student' : 'teacher';
+            navigate(`/${role}/dashboard`);
         }
+    }, [isAuthenticated, user, navigate]);
 
-        return () => clearTimeout(timer);
-    }, [countdown, disableSendOtp]);
-
-
-    const handleSendOtp = async () => {
+        const handleSendOtp = async () => {
         const email = formData.email;
         if (!email) {
             alert('Please enter email to receive OTP');
@@ -196,24 +195,22 @@ const RegisterPage = () => {
         
     };
 
-
-
-    const handleUserTypeChange = (event, newUserType) => {
-        if (newUserType !== null) {
-            setFormData({ ...formData, userType: newUserType });
-        }
-    };
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            const role = user?.role === 'employee' ? 'student' : 'teacher';
-            navigate(`/${role}/dashboard`);
-        }
-    }, [isAuthenticated, user, navigate]);
+        useEffect(() => {
+            let timer;
+            if (disableSendOtp && countdown > 0) {
+                timer = setTimeout(() => {
+                    setCountdown((prev) => prev - 1);
+                }, 1000);
+            } else if (countdown === 0) {
+                setDisableSendOtp(false);
+            }
+    
+            return () => clearTimeout(timer);
+        }, [countdown, disableSendOtp]);
 
     const handleVerifyOtp = async () => {
 
-        if (!formData.email) {
+        if(!formData.email){
             alert('Please provide email address for OTP verification')
             return;
         }
@@ -252,10 +249,9 @@ const RegisterPage = () => {
             console.error('could not verify otp', error)
         }     
 
- 
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (formData.email && !formData.email.endsWith("@ielektron.com")) {
@@ -268,14 +264,32 @@ const RegisterPage = () => {
             return;
         }
 
-        console.log("Form Data:", formData);
+        console.log("Form Data for reset password is:", formData);
 
         try {
-            userRegister(formData, dispatch);
-            // alert(`Account created successfully as ${formData.userType === 'employee' ? 'student' : 'teacher'}!`);
+
+            const response = await axios.post(
+                `${serverurl}/api/users/reset-password`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+
+            if(response.data.success){
+            
+                navigate('/login')
+                
+
+            } else {
+                console.error('Failed to reset password')
+            }
         } catch (error) {
-            alert("Registration failed: " + error.message);
-        }
+            console.error('could reset password', error)
+        }     
+
     };
 
     return (
@@ -305,131 +319,115 @@ const RegisterPage = () => {
                             DigiVidya
                         </Typography>
                         <Typography sx={{ color: '#4b5563', marginTop: '0.5rem' }}>
-                            Create your {formData.userType === 'employee' ? 'student' : 'teacher'} account
+                            Reset your password
                         </Typography>
                     </Box>
 
-                    {/* User Type Toggle */}
-                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <UserTypeToggle
-                            value={formData.userType}
-                            onChange={handleUserTypeChange}
-                            exclusive
-                        >
-                            <UserTypeButton value="employee">
-                                Employee
-                            </UserTypeButton>
-                            <UserTypeButton value="instructor">
-                                Teacher
-                            </UserTypeButton>
-                        </UserTypeToggle>
-                    </Box>
-                    {
-                        !isOtpVerified && <Box> <FormControl fullWidth error={!!emailError} sx={{
-                            marginBottom: '0.5rem', // Keep consistent spacing
-                            '& .MuiFormHelperText-root': {
-                                height: '20px', // Fixed height for error message
-                                display: 'flex',
-                                alignItems: 'center',
-                                visibility: emailError ? 'visible' : 'hidden', // Hide but keep space
-                                marginLeft: 0,
-                                fontSize: '0.75rem'
-                            }
-                        }}>
-                            <Typography variant="body2" sx={{ fontWeight: 'medium', color: '#374151', marginBottom: '0.5rem' }}>
-                                Email Address
-                            </Typography>
-                            <TextField
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                type="email"
-                                variant="outlined"
-                                placeholder="you@ielektron.com"
-                                error={!!emailError}
-                                helperText={emailError || ' '} // Empty space when no error
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        backgroundColor: '#f9fafb',
-                                        borderRadius: '0.5rem',
-                                        '& fieldset': {
-                                            borderColor: emailError ? '#ef4444' : '#d1d5db'
-                                        },
-                                        '&:hover fieldset': {
-                                            borderColor: emailError ? '#ef4444' : '#d1d5db'
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: emailError ? '#ef4444' : '#6366f1',
-                                            boxShadow: emailError ? '0 0 0 2px rgba(239, 68, 68, 0.25)' : '0 0 0 2px rgba(99, 102, 241, 0.25)'
-                                        }
-                                    }
-                                }}
-                            />
-
-                        </FormControl>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleSendOtp}
-                                disabled={disableSendOtp}
-                                sx={{
+                    
+{
+                   !isOtpVerified && <Box> <FormControl fullWidth error={!!emailError} sx={{
+                        marginBottom: '0.5rem', // Keep consistent spacing
+                        '& .MuiFormHelperText-root': {
+                            height: '20px', // Fixed height for error message
+                            display: 'flex',
+                            alignItems: 'center',
+                            visibility: emailError ? 'visible' : 'hidden', // Hide but keep space
+                            marginLeft: 0,
+                            fontSize: '0.75rem'
+                        }
+                    }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', color: '#374151', marginBottom: '0.5rem' }}>
+                            Email Address
+                        </Typography>
+                        <TextField
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            type="email"
+                            variant="outlined"
+                            placeholder="you@ielektron.com"
+                            error={!!emailError}
+                            helperText={emailError || ' '} // Empty space when no error
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    backgroundColor: '#f9fafb',
                                     borderRadius: '0.5rem',
-                                    textTransform: 'none',
-                                    fontWeight: 500,
-                                    backgroundColor: '#6366f1',
-                                    '&:hover': {
-                                        backgroundColor: '#4f46e5'
+                                    '& fieldset': {
+                                        borderColor: emailError ? '#ef4444' : '#d1d5db'
                                     },
-                                    marginBottom: '1.5rem'
-                                }}
-                            >
-                                {disableSendOtp ? `Resend OTP in ${countdown}s` : 'Send OTP'}
-                            </Button>
-
-                            <FormControl fullWidth sx={{
-                                marginBottom: '1.5rem', // Keep consistent spacing
-                                '& .MuiFormHelperText-root': {
-                                    height: '20px', // Fixed height for error message
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    marginLeft: 0,
-                                    fontSize: '0.75rem'
+                                    '&:hover fieldset': {
+                                        borderColor: emailError ? '#ef4444' : '#d1d5db'
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: emailError ? '#ef4444' : '#6366f1',
+                                        boxShadow: emailError ? '0 0 0 2px rgba(239, 68, 68, 0.25)' : '0 0 0 2px rgba(99, 102, 241, 0.25)'
+                                    }
                                 }
-                            }}>
-                                <Typography variant="body2" sx={{ fontWeight: 'medium', color: '#374151', marginBottom: '0.5rem' }}>
-                                    OTP
-                                </Typography>
-                                <TextField
-                                    name="otp"
-                                    value={otp}
-                                    onChange={handleChange}
-                                    required
+                            }}
+                        />
+                    </FormControl>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={handleSendOtp}
+                                                    disabled={disableSendOtp}
+                                                    sx={{
+                                                        borderRadius: '0.5rem',
+                                                        textTransform: 'none',
+                                                        fontWeight: 500,
+                                                        backgroundColor: '#6366f1',
+                                                        '&:hover': {
+                                                            backgroundColor: '#4f46e5'
+                                                        },
+                                                        marginBottom: '1.5rem'
+                                                    }}
+                                                >
+                                                    {disableSendOtp ? `Resend OTP in ${countdown}s` : 'Send OTP'}
+                                                </Button>
+                    
 
-                                    variant="outlined"
-                                    placeholder="X X X X X X"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            backgroundColor: '#f9fafb',
-                                            borderRadius: '0.5rem',
-                                            '& fieldset': {
-                                                borderColor: emailError ? '#ef4444' : '#d1d5db'
-                                            },
-                                            '&:hover fieldset': {
-                                                borderColor: emailError ? '#ef4444' : '#d1d5db'
-                                            },
-                                            '&.Mui-focused fieldset': {
-                                                borderColor: emailError ? '#ef4444' : '#6366f1',
-                                                boxShadow: emailError ? '0 0 0 2px rgba(239, 68, 68, 0.25)' : '0 0 0 2px rgba(99, 102, 241, 0.25)'
-                                            }
-                                        }
-                                    }}
-                                />
-                            </FormControl>
-                        </Box>
-                    }
+                    <FormControl fullWidth sx={{
+                        marginBottom: '1.5rem', // Keep consistent spacing
+                        '& .MuiFormHelperText-root': {
+                            height: '20px', // Fixed height for error message
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginLeft: 0,
+                            fontSize: '0.75rem'
+                        }
+                    }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', color: '#374151', marginBottom: '0.5rem' }}>
+                            OTP
+                        </Typography>
+                        <TextField
+                            name="otp"
+                            value={otp}
+                            onChange={handleChange}
+                            required
 
-                    {!isOtpVerified && <Button
+                            variant="outlined"
+                            placeholder="X X X X X X"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    backgroundColor: '#f9fafb',
+                                    borderRadius: '0.5rem',
+                                    '& fieldset': {
+                                        borderColor: emailError ? '#ef4444' : '#d1d5db'
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: emailError ? '#ef4444' : '#d1d5db'
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: emailError ? '#ef4444' : '#6366f1',
+                                        boxShadow: emailError ? '0 0 0 2px rgba(239, 68, 68, 0.25)' : '0 0 0 2px rgba(99, 102, 241, 0.25)'
+                                    }
+                                }
+                            }}
+                        />
+                    </FormControl> </Box>}
+
+                {  !isOtpVerified &&  <Button
                         variant="contained"
                         color="primary"
                         onClick={handleVerifyOtp}
@@ -449,83 +447,8 @@ const RegisterPage = () => {
 
 
                     {/* Form */}
-                    {isOtpVerified && <Box component="form" onSubmit={handleSubmit} sx={{ '& > :not(style)': { marginBottom: '1.5rem' } }}>
-                        <FormControl fullWidth sx={{ marginBottom: '1.5rem' }}>
-                            <Typography variant="body2" sx={{ fontWeight: 'medium', color: '#374151', marginBottom: '0.5rem' }}>
-                                Full Name
-                            </Typography>
-                            <TextField
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                                variant="outlined"
-                                placeholder="Please enter your full name"
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        backgroundColor: '#f9fafb',
-                                        borderRadius: '0.5rem',
-                                        '& fieldset': {
-                                            borderColor: '#d1d5db'
-                                        },
-                                        '&:hover fieldset': {
-                                            borderColor: '#d1d5db'
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: '#6366f1',
-                                            boxShadow: '0 0 0 2px rgba(99, 102, 241, 0.25)'
-                                        }
-                                    }
-                                }}
-                            />
-                            <Typography variant="caption" sx={{
-                                display: 'block',
-                                color: '#6b7280',
-                                fontStyle: 'italic',
-                                marginTop: '4px'
-                            }}>
-                                Note: This name will appear on certificates and cannot be changed later
-                            </Typography>
-                        </FormControl>
-
-                        <FormControl fullWidth sx={{ marginBottom: '1.5rem' }}>
-                            <Typography variant="body2" sx={{ fontWeight: 'medium', color: '#374151', marginBottom: '0.5rem' }}>
-                                Employee ID
-                            </Typography>
-                            <TextField
-                                name="employeeId"
-                                value={formData.employeeId}
-                                onChange={handleChange}
-                                required
-                                variant="outlined"
-                                placeholder="Employee ID"
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        backgroundColor: '#f9fafb',
-                                        borderRadius: '0.5rem',
-                                        '& fieldset': {
-                                            borderColor: '#d1d5db'
-                                        },
-                                        '&:hover fieldset': {
-                                            borderColor: '#d1d5db'
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: '#6366f1',
-                                            boxShadow: '0 0 0 2px rgba(99, 102, 241, 0.25)'
-                                        }
-                                    }
-                                }}
-                            />
-                            <Typography variant="caption" sx={{
-                                display: 'block',
-                                color: '#6b7280',
-                                fontStyle: 'italic',
-                                marginTop: '4px'
-                            }}>
-                            Note: This Employee ID will appear on certificates and cannot be changed later
-
-                            </Typography>
-                        </FormControl>
+                    { isOtpVerified && <Box component="form" onSubmit={handleSubmit} sx={{ '& > :not(style)': { marginBottom: '1.5rem' } }}>
+                       
 
                         <FormControl fullWidth>
                             <Typography variant="body2" sx={{ fontWeight: 'medium', color: '#374151', marginBottom: '0.5rem' }}>
@@ -628,23 +551,23 @@ const RegisterPage = () => {
                                     }
                                 }}
                             >
-                                Create {formData.userType === 'employee' ? 'Employee' : 'Instructor'} Account
+                               Reset Password
                             </Button>
                         </Box>
                     </Box>}
 
-                    <Box sx={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                 { !isOtpVerified &&  <Box sx={{ marginTop: '0.5rem', textAlign: 'center' }}>
                         <Typography variant="body2" sx={{ color: '#4b5563' }}>
-                            Already have an account?{" "}
+                            Back to login?{" "}
                             <Link to="/login" style={{ color: '#4f46e5', fontWeight: 'medium', textDecoration: 'none', '&:hover': { color: '#3730a3' } }}>
                                 Sign in
                             </Link>
                         </Typography>
-                    </Box>
+                    </Box>}
                 </RightSection>
             </FormContainer>
         </GradientBackground>
     );
 };
 
-export default RegisterPage;
+export default ForgotPasswordPage;

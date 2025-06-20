@@ -86,7 +86,7 @@ const TeacherDashboard = () => {
               mb: 1,
             }}
           >
-            Compulsory Courses
+            Mandatory Courses
           </Typography>
           <Box
             sx={{
@@ -116,7 +116,7 @@ const TeacherDashboard = () => {
               mt: 5,
             }}
           >
-            Regular Courses
+            Technical Courses
           </Typography>
           <Box
             sx={{

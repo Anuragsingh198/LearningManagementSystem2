@@ -9,12 +9,12 @@ import {
   Paper, 
   TextField, 
   Typography,
-  Link,
+  
   styled
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../../context/contextFiles/AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { userLogin } from "../../context/Actions/AuthActions";
 
 const GradientBackground = styled(Box)({
@@ -244,7 +244,7 @@ const LoginPage = () => {
                 }
               />
               <Link 
-                href="#" 
+                to="/reset-password" 
                 sx={{ 
                   fontSize: '0.875rem', 
                   fontWeight: 'medium', 
@@ -282,7 +282,7 @@ const LoginPage = () => {
             <Typography variant="body2" sx={{ color: '#4b5563' }}>
               Don't have an account?{" "}
               <Link 
-                href="/signup" 
+                to="/signup" 
                 sx={{ 
                   color: '#4f46e5', 
                   fontWeight: 'medium',

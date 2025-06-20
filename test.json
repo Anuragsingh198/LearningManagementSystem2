@@ -127,3 +127,34 @@
     "updatedAt": "2025-06-18T12:17:17.255Z",
     "__v": 0
 }
+
+[
+    {
+        "_id": "6852a6b5875165c2a5464d3e",
+        "title": "Communication with peers",
+        "description": "This video explores the importance of effective communication between colleagues in the workplace. It highlights strategies for clear, respectful, and collaborative interactions that build trust, enhance teamwork, and foster a positive work environment.",
+        "url": "https://res.cloudinary.com/dnz7suj59/video/upload/v1750247092/LMS_videos/vglwepxvqj83duom6yr0.mp4",
+        "course": "684a61e9e4770a17f40af9dc",
+        "module": "6852a6a8875165c2a5464d36",
+        "uploadedBy": "6841228eb362ef5fa17c545b",
+        "duration": 0,
+        "status": "not-started",
+        "createdAt": "2025-06-18T11:44:53.469Z",
+        "updatedAt": "2025-06-18T11:44:53.469Z",
+        "__v": 0
+    },
+    {
+        "_id": "6852a6dc875165c2a5464d45",
+        "title": "Active Listening",
+        "description": "This video focuses on the skill of active listening as a crucial component of effective communication. It demonstrates how paying full attention, understanding, and responding thoughtfully to peers and supervisors can prevent misunderstandings, resolve conflicts, and improve overall collaboration in an organization.",
+        "url": "https://res.cloudinary.com/dnz7suj59/video/upload/v1750247131/LMS_videos/ipx1jjbgsxnarx9oh2da.mp4",
+        "course": "684a61e9e4770a17f40af9dc",
+        "module": "6852a6a8875165c2a5464d36",
+        "uploadedBy": "6841228eb362ef5fa17c545b",
+        "duration": 0,
+        "status": "not-started",
+        "createdAt": "2025-06-18T11:45:32.700Z",
+        "updatedAt": "2025-06-18T11:45:32.700Z",
+        "__v": 0
+    }
+]

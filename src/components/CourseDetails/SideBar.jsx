@@ -53,6 +53,7 @@ export const Sidebar = ({
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
+    const [videoDuration, setvideoDuration] = useState(0);
     const moduleProgress = courseProgress?.moduleProgress.find(
         (mod) => mod.module === moduleId
     );
@@ -214,7 +215,7 @@ export const Sidebar = ({
                         <List >
                             {videos.map((video, index) => {
                                 const status = videoStatusMap[video._id]; // or video.id depending on your ID type
-
+                                // console.log('the status for particular video is: ',video._id,  status)
                                 return (
                                     <ListItem key={video._id} disablePadding>
                                         <ListItemButton
@@ -263,6 +264,7 @@ export const Sidebar = ({
                                                     {video.title}
                                                 </Typography>
                                                 <Typography
+                                                
                                                     variant="caption"
                                                     sx={{
                                                         color: currentVideo === index ? 'primary.contrastText' : 'text.secondary',
