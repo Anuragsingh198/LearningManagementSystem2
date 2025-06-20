@@ -54,6 +54,7 @@ export const VideoContent = ({
     const videoRef = useRef(null);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [readableDuration, setReadableDuration] = useState('');
     const [currentTime, setCurrentTime] = useState(0);
     const [isMuted, setIsMuted] = useState(false);
     const [volume, setVolume] = useState(1);
@@ -85,6 +86,7 @@ export const VideoContent = ({
     }, [currentVideo]);
 
     useEffect(() => {
+
         const handleKeyDown = (event) => {
             if (!videoRef.current) return;
 
@@ -122,6 +124,26 @@ export const VideoContent = ({
     }, []);
     
     // console.log('latest course progress is from video content: ', courseProgress)
+useEffect(() => {
+  const formatDuration = (rawSeconds) => {
+    const totalSeconds = Math.floor(rawSeconds); // remove decimals
+
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+
+    // Pad each with 2 digits
+    const paddedHrs = String(hrs).padStart(2, '0');
+    const paddedMins = String(mins).padStart(2, '0');
+    const paddedSecs = String(secs).padStart(2, '0');
+
+    return `${paddedHrs}:${paddedMins}:${paddedSecs}`;
+  };
+
+  setReadableDuration(formatDuration(duration));
+}, [duration]);
+
+
 
 
 useEffect(() => {
@@ -506,11 +528,11 @@ useEffect(() => {
                 <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, overflow: 'hidden' }}>
                     <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
                         <Typography variant="h4" fontWeight="bold" mb={1}>{currentVideoData?.title}</Typography>
-                        {/* <Box display="flex" alignItems="center" gap={2}>
-                            <Chip icon={<ClockIcon />} label={currentVideoData?.duration} size="small" />
-                            <Chip icon={<UsersIcon />} label="12,543 students" size="small" />
-                            <Chip icon={<AwardIcon />} label="Beginner Level" size="small" />
-                        </Box> */}
+                        <Box display="flex" alignItems="center" gap={2}>
+                            <Chip icon={<ClockIcon />} label={readableDuration} size="small" />
+                            {/* <Chip icon={<UsersIcon />} label="12,543 students" size="small" /> */}
+                            {/* <Chip icon={<AwardIcon />} label="Beginner Level" size="small" /> */}
+                        </Box>
                     </Box>
 
                     <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>

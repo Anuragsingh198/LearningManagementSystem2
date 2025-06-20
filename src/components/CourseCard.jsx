@@ -82,8 +82,10 @@ export const CourseCard = ({ course }) => {
         }
       );
       await getMyCoursesAction(dispatch);
-      setEnrolled(true);
-      handleCloseModal();
+      if(response.data.success){
+        setEnrolled(true);
+        handleCloseModal();
+      }
 
       console.log('Enrollment success:', response.data);
     } catch (error) {
@@ -175,9 +177,20 @@ export const CourseCard = ({ course }) => {
           {course.instructorName || (course.instructor?.name ?? 'Instructor')}
         </Typography>
 
-        <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-          {course.title}
-        </Typography>
+        <Typography
+  variant="h6"
+  component="div"
+  sx={{
+    fontWeight: 600,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    width: '100%', // or a fixed width like '200px' if needed
+  }}
+>
+  {course.title}
+</Typography>
+
 
         <Box
           sx={{

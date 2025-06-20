@@ -196,10 +196,23 @@ function QuizCreationForm({ courseId }) {
                         }
                     }
                 )
+
+                if(response.data.success){
+                    alert("Quiz submitted successfully!");
+                    setTestDescription('')
+                    setTestTitle('')
+                     setSelectedModule('');
+                setActiveQuestion(0);
+                setQuestions([{
+                    id: Date.now(),
+                    questionText: '',
+                    options: ['', '', '', ''],
+                    correctAnswer: ''
+                }]);
+                }
             } catch (error) {
                 console.error('question upload failed:', error?.response?.data || error.message);
             }
-            alert("Quiz submitted successfully!");
             
         } else {
             alert("Please fill all fields and select correct answers for all questions!");
@@ -479,7 +492,7 @@ function QuizCreationForm({ courseId }) {
             <Box sx={{ display: 'flex', width: '50%', flexDirection: 'column', justifyContent: 'space-evenly' }}>
                 <TextField
                     fullWidth
-                    label="Quiz Title"
+                    label="Assessment Title"
                     id="testTitle"
                     name="testTitle"
                     value={testTitle}
@@ -506,7 +519,7 @@ function QuizCreationForm({ courseId }) {
                 />
                 <TextField
                     fullWidth
-                    label="Quiz Description"
+                    label="Assessment Description"
                     id="testDescription"
                     name="testDescription"
                     value={testDescription}
@@ -627,7 +640,7 @@ function QuizCreationForm({ courseId }) {
                         color="success"
                         endIcon={<SendIcon />}
                     >
-                        Upload Quiz
+                        Upload Assessment
                     </Button>
                 </Box>
             </form>

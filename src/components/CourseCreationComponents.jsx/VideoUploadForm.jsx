@@ -94,6 +94,17 @@ const [existingModules, setExistingModules] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploaded, setIsUploaded] = useState(false);
 
+  useEffect(() => {
+  if (isUploaded) {
+    const timer = setTimeout(() => {
+      setIsUploaded(false);
+    }, 5000);
+
+    return () => clearTimeout(timer); // cleanup if the component unmounts
+  }
+}, [isUploaded]);
+
+
   const validateModuleForm = () => {
     const newErrors = {};
     

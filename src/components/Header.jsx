@@ -202,9 +202,9 @@ const handleLogout = async () => {
               },
             }}
           >
-            <Badge badgeContent={4} color="error">
+            {/* <Badge badgeContent={4} color="error">
               <NotificationsIcon fontSize="medium" />
-            </Badge>
+            </Badge> */}
           </IconButton>
               {/* here add one logout button */}
           <Box
@@ -221,7 +221,7 @@ const handleLogout = async () => {
   }}
 >
   <Avatar
-    alt="User Profile"
+    alt={name}
     src="/profile.jpg"
     sx={{
       width: 36,
