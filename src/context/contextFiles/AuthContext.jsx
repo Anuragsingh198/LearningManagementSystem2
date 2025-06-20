@@ -9,9 +9,9 @@ const initialstate = {
   user: null,
   notifications: [],
   courseProgress:null,
+  enrolledEmployees:[],
   loading :true
 };
-
 
 export const AuthProvider = ({ children }) => {
   const [state , dispatch] = useReducer(authReducer , initialstate)
