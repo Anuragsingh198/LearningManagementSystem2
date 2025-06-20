@@ -124,17 +124,30 @@ export const VideoContent = ({
     // console.log('latest course progress is from video content: ', courseProgress)
 
 
-    useEffect(() => {
-     if (progress >= 90 && !hasMarkedComplete ) {
-        setHasMarkedComplete(true);
-        const videoId = currentVideoData._id
-        // console.log('api call to backend to make video as completed with current video id: ', currentVideoData._id)
-        updateVideoCompletion(courseId, videoId, moduleId, dispatch);
+useEffect(() => {
+  const markVideoAndFetchProgress = async () => {
+    if (progress >= 90 && !hasMarkedComplete) {
+      setHasMarkedComplete(true);
+
+      const videoId = currentVideoData._id;
+    //   console.log('api call to backend to make video as completed with current video id: ', videoId);
+
+      try {
+        await updateVideoCompletion(courseId, videoId, moduleId, dispatch);
+        await getCourseProgress(courseId, userId, dispatch);
+
+        // console.log('latest course progress is from video content: ', courseProgress);
+      } catch (error) {
+        console.error('Error updating video completion or fetching progress:', error);
+      }
+    }
+  };
+
+  markVideoAndFetchProgress();
+}, [progress]);
+
+
         
-        getCourseProgress(courseId, userId, dispatch);
-        // console.log('latest course progress is from video content: ', courseProgress)
-        }
-        }, [progress]);
 
 
     const togglePlayPause = () => {
@@ -153,7 +166,7 @@ export const VideoContent = ({
         if (videoRef.current) {
             const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
             setProgress(currentProgress);
-            // console.log('the current duration is: ', duration)
+            console.log('the current duration is: ', currentProgress)
             setCurrentTime(videoRef.current.currentTime);
         }
     };
@@ -457,9 +470,9 @@ export const VideoContent = ({
                         <Typography variant="body2" color="text.secondary">
                             Video {currentVideo + 1} of {videos?.length}
                         </Typography>
-                        <Typography variant="caption" color="text.disabled">
+                        {/* <Typography variant="caption" color="text.disabled">
                             {videos?.filter(v => v.completed).length} completed
-                        </Typography>
+                        </Typography> */}
                     </Box>
 
                     <Button
@@ -493,11 +506,11 @@ export const VideoContent = ({
                 <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, overflow: 'hidden' }}>
                     <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
                         <Typography variant="h4" fontWeight="bold" mb={1}>{currentVideoData?.title}</Typography>
-                        <Box display="flex" alignItems="center" gap={2}>
+                        {/* <Box display="flex" alignItems="center" gap={2}>
                             <Chip icon={<ClockIcon />} label={currentVideoData?.duration} size="small" />
                             <Chip icon={<UsersIcon />} label="12,543 students" size="small" />
                             <Chip icon={<AwardIcon />} label="Beginner Level" size="small" />
-                        </Box>
+                        </Box> */}
                     </Box>
 
                     <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>

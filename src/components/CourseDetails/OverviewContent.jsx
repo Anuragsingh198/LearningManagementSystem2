@@ -109,10 +109,10 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
     // moduleProgressMap = { "68418edaacce3e3b7adc1f0f": "completed", ... }
   });
 
-  // console.log('progress percentage in overview content is: ', progressPercentage)
+  // console.log('progress percentage in overview content is: ', percentageCompleted)
 
 
-  console.log('progress percentage completed is: ', progressPercentage)
+  // console.log('progress percentage completed is: ', progressPercentage)
 
   const handleSubmit = async (chapterId) => {
     setSelectedChapter(chapterId);
@@ -281,7 +281,8 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                 onClick={handleGenerateCertificate}
                 startIcon={<DownloadIcon />}
                 sx={{ textTransform: 'none' }}
-                // disabled={percentageCompleted < 90}  // Disable if less than 90
+                disabled={progressPercentage != 100}
+
               >
                 Generate Certificate
               </Button>
@@ -353,12 +354,12 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                           },
                           {
                             icon: <HelpIcon fontSize="small" />,
-                            text: `${chapter.tests?.length || 0} MCQs`
+                            text: `${chapter.tests?.length || 0} Assessment(s)`
                           },
-                          {
-                            icon: <AccessTimeIcon fontSize="small" />,
-                            text: chapter.duration || 'N/A'
-                          }
+                          // {
+                          //   icon: <AccessTimeIcon fontSize="small" />,
+                          //   text: chapter.duration || 'N/A'
+                          // }
                         ].map((item, index) => (
                           <Box key={index} display="flex" alignItems="center" gap={0.5}>
                             {item.icon}

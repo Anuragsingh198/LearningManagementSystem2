@@ -19,6 +19,7 @@ import { ModuleDetails } from './pages/employee/ModuleDetails';
 import { useAuth } from './context/contextFiles/AuthContext';
 import MuiLoading from './pages/common/Loading';
 import EnrolledEmployees from './pages/admin/EnrolledEmployees';
+import ForgotPasswordPage from './pages/AuthPage/ForgotPassword';
 
 function App() {
     const { state: { user, loading }, dispatch } = useAuth();
@@ -35,6 +36,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<RegisterPage />} />
+        <Route path="/reset-password" element={ <ForgotPasswordPage/> } />
 
         <Route
           path="/*"
