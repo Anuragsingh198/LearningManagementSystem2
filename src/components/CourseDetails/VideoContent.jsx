@@ -538,7 +538,9 @@ useEffect(() => {
                     <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <Box>
                             <Typography variant="h6" fontWeight="semibold" mb={1}>Description</Typography>
-                            <Typography color="text.secondary" sx={{ lineHeight: 1.6 }}>{currentVideoData?.description}</Typography>
+
+                            <Typography color="text.secondary" sx={{ lineHeight: 1.6 ,whiteSpace: 'pre-wrap', wordBreak: 'break-word'  }}>{currentVideoData?.description}</Typography>
+
                         </Box>
 
                         {/* <Box>

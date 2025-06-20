@@ -144,7 +144,6 @@ for (let pair of formDataToSend.entries()) {
               multiline
               rows={4}
             />
-
             <ThumbnailUpload
               thumbnailPreview={thumbnailPreview}
               onThumbnailChange={handleThumbnailChange}
@@ -161,7 +160,6 @@ for (let pair of formDataToSend.entries()) {
   );
 };
 
-// Reusable components
 const FormField = ({ label, name, value, error, onChange, multiline, rows }) => (
   <FormControl fullWidth>
     <Typography variant="subtitle2" sx={labelStyles}>
