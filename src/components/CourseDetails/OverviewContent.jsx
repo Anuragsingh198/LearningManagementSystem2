@@ -51,7 +51,7 @@ const CourseDescription = ({ description }) => {
         borderRadius: 2,
       },
     }}>
-      <Typography color="rgba(255, 255, 255, 0.8)">
+      <Typography color="rgba(255, 255, 255, 0.8)" sx={{whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
         {description}
       </Typography>
     </Box>
