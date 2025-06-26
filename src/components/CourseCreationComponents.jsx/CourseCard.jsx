@@ -262,7 +262,7 @@ const CourseCard = ({ course }) => {
         {role != 'instructor' ? '' : <Button
           fullWidth
           variant="contained"
-          onClick={handleUploadClick}
+          onClick={() => navigate(`/teacher/upload-video/${course._id}`)}
           startIcon={<Video size={16} />}
           sx={{
             background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
@@ -284,7 +284,7 @@ const CourseCard = ({ course }) => {
         <Button
           fullWidth
           variant="contained"
-          onClick={handleViewClick} // Replace with your view handler
+          onClick={() => navigate(`/course/details/${course._id}`)} // Replace with your view handler
           startIcon={<Book size={16} />}
           sx={{
             background: 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)', // Teal to emerald
@@ -308,7 +308,7 @@ const CourseCard = ({ course }) => {
         {role != 'instructor' ? '' : <Button
           fullWidth
           variant="contained"
-          onClick={handleViewEmployeesClick} // Replace with your view handler
+          onClick={() => navigate(`/teacher/employees/${course._id}`)} 
           startIcon={<Users size={16} />}
           sx={{
             background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
