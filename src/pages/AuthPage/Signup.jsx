@@ -243,7 +243,7 @@ const RegisterPage = () => {
             const response = await axios.post(
                 `${serverurl}/api/users/generate-otp`,
                 {
-                    email: email
+                    email: email, type: 'signup'
                 },
                 {
                     headers: {
@@ -373,7 +373,7 @@ const RegisterPage = () => {
                     onCancel={handleCancel}
                     onConfirm={handleConfirm}
                     title="Confirm User Type"
-                    message="Are you sure you are a Teacher?"
+                    message="Are you sure you want to login as an Admin, you won't be able to chagne your role and get certificates?"
                 />
             )}
 
@@ -384,13 +384,13 @@ const RegisterPage = () => {
                     <Box sx={{ position: 'relative', zIndex: 10 }}>
                         <Typography variant="h3" sx={{ lineHeight: '1.375', marginBottom: '1rem' }}>
                             {formData.userType === 'employee'
-                                ? "Start Your Learning Journey Today!"
-                                : "Share Your Knowledge with the World!"}
+                                ? "Start Learning Today!"
+                                : "Share Your Knowledge with your Team!"}
                         </Typography>
                         <Typography sx={{ fontSize: '1.125rem', fontWeight: 'normal', marginTop: '1rem' }}>
                             {formData.userType === 'employee'
-                                ? "Join thousands of students expanding their skills with our courses."
-                                : "Connect with eager learners and build your teaching portfolio."}
+                                ? "Register today! Explore all the courses and get certified"
+                                : "Connect with your employees and build your teaching portfolio."}
                         </Typography>
                     </Box>
                 </LeftSection>
@@ -402,7 +402,7 @@ const RegisterPage = () => {
                             DigiVidya
                         </Typography>
                         <Typography sx={{ color: '#4b5563', marginTop: '0.5rem' }}>
-                            Create your {formData.userType === 'employee' ? 'student' : 'teacher'} account
+                            Create your {formData.userType === 'employee' ? 'Employee' : 'Admin'} account
                         </Typography>
                     </Box>
 

@@ -5,9 +5,16 @@ import {
   LinearProgress,
   Button,
   Paper,
-  Divider,
   Avatar,
-  IconButton
+  IconButton,
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   Download as DownloadIcon,
@@ -28,11 +35,8 @@ import { useEffect, useState } from 'react';
 import NoContentPage from './NoContentPage';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
-import { checkProgress } from '../../context/Actions/courseActions';
+import { checkProgress, deleteModule } from '../../context/Actions/courseActions';
 import axios from 'axios';
-import MuiLoading from '../../pages/common/Loading';
-
-
 
 
 const CourseDescription = ({ description }) => {
@@ -90,9 +94,12 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   const [totalTests, setTotalTests] = useState(0);
   const navigate = useNavigate();
   const percentageCompleted = oneCourse.percentageCompleted;
+  const [isLoading, setisLoading] = useState(false)
 
   const { state: { user }, dispatch } = useAuth();
-
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [moduleToDelete, setModuleToDelete] = useState(null);
+  
   const role = user?.role;
   const token = user?.token;
   const name = user?.name;
@@ -115,6 +122,10 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
 
 
   // console.log('progress percentage completed is: ', progressPercentage)
+    const handleDelete = (courseId) => {
+    setModuleToDelete(courseId);
+    setDeleteDialogOpen(true);
+  };
 
   const handleSubmit = async (chapterId) => {
     setSelectedChapter(chapterId);
@@ -181,10 +192,24 @@ const handleGenerateCertificate = async () => {
     setTotalTests(totalTest);
   }, [chapters]);
 
-  const handleDeleteChapter = (chapterId) => {
-    // You can call an API here or update state
-    console.log("Deleting chapter with ID:", chapterId);
+  const handleDeleteChapter = async (chapterId) => {    
+    setModuleToDelete(courseId);
+    setDeleteDialogOpen(true);    
   };
+
+
+  
+
+   const cancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setModuleToDelete(null);
+};
+
+  const confirmDelete = async () => {
+    
+
+  };
+  
 
   return (
     <Box sx={{
@@ -219,14 +244,7 @@ const handleGenerateCertificate = async () => {
         <CourseDescription description={oneCourse.description} />
 
         <Grid container spacing={3} mb={4} mt={2}>
-        { role !== 'instructor' &&  <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
-              {completedChapters}
-            </Typography>
-            <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
-              Completed
-            </Typography>
-          </Grid>}
+       
           <Grid item xs={6} sm={3} textAlign="center">
             <Typography variant="h4" fontWeight="bold">
               {totalChapters}
@@ -251,6 +269,14 @@ const handleGenerateCertificate = async () => {
               Tests
             </Typography>
           </Grid>
+           { role !== 'instructor' &&  <Grid item xs={6} sm={3} textAlign="center">
+            <Typography variant="h4" fontWeight="bold">
+              {completedChapters}
+            </Typography>
+            <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
+              Completed
+            </Typography>
+          </Grid>}
         </Grid>
 
         {role !== 'instructor' && <Box sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 2, p: 2 }}>
@@ -410,6 +436,56 @@ const handleGenerateCertificate = async () => {
               </Paper>
             ))}
           </Box>
+          <Dialog
+                    open={deleteDialogOpen}
+                    onClose={cancelDelete}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          width: 600,
+                          maxHeight: 600,
+                          borderRadius: 3,
+                          boxShadow: 10,
+                        }
+                      }
+                    }}
+                  >
+                    <DialogTitle id="alert-dialog-title">{"Confirm Module Deletion"}</DialogTitle>
+                    <DialogContent>
+                      <Box id="alert-dialog-description">
+                        <Typography variant="body1" color="textSecondary" gutterBottom>
+                          We will be adding this feature shortly...
+                          Deleting this Module will permanently remove:
+                        </Typography>
+                        <ul style={{ paddingLeft: '1.5rem', marginTop: 0, marginBottom: 0 }}>
+                          <li>All the uploaded videos in this module</li>
+                          <li>All uploaded Assessments and test</li>
+                        </ul>
+                        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+                          This action cannot be undone. Are you sure you want to continue?
+                        </Typography>
+                      </Box>
+                    </DialogContent>
+                    <DialogActions sx={{ mb: 1, mr: 1 }}>
+                      <Button onClick={cancelDelete} color="primary">
+                        Cancel
+                      </Button>
+                      {/* <Button
+                        onClick={confirmDelete}
+                        color={isLoading ? 'inherit' : 'error'}
+                        autoFocus
+                        disabled={isLoading}
+                        
+                        variant="contained"
+                        sx={{width: 205}}
+                      >
+                        {isLoading ? 'Deleting...' : 'Delete Module'}
+                      </Button> */}
+          
+                    </DialogActions>
+                  </Dialog>
         </>
       )}
     </Box>

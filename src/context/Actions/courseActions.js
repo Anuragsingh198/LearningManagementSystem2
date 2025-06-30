@@ -455,3 +455,62 @@ export const checkVideoOrTestInUserProgressAction = async ({ videoId, testId, mo
     dispatch({ type: 'SET_LOADING', payload: false });
   }
 };
+
+export const deleteCourse = async ( courseToDelete, dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    console.log('the course id is: ', courseToDelete)
+    const response = await axios.delete(`${serverurl}/api/courses/delete-course/${courseToDelete}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = response.data;
+
+    if (data.success) {
+      
+      console.log('course deleted, message from backend: ', data.message)
+      
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in deleting course:', error);
+  } finally {
+    dispatch({ type: 'SET_LOADING', payload: false });
+  }
+};
+
+
+export const deleteModule = async ( chapterId, dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    console.log('the course id is: ', chapterId)
+    const response = await axios.delete(`${serverurl}/api/courses/delete-module/${chapterId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = response.data;
+
+    if (data.success) {
+      
+      console.log('Module deleted, message from backend: ', data.message)
+      
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in deleting course:', error);
+  } finally {
+    dispatch({ type: 'SET_LOADING', payload: false });
+  }
+};
+
+

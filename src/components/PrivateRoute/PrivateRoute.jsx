@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }) => {
   // console.log('the loading status from private route.jsx is: ', loading)
 
   if (loading) return <MuiLoading/>
-  return user ? children : <Navigate to="/" />;
+  return user ? children : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;

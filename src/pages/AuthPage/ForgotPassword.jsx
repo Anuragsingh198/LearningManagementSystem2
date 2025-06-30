@@ -18,6 +18,7 @@ import {
     styled
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 const GradientBackground = styled(Box)({
     background: 'linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%)',
@@ -170,7 +171,8 @@ const handleChange = (e) => {
         const handleSendOtp = async () => {
         const email = formData.email;
         if (!email) {
-            alert('Please enter email to receive OTP');
+           toast.error("Please enter email to receive OTP")
+            // alert('Please enter email to receive OTP');
             return;
         }
 
@@ -181,7 +183,7 @@ const handleChange = (e) => {
             const response = await axios.post(
                 `${serverurl}/api/users/generate-otp`,
                 {
-                    email: email
+                    email: email, type: 'resetpassword'
                 },
                 {
                     headers: {
@@ -189,7 +191,9 @@ const handleChange = (e) => {
                     }
                 }
             )
+            toast.success("OTP sent! Please check your mail")
         } catch (error) {
+            toast.error("Error in OTP generation")
             console.error('could not send otp', error)
         }       
         
@@ -211,7 +215,8 @@ const handleChange = (e) => {
     const handleVerifyOtp = async () => {
 
         if(!formData.email){
-            alert('Please provide email address for OTP verification')
+            toast.error("Please provide email address for OTP verification")
+            
             return;
         }
         if (formData.email && !formData.email.endsWith("@ielektron.com")) {
@@ -219,7 +224,8 @@ const handleChange = (e) => {
             return;
         }
         if(!otp){
-            alert('Please enter otp')
+            toast.error("Please Enter OTP")
+            // alert('Please enter otp')
             return
         }
 
@@ -239,13 +245,15 @@ const handleChange = (e) => {
             )
 
             if(response.data.success){
-            
+                toast.success("OTP verified!")
                 setIsOtpVerified((prev) => !prev)
 
             } else {
+                toast.error(" verification failed! OTP is not valid :(")
                 console.error('otp not valid, verification failed')
             }
         } catch (error) {
+                toast.error(" verification failed! OTP is not valid :(")
             console.error('could not verify otp', error)
         }     
 
@@ -279,14 +287,16 @@ const handleChange = (e) => {
             )
 
             if(response.data.success){
-            
+                toast.success("Password reset completed! Pleae login.")
                 navigate('/login')
                 
 
             } else {
+                toast.error(" verification failed! OTP is not valid :(")
                 console.error('Failed to reset password')
             }
         } catch (error) {
+            toast.error(" verification failed! OTP is not valid :(")
             console.error('could reset password', error)
         }     
 
@@ -301,13 +311,13 @@ const handleChange = (e) => {
                     <Box sx={{ position: 'relative', zIndex: 10 }}>
                         <Typography variant="h3" sx={{ lineHeight: '1.375', marginBottom: '1rem' }}>
                             {formData.userType === 'employee'
-                                ? "Start Your Learning Journey Today!"
-                                : "Share Your Knowledge with the World!"}
+                                ? "Start Learning Today!"
+                                : "Share Your Knowledge with your Team!"}
                         </Typography>
                         <Typography sx={{ fontSize: '1.125rem', fontWeight: 'normal', marginTop: '1rem' }}>
                             {formData.userType === 'employee'
-                                ? "Join thousands of students expanding their skills with our courses."
-                                : "Connect with eager learners and build your teaching portfolio."}
+                                ? "Create account to expand your knowledge."
+                                : "Explore all the courses and get certified"}
                         </Typography>
                     </Box>
                 </LeftSection>

@@ -297,7 +297,7 @@ export const Sidebar = ({
                 tests.length !== 0 ? (
                     <Box sx={{ mt: 2 }}>
                         <Typography variant="overline" color="text.secondary">
-                            Quizzes
+                            Assessment
                         </Typography>
                         <Box
                             sx={{

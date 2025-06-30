@@ -114,7 +114,7 @@ const LoginPage = () => {
       toast.success("user Logged in successfully ")
       
     } catch (error) {
-      toast.error("Login failed: " + error.message)
+      toast.error("Please enter correct Email and Password")
     }
   };
 

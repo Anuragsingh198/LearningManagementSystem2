@@ -4,6 +4,7 @@ import { CourseCard } from '../../components/CourseCard';
 import bgImg from '../../assets/bg-img.jpg';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { getCoursesAction, getMyCoursesAction } from '../../context/Actions/courseActions';
+import CourseCardHoverWrapper from '../common/CourseCardHoverWrapper';
 
 const TeacherDashboard = () => {
   const { state: { courses, loading, error, myCourses }, dispatch } = useCourseContext();
@@ -23,7 +24,7 @@ const TeacherDashboard = () => {
 
     fetchCourses();
   }, []);
-  // console.log('hello')
+  console.log('all: courses are: ', allCourses)
   const compulsoryCourses = allCourses?.filter(course => course.compulsory);
   const regularCourses = allCourses?.filter(course => !course.compulsory);
 
@@ -125,7 +126,9 @@ const TeacherDashboard = () => {
             <Grid container spacing={3} justifyContent="flex-start">
               {compulsoryCourses?.map((course, index) => (
                 <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                    {/* <CourseCardHoverWrapper course={course}> */}
                   <CourseCard course={course} />
+                  {/* </CourseCardHoverWrapper> */}
                 </Grid>
               ))}
             </Grid>
@@ -184,7 +187,11 @@ const TeacherDashboard = () => {
             <Grid container spacing={3} justifyContent="flex-start">
               {regularCourses?.map((course, index) => (
                 <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                  {/* <CourseCardHoverWrapper course={course}> */}
+
                   <CourseCard course={course} />
+                  {/* </CourseCardHoverWrapper> */}
+                  
                 </Grid>
               ))}
             </Grid>
