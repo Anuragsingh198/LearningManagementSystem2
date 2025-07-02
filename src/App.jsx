@@ -24,14 +24,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import HomePage from './pages/common/HomePage';
 
 function App() {
-  // const {
-  //   state: { user, loading },
-  //   dispatch, error
-  // } = useAuth();
-
-  // if (loading) {
-  //   return <MuiLoading />;
-  // }
 
   return (
     <>
@@ -39,7 +31,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<RegisterPage />} />
         <Route path="/reset-password" element={<ForgotPasswordPage />} />
-        <Route 
+        {/* <Route 
           path="/"
           element={
             <Layout>
@@ -50,7 +42,7 @@ function App() {
             </Layout>
 
           }
-        />
+        /> */}
         
 
 

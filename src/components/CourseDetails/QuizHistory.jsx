@@ -17,12 +17,17 @@ function QuizHistory({ questions, moduleId, currentTest }) {
 
     const totalQuestions = questions?.length || 2; // Avoid division by 0
 
-    useEffect(() => {
-        const fetchdata = async () => {
-            await getCourseProgress(courseId, user._id, dispatch);
-        };
-        if (user?._id && courseId) fetchdata();
-    }, [user?._id, courseId]);
+    // useEffect(() => {
+    //     const fetchdata = async () => {
+    //         await getCourseProgress(courseId, user._id, dispatch);
+    //     };
+    //     if (user?._id && courseId) fetchdata();
+    // }, [user?._id, courseId]);
+
+    // console.log('questions are', questions)
+    // console.log('moduleId is', moduleId)
+    // console.log('currentTest is', currentTest)
+
 
     const currentTestStatus = useMemo(() => {
         if (!courseProgress?.moduleProgress) return null;
@@ -81,7 +86,7 @@ function QuizHistory({ questions, moduleId, currentTest }) {
                         <Grid item xs={12} sm={8}>
                             <Typography color={currentTestStatus.isCompleted ? "green" : "red"}>
                                 {currentTestStatus.isCompleted
-                                    ? "Assessment Passed"
+                                    ? "Passed"
                                     : currentTestStatus.retakeCount === 0
                                         ? "-"
                                         : "Failed"}

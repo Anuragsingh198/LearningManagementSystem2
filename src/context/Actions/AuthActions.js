@@ -23,7 +23,7 @@ export const userLogin = async (user, dispatch) => {
     if (data.success) {
       // dispatch({ type: 'LOGIN', payload: { user: data.user } });
       dispatch({ type: 'LOGIN', payload: data.user });
-      console.log('this is  the   Login  action  user ' , data.user)
+      // console.log('this is  the   Login  action  user ' , data.user)
       localStorage.setItem('user', JSON.stringify(data.user));
     } else {
       throw new Error(data.message || 'Login failed');
@@ -33,14 +33,14 @@ export const userLogin = async (user, dispatch) => {
     dispatch({type:'SET_ERROR' , payload:error.message})
     throw error;
   }finally{
-    console.log("userLogin  finaly  executed!!")
+    // console.log("userLogin  finaly  executed!!")
     dispatch({type:'SET_LOADING' , payload: false})
   }
 };
 
 export const userLogout = async (dispatch) => {
   try {
-    console.log('logout in action: ', serverurl);
+    // console.log('logout in action: ', serverurl);
     await axios.post(`${serverurl}/api/users/logout`);
     dispatch({ type: 'LOGOUT' });
     localStorage.removeItem('user');
@@ -53,7 +53,7 @@ export const userLogout = async (dispatch) => {
 
 
 export const userRegister = async (user, dispatch) => {
-  console.log('Registering user:', user);
+  // console.log('Registering user:', user);
   try {
     dispatch({type:'SET_LOADING' , payload:true})
     const response = await axios.post(`${serverurl}/api/users/register`, user);
@@ -75,7 +75,7 @@ export const userRegister = async (user, dispatch) => {
 
 
 export const enrolledStudentsAction = async (courseId, dispatch) => {
-  console.log("the course id from enrolledStudentsAction :  ", courseId);
+  // console.log("the course id from enrolledStudentsAction :  ", courseId);
   const token = getAuthToken();
   
   try {
@@ -93,6 +93,7 @@ export const enrolledStudentsAction = async (courseId, dispatch) => {
     }
   } catch (error) {
     console.error('Enrolled employees fetch error:', error);
+    return []
   } finally {
     dispatch({ type: 'SET_LOADING', payload: false });
   }

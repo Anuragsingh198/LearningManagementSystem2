@@ -13,6 +13,8 @@ import {
   YouTube,
   LinkedIn,
 } from '@mui/icons-material';
+import { useCourseContext } from '../../context/contextFiles/CourseContext';
+import { getCoursesAction, getMyCoursesAction } from '../../context/Actions/courseActions';
 
 const drawerWidth = 240;
 
@@ -20,8 +22,23 @@ export default function Layout({ children }) {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
-  const { state: { isAuthenticated }, dispatch } = useAuth();
+  const { state: { isAuthenticated } } = useAuth();
+  const { state: { courses, loading, error, myCourses }, dispatch } = useCourseContext();
+  
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        console.log('in use effect of mainlayout.jsx')
+        await getCoursesAction(dispatch);
+        await getMyCoursesAction(dispatch);
 
+      } catch (error) {
+        console.error('Failed to fetch courses:', error);
+      }
+    };
+
+    fetchCourses();
+  }, []);
   // useEffect(() => {
   //   console.log("this is the use effect from mainLayout:");
   //   if (!isAuthenticated) {

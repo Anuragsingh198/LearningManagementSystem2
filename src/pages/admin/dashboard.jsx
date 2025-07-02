@@ -4,28 +4,29 @@ import { CourseCard } from '../../components/CourseCard';
 import bgImg from '../../assets/bg-img.jpg';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { getCoursesAction, getMyCoursesAction } from '../../context/Actions/courseActions';
+import CourseCardHoverWrapper from '../common/CourseCardHoverWrapper';
 
 const TeacherDashboard = () => {
-  const { state: { courses, loading, error, myCourses }, dispatch } = useCourseContext();
+  const { state: { courses, loading }, dispatch } = useCourseContext();
   const [allCourses, setAllCourses] = useState([])
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const data = await getCoursesAction(dispatch);
-        await getMyCoursesAction(dispatch);
-        if (data.length !== 0) {
-          setAllCourses(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch courses:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCourses = async () => {
+  //     try {
+  //       const data = await getCoursesAction(dispatch);
+  //       await getMyCoursesAction(dispatch);
+  //       if (data.length !== 0) {
+  //         setAllCourses(data);
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to fetch courses:', error);
+  //     }
+  //   };
 
-    fetchCourses();
-  }, []);
-  // console.log('hello')
-  const compulsoryCourses = allCourses?.filter(course => course.compulsory);
-  const regularCourses = allCourses?.filter(course => !course.compulsory);
+  //   fetchCourses();
+  // }, []);
+  console.log('all: courses are: ', courses)
+  const compulsoryCourses = courses?.filter(course => course.compulsory);
+  const regularCourses = courses?.filter(course => !course.compulsory);
 
   return (
     <Box sx={{ padding: '0px', width: '100%' }} className="dashboard-scroll">
@@ -33,22 +34,26 @@ const TeacherDashboard = () => {
         Welcome to DigiVidya
       </Typography>
 
-      <Box sx={{
-        position: 'relative',
-        width: '100%',
-        height: '450px',
-        borderRadius: 2,
-        overflow: 'hidden',
-        marginTop: '8px',
-        boxShadow: 3,
-        mb: 4
-      }}>
+      <Box
+        sx={{
+          position: 'relative',
+          width: '99%', // instead of %
+          height: '58vh', // instead of px
+          borderRadius: 2,
+          overflow: 'hidden',
+          marginTop: '8px',
+          boxShadow: 3,
+          mr: 2,
+          mb: 4
+        }}
+      >
         <Box
-  component="img"
-  src={bgImg}
-  alt="Description"
-  sx={{ width: '100%', height: '100%', borderRadius: 2 }}
+          component="img"
+          src={bgImg}
+          alt="Description"
+          sx={{ width: '100%', height: '100%', borderRadius: 2 }}
         />
+
         <Box sx={{
           position: 'absolute',
           bottom: 0,
@@ -56,7 +61,7 @@ const TeacherDashboard = () => {
           right: 0,
           bgcolor: 'rgba(0,0,0,0.5)',
           color: 'white',
-          p: 3,
+          p: 2,
           backdropFilter: 'blur(4px)'
         }}>
           <Typography variant="h5" sx={{ fontWeight: 'bold', fontFamily: 'Michroma, sans-serif' }}>
@@ -121,7 +126,9 @@ const TeacherDashboard = () => {
             <Grid container spacing={3} justifyContent="flex-start">
               {compulsoryCourses?.map((course, index) => (
                 <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                  {/* <CourseCardHoverWrapper course={course}> */}
                   <CourseCard course={course} />
+                  {/* </CourseCardHoverWrapper> */}
                 </Grid>
               ))}
             </Grid>
@@ -180,7 +187,11 @@ const TeacherDashboard = () => {
             <Grid container spacing={3} justifyContent="flex-start">
               {regularCourses?.map((course, index) => (
                 <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                  {/* <CourseCardHoverWrapper course={course}> */}
+
                   <CourseCard course={course} />
+                  {/* </CourseCardHoverWrapper> */}
+
                 </Grid>
               ))}
             </Grid>

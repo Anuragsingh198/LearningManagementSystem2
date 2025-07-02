@@ -17,6 +17,8 @@ import { useAuth } from "../../context/contextFiles/AuthContext";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { userLogin } from "../../context/Actions/AuthActions";
 import { toast } from "react-toastify";
+import landingImg from '../../assets/landing.jpg'
+
 
 const GradientBackground = styled(Box)({
   background: 'linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%)',
@@ -47,7 +49,8 @@ const LeftSection = styled(Box)(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
     display: 'flex',
     width: '60%',
-    backgroundImage: 'url(https://images.unsplash.com/photo-1465433045946-ba6506ce5a59?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzR8fHN0dWR5fGVufDB8fDB8fHww)',
+            backgroundImage: `url(${landingImg})`,
+
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     alignItems: 'center',
@@ -114,7 +117,7 @@ const LoginPage = () => {
       toast.success("user Logged in successfully ")
       
     } catch (error) {
-      toast.error("Login failed: " + error.message)
+      toast.error("Please enter correct Email and Password")
     }
   };
 

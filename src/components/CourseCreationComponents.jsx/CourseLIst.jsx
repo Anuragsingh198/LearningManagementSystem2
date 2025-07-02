@@ -21,18 +21,20 @@ const CourseList = () => {
   const { state: { user } } = useAuth();
   const role = user?.role;
 
+  // console.log('the courses are in the parent component: ', myCourses)
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        await getMyCoursesAction(dispatch);
-      } catch (error) {
-        console.error('Failed to fetch courses:', error);
-      }
-    };
 
-    fetchCourses();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const fetchCourses = async () => {
+  //     try {
+  //       await getMyCoursesAction(dispatch);
+  //     } catch (error) {
+  //       console.error('Failed to fetch courses:', error);
+  //     }
+  //   };
+
+  //   fetchCourses();
+  // }, [dispatch]);
 
   if (loading && myCourses?.length === 0) {
     return (
@@ -65,6 +67,14 @@ const CourseList = () => {
     );
   }
 
+  const filteredCoursesPending = myCourses?.filter(
+  (course) => course.progressStatus === 'pending' || course.progressStatus === 'enrolled'
+    );
+
+    const filteredCoursesCompleted = myCourses?.filter(
+      (course) => course.progressStatus === 'completed' 
+    )
+
   return (
     <Container
       maxWidth="100%"
@@ -84,13 +94,14 @@ const CourseList = () => {
   justifyContent: 'space-between', 
   alignItems: 'center',
   mb: 3,
-  mx: 6
+  mx: 5
 }}>
   <Box>
     <Typography variant="h5" fontWeight="bold" sx={{ color: 'black' }}>
-      Your Courses
+      {role === 'instructor' ? 'My Uploaded Courses' :'Enrolled Courses'}
     </Typography>
     <Typography variant="body2" color="text.secondary">
+      
       {!myCourses || myCourses.length === 0
         ? role === 'employee'
           ? "Please enroll in available courses"
@@ -175,17 +186,119 @@ const CourseList = () => {
 </Paper>
 
         ) : (
-          <Box sx={{ mt: 3, px: 5, width: '100%' , }}>
-            <Grid container spacing={3} justifyContent="flex-start" >
-              {myCourses?.map((course) => (
-                <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
+        <Box sx={{ mt: 3, px: 5, width: '100%' }}>
+  {role === 'instructor' ? (
+    <Grid container spacing={3}>
+      {myCourses?.map((course) => (
+        <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
+          <CourseCard course={course} />
+        </Grid>
+      ))}
+    </Grid>
+  ) : (
+    <>
+      {/* Pending Courses */}
+      <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: 'gray' }}>
+        Ongoing Courses
+      </Typography>
+         <Box
+        sx={{
+          height: '1px',
+          width: '95%',
+          backgroundColor: 'grey.300',
+          mb: 4,
+        }}
+      />
+    {filteredCoursesPending && filteredCoursesPending.length > 0 ? (
+  <Grid container spacing={3} sx={{ mb: 4 }}>
+    {filteredCoursesPending.map((course) => (
+      <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
+        <CourseCard course={course} />
+      </Grid>
+    ))}
+  </Grid>
+) : (
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 }}>
+    <Paper
+      elevation={3}
+      sx={{
+        padding: 4,
+                mr: 10,
+        width: '80%',
+        textAlign: 'center',
+        backgroundColor: '#f9f9f9',
+        borderRadius: 3,
+        border: '1px solid #e0e0e0',
+      }}
+    >
+      <Typography variant="h6" sx={{ color: '#424242', fontWeight: 500 }}>
+        No Ongoing Courses Available
+      </Typography>
+      <Typography sx={{ mt: 1, color: '#757575', fontStyle: 'italic' }}>
+        Please Enroll in courses under dashboard to start learning.
+      </Typography>
+    </Paper>
+  </Box>
+)}
 
-                  <CourseCard course={course} />
-
-                </Grid>
-              ))}
+      {/* Completed Courses */}
+      <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: 'green' }}>
+        Completed Courses
+      </Typography>
+         <Box
+        sx={{
+          height: '1px',
+          width: '95%',
+          backgroundColor: 'grey.300',
+          mb: 4,
+        }}
+      />
+      {/* <Grid container spacing={3}>
+        {myCourses
+          ?.filter((course) => course.progressStatus === 'completed')
+          .map((course) => (
+            <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
+              <CourseCard course={course} />
             </Grid>
-          </Box>
+          ))}
+      </Grid> */}
+      {
+        filteredCoursesCompleted && filteredCoursesCompleted.length > 0 ? (
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            {filteredCoursesCompleted.map((course) => (
+              <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
+               <CourseCard course={course}/>
+                </Grid>
+            ))}
+          </Grid>
+        ) : (
+           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 }}>
+    <Paper
+      elevation={3}
+      sx={{
+        padding: 4,
+        mr: 10,
+        width: '80%',
+        textAlign: 'center',
+        backgroundColor: '#f9f9f9',
+        borderRadius: 3,
+        border: '1px solid #e0e0e0',
+      }}
+    >
+      <Typography variant="h6" sx={{ color: '#424242', fontWeight: 500 }}>
+        No Courses Completed
+      </Typography>
+      <Typography sx={{ mt: 1, color: '#757575', fontStyle: 'italic' }}>
+        Please complete ongoing courses!
+      </Typography>
+    </Paper>
+  </Box>
+        )
+      }
+    </>
+  )}
+</Box>
+
         )}
       </Box>
     </Container>

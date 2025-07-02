@@ -24,7 +24,7 @@ import { useCourseContext } from '../context/contextFiles/CourseContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-export const CourseCard = ({ course }) => {
+export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) => {
   const theme = useTheme();
   const { state: { user } } = useAuth();
   const role = user?.role;
@@ -65,7 +65,7 @@ export const CourseCard = ({ course }) => {
         }
       );
       await getMyCoursesAction(dispatch);
-      if(response.data.success){
+      if (response.data.success) {
         setEnrolled(true);
         navigate(`/course/details/${course._id}`);
         handleCloseModal();
@@ -82,7 +82,7 @@ export const CourseCard = ({ course }) => {
   };
 
   const handleNavigateToLogin = () => {
-        navigate(`/login`);
+    navigate(`/login`);
 
   }
 
@@ -99,7 +99,7 @@ export const CourseCard = ({ course }) => {
         borderRadius: 3,
         overflow: 'hidden',
         width: 320,
-        height: role === 'instructor' ? 360 : 420,
+        height: role === 'instructor' ? 340 : 380,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -150,9 +150,29 @@ export const CourseCard = ({ course }) => {
       </Box>
 
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Typography variant="body2" color="text.secondary">
+        <Box sx={{display: 'flex', justifyContent: 'space-between',}}>
+       <Typography variant="body2" color="text.secondary" sx={{mt: 0.3}}>
           {course.instructorName || (course.instructor?.name ?? 'Instructor')}
         </Typography>
+         <Chip
+  label={`Duration: ${course.courseDuration } days`}
+  size="small"
+  sx={{
+    // ml: 2,
+    backgroundColor: 'rgba(52, 152, 219, 0.1)', // light blue background
+    border: '1px solid #3498db', // blue border
+    color: '#3498db', // blue text
+    fontWeight: 600,
+    borderRadius: '20px',
+    maxWidth: 200,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }}
+/>
+
+        </Box>
+ 
 
         <Typography
           variant="h6"
@@ -171,22 +191,37 @@ export const CourseCard = ({ course }) => {
         <Box
           sx={{
             flexGrow: 1,
-            overflowY: 'auto',
-            height: 80,
+            overflow: 'hidden',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'normal',
             pr: 1,
-            '&::-webkit-scrollbar': {
-              display: 'none'
-            }
+            height: 'auto', // ← FIXED: remove the fixed 10px height!
+            minHeight: '40px', // ← Optional: ensures enough space for 2 lines
           }}
         >
-          <Typography variant="body2" color="text.secondary">
-            {course.description}
+          <Typography
+            variant="body2"
+            color="black"
+            sx={{
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {course.description || 'No description available'}
           </Typography>
         </Box>
 
+
+
         {Array.isArray(course.students) && (
           <Typography variant="caption" color="text.secondary">
-            👩‍🎓 {course.students.length.toLocaleString()} students
+            💻 {course.students.length.toLocaleString()} Employees enrolled
           </Typography>
         )}
 
@@ -201,10 +236,12 @@ export const CourseCard = ({ course }) => {
                 backgroundColor: enrolled ? 'darkgreen' : undefined
               }
             }}
+              onMouseEnter={onHoverDisablePopup}
+  onMouseLeave={onHoverEnablePopup}
             onClick={handleOpenModal}
             disabled={loading || enrolled}
           >
-            { user ? (loading ? (
+            {user ? (loading ? (
               <CircularProgress size={24} sx={{ color: 'white' }} />
             ) : enrolled ? (
               'Enrolled'
@@ -274,7 +311,7 @@ export const CourseCard = ({ course }) => {
           <Button onClick={handleCloseModal} variant="outlined">
             Cancel
           </Button>
-       {  user ?   <Button
+          {user ? <Button
             onClick={handleEnroll}
             variant="contained"
             disabled={loading || enrolled}
@@ -286,13 +323,13 @@ export const CourseCard = ({ course }) => {
             ) : (
               '🚀 Enroll'
             )}
-          </Button> : 
-          <Button
-            variant="contained"
-            onClick={handleNavigateToLogin}
-          >
+          </Button> :
+            <Button
+              variant="contained"
+              onClick={handleNavigateToLogin}
+            >
               Login to Enroll
-          </Button>
+            </Button>
           }
         </DialogActions>
       </Dialog>

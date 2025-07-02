@@ -193,7 +193,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
               />
             ) : (
               <NoContentPage
-                title="Quizzes"
+                title="Assessment"
                 description="No quizzes available for this module"
               />
             )
