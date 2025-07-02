@@ -23,7 +23,7 @@ const CourseCard = ({ course }) => {
   const { state: { user } } = useAuth();
   const role = user?.role;
   const navigate = useNavigate();
-
+  console.log("coures id from coure card : ", course._id)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState(null);
 
@@ -67,11 +67,11 @@ const CourseCard = ({ course }) => {
   }
 
 
-  const formattedDate = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  }).format(new Date(course.createdAt));
+  // const formattedDate = new Intl.DateTimeFormat('en-US', {
+  //   year: 'numeric',
+  //   month: 'short',
+  //   day: 'numeric',
+  // }).format(new Date(course.createdAt));
 
   return (
     <Card sx={{
@@ -233,7 +233,7 @@ const CourseCard = ({ course }) => {
           {course.duration && (
             <Box>
               <Clock size={14} style={{ marginRight: 4 }} />
-              <span>{course.duration}</span>
+              <span>{course.courseDuration}</span>
             </Box>
           )}
         </Box>
@@ -284,7 +284,7 @@ const CourseCard = ({ course }) => {
         <Button
           fullWidth
           variant="contained"
-          onClick={handleViewClick} // Replace with your view handler
+          onClick={()=> navigate(`/course/details/${course._id}`)} 
           startIcon={<Book size={16} />}
           sx={{
             background: 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)', // Teal to emerald
@@ -308,7 +308,7 @@ const CourseCard = ({ course }) => {
         {role != 'instructor' ? '' : <Button
           fullWidth
           variant="contained"
-          onClick={handleViewEmployeesClick} // Replace with your view handler
+          onClick={handleViewEmployeesClick} 
           startIcon={<Users size={16} />}
           sx={{
             background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',

@@ -19,7 +19,6 @@ import { getCourseProgress, SubmitTest } from "../../context/Actions/courseActio
 import { Loader } from "lucide-react";
 import { useParams } from "react-router-dom";
 
-// add progress in  inital state and add the the  test also;
 export const QuizContent = ({
   questions,
   currentQuestion,

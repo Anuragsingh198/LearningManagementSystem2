@@ -8,7 +8,8 @@ import {
     IconButton,
     LinearProgress,
     Grid,
-    Chip
+    Chip,
+    CircularProgress
 } from '@mui/material';
 import {
     PlayCircle as PlayCircleIcon,
@@ -31,8 +32,10 @@ import {
     CheckCircle as CheckCircleIcon,
     Download as DownloadIcon,
     Article as FileTextIcon,
-    MenuBook as BookOpenIcon
+    MenuBook as BookOpenIcon,
+    DuoTwoTone
 } from '@mui/icons-material';
+import ReactPlayer from 'react-player';
 import { useEffect, useRef, useState } from 'react';
 import { getCourseProgress, updateVideoCompletion } from '../../context/Actions/courseActions';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
@@ -51,167 +54,112 @@ export const VideoContent = ({
     courseId,
     moduleId
 }) => {
+    const playerRef = useRef(null);
+    
+    // Get current video data first
+    const currentVideoData = Array.isArray(videos) && videos.length > currentVideo && currentVideo >= 0
+        ? videos[currentVideo]
+        : null;
 
-    const videoRef = useRef(null);
+    // Then use it in state initialization
     const [progress, setProgress] = useState(0);
-    const [duration, setDuration] = useState(0);
+    const [duration, setDuration] = useState(currentVideoData?.duration || 0);
     const [readableDuration, setReadableDuration] = useState('');
     const [currentTime, setCurrentTime] = useState(0);
     const [isMuted, setIsMuted] = useState(false);
     const [volume, setVolume] = useState(1);
     const [showControls, setShowControls] = useState(false);
     const [hasMarkedComplete, setHasMarkedComplete] = useState(false);
-    const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
+    const [isBuffering, setIsBuffering] = useState(false);
+    const [isVideoReady, setIsVideoReady] = useState(false);
+    
+    const { state: { loading, courseProgress }, dispatch } = useCourseContext();
     const { state: { user } } = useAuth();
     const userId = user._id;
-    const [isVideoReady, setIsVideoReady] = useState(false);
-    // const currentVideoData = videos[currentVideo];
-    const currentVideoData = Array.isArray(videos) && videos.length > currentVideo && currentVideo >= 0
-        ? videos[currentVideo]
-        : null;
+
+    // Buffer and loading state handling
+    useEffect(() => {
+        return () => {
+            // Cleanup if needed
+        };
+    }, [isPlaying]);
 
     useEffect(() => {
-        // console.log('the current time is: ', currentTime)
-        // console.log('the duration of the video is: ', duration)
-
-        if (videoRef.current && isPlaying) {
-            videoRef.current.play().catch(error => {
-                console.error("Auto-play was prevented:", error);
-                setIsPlaying(false);
-            });
-        }
-    }, [currentTime, currentVideo, isPlaying]);
-
-    useEffect(() => {
-        setHasMarkedComplete(false); // this function is there to reset has marked completed when video changes so we can make api call for completed video
+        setHasMarkedComplete(false);
     }, [currentVideo]);
 
-
-
-
-
-    // console.log('latest course progress is from video content: ', courseProgress)
     useEffect(() => {
         const formatDuration = (rawSeconds) => {
-            const totalSeconds = Math.floor(rawSeconds); // remove decimals
-
+            const totalSeconds = Math.floor(rawSeconds);
             const hrs = Math.floor(totalSeconds / 3600);
             const mins = Math.floor((totalSeconds % 3600) / 60);
             const secs = totalSeconds % 60;
-
-            // Pad each with 2 digits
-            const paddedHrs = String(hrs).padStart(2, '0');
-            const paddedMins = String(mins).padStart(2, '0');
-            const paddedSecs = String(secs).padStart(2, '0');
-
-            return `${paddedHrs}:${paddedMins}:${paddedSecs}`;
+            return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         };
-
         setReadableDuration(formatDuration(duration));
     }, [duration]);
 
-
-
     useEffect(() => {
         const markVideoAndFetchProgress = async () => {
-            if (progress >= 90 && !hasMarkedComplete) {
+            if (progress >= 90 && !hasMarkedComplete && currentVideoData?._id) {
                 setHasMarkedComplete(true);
-
-                const videoId = currentVideoData._id;
-                //   console.log('api call to backend to make video as completed with current video id: ', videoId);
-
                 try {
-                    await updateVideoCompletion(courseId, videoId, moduleId, dispatch);
+                    await updateVideoCompletion(courseId, currentVideoData._id, moduleId, dispatch);
                     await getCourseProgress(courseId, userId, dispatch);
-
-                    // console.log('latest course progress is from video content: ', courseProgress);
                 } catch (error) {
-                    console.error('Error updating video completion or fetching progress:', error);
+                    console.error('Error updating video completion:', error);
                 }
             }
         };
-
         markVideoAndFetchProgress();
     }, [progress]);
 
-
-
-
-
     const togglePlayPause = () => {
+        setIsPlaying(!isPlaying);
+    };
 
-        if (videoRef.current) {
-            console.log('play pause toggeled')
-            if (videoRef.current.paused) {
-                videoRef.current.play().then(() => setIsPlaying(true));
-            } else {
-                videoRef.current.pause();
-                setIsPlaying(false);
-            }
+    const handleProgress = (state) => {
+        setProgress(state.played * 100);
+        setCurrentTime(state.playedSeconds);
+        // Mark as ready when we have enough buffer
+        if (state.loadedSeconds - state.playedSeconds > 2) {
+            setIsVideoReady(true);
+            setIsBuffering(false);
         }
     };
 
-    // const handleTimeUpdate = () => {
-    //     if (videoRef.current && !isNaN(videoRef.current.duration)) {
-    //         const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-    //         setProgress(currentProgress);
-    //         // console.log('the current duration is: ', currentProgress)
-    //         setCurrentTime(videoRef.current.currentTime);
-    //     }
-    // };
-
-    const handleTimeUpdate = () => {
-    // console.log('Time update triggered');
-    if (videoRef.current) {
-        // console.log('Current time:', videoRef.current.currentTime);
-        // console.log('Duration:', videoRef.current.duration);
-        if (!isNaN(videoRef.current.duration)) {
-            const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-            setProgress(currentProgress);
-            setCurrentTime(videoRef.current.currentTime);
-        }
-    }
-};
-
-    const handleLoadedMetadata = () => {
-        if (videoRef.current) {
-            setDuration(videoRef.current.duration);
-        }
+    const handleDuration = (duration) => {
+        setDuration(duration);
     };
 
     const handleSeek = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        if (videoRef.current && videoRef.current.readyState > 0) {
-            const seekTime = (e.nativeEvent.offsetX / e.currentTarget.offsetWidth) * videoRef.current.duration;
-            videoRef.current.currentTime = seekTime;
+        e.preventDefault();
+        e.stopPropagation();
+        if (playerRef.current) {
+            const seekFraction = e.nativeEvent.offsetX / e.currentTarget.offsetWidth;
+            playerRef.current.seekTo(seekFraction);
+            const seekTime = seekFraction * duration;
+            setCurrentTime(seekTime);
+            setProgress(seekFraction * 100);
         }
-        const currentProgress = (seekTime / videoRef.current.duration) * 100;
-        setProgress(currentProgress);
-        setCurrentTime(seekTime);
     };
+
     const seekTo = (time) => {
-    if (videoRef.current && !isNaN(videoRef.current.duration)) {
-        videoRef.current.currentTime = time;
-        const currentProgress = (time / videoRef.current.duration) * 100;
-        setProgress(currentProgress);
-        setCurrentTime(time);
-    }
-};
+        if (playerRef.current) {
+            playerRef.current.seekTo(time);
+            setCurrentTime(time);
+            setProgress((time / duration) * 100);
+        }
+    };
 
     const toggleMute = () => {
-        if (videoRef.current) {
-            videoRef.current.muted = !videoRef.current.muted;
-            setIsMuted(videoRef.current.muted);
-        }
+        setIsMuted(!isMuted);
     };
+
     const handleVolumeChange = (e) => {
         const newVolume = parseFloat(e.target.value);
-        if (videoRef.current) {
-            videoRef.current.volume = newVolume;
-            setVolume(newVolume);
-            setIsMuted(newVolume === 0);
-        }
+        setVolume(newVolume);
+        setIsMuted(newVolume === 0);
     };
 
     const formatTime = (timeInSeconds) => {
@@ -222,8 +170,9 @@ export const VideoContent = ({
 
     const toggleFullscreen = () => {
         if (!isVideoFullscreen) {
-            if (videoRef.current?.requestFullscreen) {
-                videoRef.current.requestFullscreen();
+            const playerWrapper = document.querySelector('.player-wrapper');
+            if (playerWrapper?.requestFullscreen) {
+                playerWrapper.requestFullscreen();
             }
         } else {
             if (document.exitFullscreen) {
@@ -233,50 +182,23 @@ export const VideoContent = ({
         setIsVideoFullscreen(!isVideoFullscreen);
     };
 
-        useEffect(() => {
-    const handleError = () => {
-        console.error('Video error:', videoRef.current?.error);
-        setIsVideoReady(false);
-    };
-
-    if (videoRef.current) {
-        videoRef.current.addEventListener('error', handleError);
-        return () => videoRef.current?.removeEventListener('error', handleError);
-    }
-}, []);
-
-        useEffect(() => {
-
+    // Keyboard shortcuts
+    useEffect(() => {
         const handleKeyDown = (event) => {
-            if (!videoRef.current || !isVideoReady) return;
+            if (!playerRef.current || !isVideoReady) return;
 
             switch (event.code) {
                 case 'Space':
                     event.preventDefault();
-                    console.log("Key pressed:", event.code);
                     togglePlayPause();
                     break;
                 case 'ArrowRight':
-                    event.preventDefault(); // Optional: Prevent scroll on some browsers
-                    console.log("Key pressed:", event.code);
-                    videoRef.current.currentTime = Math.min(
-                        videoRef.current.currentTime + 10,
-                        videoRef.current.duration
-                    );
-                    seekTo(videoRef.current.currentTime);
-                    console.log("current pointer in video:", videoRef.current.currentTime);
-
+                    event.preventDefault();
+                    seekTo(Math.min(currentTime + 10, duration));
                     break;
                 case 'ArrowLeft':
-                    event.preventDefault(); // Optional
-                    console.log("Key pressed:", event.code);
-                    videoRef.current.currentTime = Math.max(
-                        videoRef.current.currentTime - 5,
-                        0
-                    );
-                    seekTo(videoRef.current.currentTime);
-                    console.log("current pointer in video", videoRef.current.currentTime);
-
+                    event.preventDefault();
+                    seekTo(Math.max(currentTime - 5, 0));
                     break;
                 default:
                     break;
@@ -284,49 +206,33 @@ export const VideoContent = ({
         };
 
         window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [togglePlayPause]);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [currentTime, duration, isVideoReady]);
 
+    // Fullscreen change handler
     useEffect(() => {
         const handleFullscreenChange = () => {
             setIsVideoFullscreen(!!document.fullscreenElement);
         };
-
         document.addEventListener('fullscreenchange', handleFullscreenChange);
-        return () => {
-            document.removeEventListener('fullscreenchange', handleFullscreenChange);
-        };
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
     }, []);
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
+        <Box sx={{ display: 'flex',
                 flexDirection: 'column',
-                height: '100vh',        // or use a dynamic height if needed
+                height: '100vh',       
                 overflowY: 'auto',
-                // Hide scrollbar for Webkit browsers (Chrome, Safari, etc.)
                 '&::-webkit-scrollbar': {
                     display: 'none',
                 },
-                // Hide scrollbar for Firefox
                 scrollbarWidth: 'none',
-                // Hide scrollbar for IE and Edge
-                msOverflowStyle: 'none',
-            }}
-        >
-
-            <Box sx={{
-                height: '80%',
+                msOverflowStyle: 'none',}}>
+            <Box sx={{  height: '80%',
                 display: 'flex',
                 flexDirection: 'column',
-                p: 1
-            }}>
-
-                <Paper sx={{
-                    backgroundColor: 'black',
+                p: 1}}>
+                <Paper sx={{ backgroundColor: 'black',
                     borderRadius: isVideoFullscreen ? 0 : 3,
                     overflow: 'hidden',
                     transition: 'all 0.3s',
@@ -339,42 +245,62 @@ export const VideoContent = ({
                     transform: isVideoZoomed && !isVideoFullscreen ? 'scale(1.1)' : undefined,
                     height: '100%',
                     display: 'flex',
-                    flexDirection: 'column'
-                }}>
-                    <Box sx={{
+                    flexDirection: 'column'}}>
+                    <Box className="player-wrapper" sx={{
                         aspectRatio: '16/9',
                         background: 'linear-gradient(135deg, #1e293b, #0f172a)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
                         position: 'relative',
                         flexGrow: 1,
-                        '&:hover .controls-overlay': {
-                            opacity: 1
-                        }
+                        '&:hover .controls-overlay': { opacity: 1 }
                     }}>
-                        <video
-                            ref={videoRef}
-                             onCanPlay={() => setIsVideoReady(true)}
-                            src={currentVideoData?.url}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                cursor: 'pointer',
-                                transform: isVideoZoomed && !isVideoFullscreen ? 'scale(1.1)' : 'none',
-                                transition: 'transform 0.3s'
-                            }}
-                            onClick={togglePlayPause}
-                            onTimeUpdate={handleTimeUpdate}
-                            onLoadedMetadata={handleLoadedMetadata}
+                        <ReactPlayer
+                            ref={playerRef}
+                            url={currentVideoData?.url}
+                            width="100%"
+                            height="100%"
+                            playing={isPlaying}
+                            muted={isMuted}
+                            volume={isMuted ? 0 : volume}
+                            controls={false}
+                            onReady={() => setIsVideoReady(true)}
+                            onStart={() => setIsVideoReady(true)}
                             onPlay={() => setIsPlaying(true)}
                             onPause={() => setIsPlaying(false)}
                             onEnded={() => setIsPlaying(false)}
-                            autoPlay={isPlaying}
-                            muted={isMuted}
-                        >
-                            Your browser does not support the video tag.
-                        </video>
+                            onProgress={handleProgress}
+                            onDuration={handleDuration}
+                            onBuffer={() => setIsBuffering(true)}
+                            onBufferEnd={() => setIsBuffering(false)}
+                            onError={(e) => {
+                                console.error('ReactPlayer error:', e);
+                                setIsVideoReady(false);
+                            }}
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                transform: isVideoZoomed && !isVideoFullscreen ? 'scale(1.1)' : 'none',
+                                transition: 'transform 0.3s'
+                            }}
+                        />
+
+                        {isBuffering && (
+                            <Box sx={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                zIndex: 999,
+                                color: 'white',
+                                textAlign: 'center',
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                borderRadius: 2,
+                                padding: 2,
+                            }}>
+                                <CircularProgress color="inherit" />
+                                <Typography mt={2} variant="body2">Buffering...</Typography>
+                            </Box>
+                        )}
 
                         {!isPlaying && (
                             <Box sx={{
@@ -593,62 +519,11 @@ export const VideoContent = ({
 
                         </Box>
 
-                        {/* <Box>
-                            <Typography variant="h6" fontWeight="semibold" mb={1}>Additional Resources</Typography>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={4}>
-                                    <Button fullWidth sx={{
-                                        p: 2,
-                                        border: '1px solid',
-                                        borderColor: 'divider',
-                                        justifyContent: 'flex-start',
-                                        gap: 2,
-                                        '&:hover': { backgroundColor: 'action.hover' }
-                                    }}>
-                                        <DownloadIcon color="primary" />
-                                        <Box textAlign="left">
-                                            <Typography fontWeight="medium">Video Transcript</Typography>
-                                            <Typography variant="body2" color="text.secondary">Download PDF</Typography>
-                                        </Box>
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Button fullWidth sx={{
-                                        p: 2,
-                                        border: '1px solid',
-                                        borderColor: 'divider',
-                                        justifyContent: 'flex-start',
-                                        gap: 2,
-                                        '&:hover': { backgroundColor: 'action.hover' }
-                                    }}>
-                                        <FileTextIcon color="primary" />
-                                        <Box textAlign="left">
-                                            <Typography fontWeight="medium">Presentation Slides</Typography>
-                                            <Typography variant="body2" color="text.secondary">View online</Typography>
-                                        </Box>
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Button fullWidth sx={{
-                                        p: 2,
-                                        border: '1px solid',
-                                        borderColor: 'divider',
-                                        justifyContent: 'flex-start',
-                                        gap: 2,
-                                        '&:hover': { backgroundColor: 'action.hover' }
-                                    }}>
-                                        <BookOpenIcon color="primary" />
-                                        <Box textAlign="left">
-                                            <Typography fontWeight="medium">Reading Materials</Typography>
-                                            <Typography variant="body2" color="text.secondary">External links</Typography>
-                                        </Box>
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Box> */}
+                      
                     </Box>
                 </Paper>
             </Box>
         </Box>
     );
 };
+

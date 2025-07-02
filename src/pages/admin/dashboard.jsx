@@ -29,13 +29,13 @@ const TeacherDashboard = () => {
 
   return (
     <Box sx={{ padding: '0px', width: '100%' }} className="dashboard-scroll">
-      <Typography variant="h4"  gutterBottom sx={{ mb: 0, color: 'black', fontSize: '40px',  fontWeight: 'bold' }}>
+      <Typography variant="h4" gutterBottom sx={{ mb: 0, color: 'black', fontSize: '40px', fontWeight: 'bold' }}>
         Welcome to DigiVidya
       </Typography>
 
       <Box sx={{
         position: 'relative',
-        width: '98%',
+        width: '100%',
         height: '450px',
         borderRadius: 2,
         overflow: 'hidden',
@@ -43,15 +43,11 @@ const TeacherDashboard = () => {
         boxShadow: 3,
         mb: 4
       }}>
-        <img
-          src={bgImg}
-          alt="Dashboard banner"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center'
-          }}
+        <Box
+  component="img"
+  src={bgImg}
+  alt="Description"
+  sx={{ width: '100%', height: '100%', borderRadius: 2 }}
         />
         <Box sx={{
           position: 'absolute',
@@ -66,7 +62,7 @@ const TeacherDashboard = () => {
           <Typography variant="h5" sx={{ fontWeight: 'bold', fontFamily: 'Michroma, sans-serif' }}>
             DigiVidya
           </Typography>
-          <Typography variant="body1" sx={{fontFamily: 'Michroma, sans-serif'}}>
+          <Typography variant="body1" sx={{ fontFamily: 'Michroma, sans-serif' }}>
             Explore all the courses
           </Typography>
         </Box>
@@ -100,7 +96,7 @@ const TeacherDashboard = () => {
               <CircularProgress size={60} />
             </Box>
           ) : compulsoryCourses?.length === 0 ? (
-               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 }}>
               <Paper
                 elevation={3}
                 sx={{
