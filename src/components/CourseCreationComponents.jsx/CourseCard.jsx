@@ -20,6 +20,7 @@ import { useAuth } from '../../context/contextFiles/AuthContext';
 import IconButton from '@mui/material/IconButton';
 import { deleteCourse, getMyCoursesAction } from '../../context/Actions/courseActions';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
+import { toast } from 'react-toastify';
 
 const CourseCard = ({ course }) => {
   const { state: { user } } = useAuth();
@@ -55,11 +56,11 @@ const CourseCard = ({ course }) => {
   const confirmDelete = async () => {
     setisLoading(true);
     try {
-      await deleteCourse(courseToDelete, dispatch)
-      // console.log('course to delete is: ', courseToDelete);
-      await getMyCoursesAction(dispatch)
+      await deleteCourse(courseToDelete, dispatch);
+      await getMyCoursesAction(dispatch);
       setisLoading(false);
       setDeleteDialogOpen(false);
+      toast.success('Course deleted successfully')
     } catch (error) {
       setisLoading(false)
       console.error('Error deleting course:', error);
