@@ -40,7 +40,8 @@ import { useEffect, useRef, useState } from 'react';
 import { getCourseProgress, updateVideoCompletion } from '../../context/Actions/courseActions';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { useAuth } from '../../context/contextFiles/AuthContext';
-
+import axios from 'axios';
+const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 export const VideoContent = ({
     currentVideo,
     isVideoZoomed,
@@ -72,11 +73,11 @@ export const VideoContent = ({
     const [hasMarkedComplete, setHasMarkedComplete] = useState(false);
     const [isBuffering, setIsBuffering] = useState(false);
     const [isVideoReady, setIsVideoReady] = useState(false);
-    
+    const [videoUrl, setVideoUrl] = useState('');
     const { state: { loading, courseProgress }, dispatch } = useCourseContext();
     const { state: { user } } = useAuth();
     const userId = user._id;
-
+    const hoursToExpire = 24; 
     // Buffer and loading state handling
     useEffect(() => {
         return () => {
@@ -84,9 +85,21 @@ export const VideoContent = ({
         };
     }, [isPlaying]);
 
-    useEffect(() => {
-        setHasMarkedComplete(false);
-    }, [currentVideo]);
+
+useEffect(() => {
+    console.log("this is the current video data: ", currentVideoData);
+  const fetchSasUrl = async () => {
+    try {
+      const res = await axios.get(
+        `${serverURL}/api/courses/videos/${currentVideoData?.videoBlobName}/expires?hours=${hoursToExpire}`
+      );
+      setVideoUrl(res.data.sasToken);
+    } catch (error) {
+      console.error('Failed to fetch SAS URL:', error);
+    }
+  };
+  fetchSasUrl();
+}, [currentVideoData]);
 
     useEffect(() => {
         const formatDuration = (rawSeconds) => {
@@ -255,7 +268,7 @@ export const VideoContent = ({
                     }}>
                         <ReactPlayer
                             ref={playerRef}
-                            url={currentVideoData?.url}
+                            url={videoUrl}
                             width="100%"
                             height="100%"
                             playing={isPlaying}
