@@ -78,6 +78,7 @@ export const VideoContent = ({
     const { state: { user } } = useAuth();
     const userId = user._id;
     const hoursToExpire = 24; 
+    const userToken = user.token;
     // Buffer and loading state handling
     useEffect(() => {
         return () => {
@@ -91,7 +92,12 @@ useEffect(() => {
   const fetchSasUrl = async () => {
     try {
       const res = await axios.get(
-        `${serverURL}/api/courses/videos/${currentVideoData?.videoBlobName}/expires?hours=${hoursToExpire}`
+        `${serverURL}/api/courses/videos/${currentVideoData?.videoBlobName}/expires?hours=${hoursToExpire}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          }
+        }
       );
       setVideoUrl(res.data.sasToken);
     } catch (error) {
