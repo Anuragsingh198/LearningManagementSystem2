@@ -22,6 +22,7 @@ import { useAuth } from './context/contextFiles/AuthContext';
 import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import HomePage from './pages/common/HomePage';
+import MainAssessment from './pages/common/MainAssessment';
 
 function App() {
 
@@ -61,6 +62,7 @@ function App() {
                   <Route path="/Profile" element={<ProfilePage />} />
                   <Route path="/course/details/:courseId" element={<OverviewPage />} />
                   <Route path="/course/module/:courseId/:moduleId" element={<ModuleDetails />} />
+                  <Route path="/assessments" element={<MainAssessment/>} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
               </Layout>

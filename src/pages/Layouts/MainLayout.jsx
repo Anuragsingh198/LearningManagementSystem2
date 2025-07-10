@@ -24,7 +24,7 @@ export default function Layout({ children }) {
   const navigate = useNavigate();
   const { state: { isAuthenticated } } = useAuth();
   const { state: { courses, loading, error, myCourses }, dispatch } = useCourseContext();
-  
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -39,18 +39,6 @@ export default function Layout({ children }) {
 
     fetchCourses();
   }, []);
-  // useEffect(() => {
-  //   console.log("this is the use effect from mainLayout:");
-  //   if (!isAuthenticated) {
-  //     console.log('this if condition')
-  //     navigate('/login');
-  //   }
-  //   // else{
-  //   //   navigate('/student/dashboard')
-  //   // }
-  // }, [loading, navigate]);
-
-
 
   return (
     <Box sx={{
@@ -66,7 +54,7 @@ export default function Layout({ children }) {
         width: '100%'
       }}>
         <Header />
-        {isAuthenticated ? <HorizontalNavBar />: ''}
+        {isAuthenticated ? <HorizontalNavBar /> : ''}
       </Box>
 
       <Box sx={{
@@ -96,16 +84,10 @@ export default function Layout({ children }) {
           textAlign: 'center',
         }}
       >
-        {/* <Typography variant="h4" color="#1976D2" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Digividya
-        </Typography> */}
-
-
-
-      <Typography variant="subtitle1" color="#1976D2" sx={{ maxWidth: 700, mx: 'auto' }}>
-  © 2025 DigiVidya | Made with{' '}
-  <Box component="span" sx={{ color: 'red', fontSize: 20 }}>❤</Box> by Gopal, Anurag, and Adi
-</Typography>
+        <Typography variant="subtitle1" color="#1976D2" sx={{ maxWidth: 700, mx: 'auto' }}>
+          © 2025 DigiVidya | Made with{' '}
+          <Box component="span" sx={{ color: 'red', fontSize: 20 }}>❤</Box> by Gopal, Anurag, and Adi
+        </Typography>
 
         <Typography variant="body2" color="#1976D2"  >
           www.ielektron.com
