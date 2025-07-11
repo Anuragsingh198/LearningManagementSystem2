@@ -16,6 +16,7 @@ import {
   BookOpen,
   FolderPlus,
   Video,
+  LaptopMinimalCheck,
   Users,
   Search,
   PlayCircle,
@@ -88,6 +89,7 @@ const HorizontalNavBar = () => {
           <>
             <SidebarLink to="/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/dashboard')} />
             <SidebarLink to="/teacher/my-courses" icon={<BookOpen />} label="My Courses" active={isActive('/teacher/my-courses')} />
+            <SidebarLink to="/assessments" icon={<LaptopMinimalCheck />} label="Assessments" active={isActive('/assessments')} />
             <SidebarLink to="/teacher/create-course" icon={<FolderPlus />} label="Create Course" active={isActive('/teacher/create-course')} />
             <Divider orientation="vertical" flexItem sx={{ borderColor: '#e5e7eb', margin: '8px 4px' }} />
             <SidebarLink to="/teacher/my-courses" icon={<Video />} label="Upload Videos" />
@@ -97,6 +99,7 @@ const HorizontalNavBar = () => {
           <>
             <SidebarLink to="/dashboard" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/dashboard')} />
             <SidebarLink to="/student/my-courses" icon={<BookOpen />} label="My Courses" active={isActive('/student/my-courses')} />
+            <SidebarLink to="/assessments" icon={<LaptopMinimalCheck />} label="Assessments" active={isActive('/assessments')} />
             {/* <SidebarLink to="/student/my-courses" icon={<Assignment />} label="Assignments" active={isActive('/student/my-courses')} /> */}
             <Divider orientation="vertical" flexItem sx={{ borderColor: '#e5e7eb', margin: '8px 4px' }} />
             {/* <SidebarLink to="/student/my-courses" icon={<PlayCircle />} label="Continue Learning" /> */}
