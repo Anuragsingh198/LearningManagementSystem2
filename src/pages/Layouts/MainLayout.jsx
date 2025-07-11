@@ -28,7 +28,7 @@ export default function Layout({ children }) {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        console.log('in use effect of mainlayout.jsx')
+        // console.log('in use effect of mainlayout.jsx')
         await getCoursesAction(dispatch);
         await getMyCoursesAction(dispatch);
 

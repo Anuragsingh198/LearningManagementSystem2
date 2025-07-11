@@ -9,22 +9,7 @@ import CourseCardHoverWrapper from '../common/CourseCardHoverWrapper';
 const TeacherDashboard = () => {
   const { state: { courses, loading }, dispatch } = useCourseContext();
   const [allCourses, setAllCourses] = useState([])
-  // useEffect(() => {
-  //   const fetchCourses = async () => {
-  //     try {
-  //       const data = await getCoursesAction(dispatch);
-  //       await getMyCoursesAction(dispatch);
-  //       if (data.length !== 0) {
-  //         setAllCourses(data);
-  //       }
-  //     } catch (error) {
-  //       console.error('Failed to fetch courses:', error);
-  //     }
-  //   };
 
-  //   fetchCourses();
-  // }, []);
-  console.log('all: courses are: ', courses)
   const compulsoryCourses = courses?.filter(course => course.compulsory);
   const regularCourses = courses?.filter(course => !course.compulsory);
 
@@ -96,7 +81,7 @@ const TeacherDashboard = () => {
             }}
           />
 
-          {loading ? (
+          {!compulsoryCourses ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4, mt: 12 }}>
               <CircularProgress size={60} />
             </Box>
@@ -157,9 +142,9 @@ const TeacherDashboard = () => {
             }}
           />
 
-          {loading ? (
+          {!regularCourses ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-              <CircularProgress />
+              <CircularProgress size={60} />
             </Box>
           ) : regularCourses?.length === 0 ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 }}>

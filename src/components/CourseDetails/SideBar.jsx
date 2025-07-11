@@ -133,7 +133,7 @@ export const Sidebar = ({
                         onClick={() => setCurrentView('video')}
                         sx={{
 
-                            border: '1px solid #ccc', // light gray border
+                            border: '1px solid #ccc', 
                             mb: '4px',
                             borderRadius: '8px',
                             '&.Mui-selected': {
@@ -171,7 +171,7 @@ export const Sidebar = ({
                         onClick={() => setCurrentView('quiz')}
                         sx={{
 
-                            border: '1px solid #ccc', // light gray border
+                            border: '1px solid #ccc', 
                             borderRadius: '8px',
                             '&.Mui-selected': {
                                 bgcolor: 'primary.main',
@@ -194,7 +194,7 @@ export const Sidebar = ({
                                         color: currentView === 'quiz' ? 'primary.contrastText' : 'black',
                                     }}
                                 >
-                                    {`Quizzes (${tests?.length})`}
+                                    {`Assessments (${tests?.length})`}
                                 </Typography>
                             }
                         />

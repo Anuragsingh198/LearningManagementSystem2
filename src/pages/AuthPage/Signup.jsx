@@ -341,7 +341,7 @@ const RegisterPage = () => {
         }
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (formData.email && !formData.email.endsWith("@ielektron.com")) {
@@ -359,7 +359,7 @@ const RegisterPage = () => {
         }
         console.log("Form Data:", formData);
         try {
-            userRegister(formData, dispatch);
+            await userRegister(formData, dispatch);
             toast.success('User registration successful')
         } catch (error) {
             console.error("OTP send error:", error);

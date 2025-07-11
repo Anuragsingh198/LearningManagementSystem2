@@ -40,7 +40,7 @@ export const QuizContent = ({
   const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
   // console.log("loading true  Quiz Content: ,", loading)
   const currentQ = questions && questions[currentQuestion];
-  // console.log("this is the  course  id  from setewg testcontent", courseProgress);
+  console.log("this is the  current question from quiz content", currentQ);
 
   if (!questions || questions.length === 0) {
     return <NoVideosFound />;
@@ -156,7 +156,7 @@ export const QuizContent = ({
         }}
       >
         <Typography variant="h6" fontWeight="semibold" mb={2}>
-          Quiz Statistics
+          Assessment Statistics
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={4}>
@@ -329,7 +329,8 @@ export const QuizContent = ({
                       />
                     )}
                   </Avatar>
-                  <Typography color="text.primary">
+                  <Typography color="text.primary" sx={{textTransform:"none"}}>
+                    {console.log(option.optionText)}
                     {option.optionText}
                   </Typography>
                 </Box>
@@ -368,7 +369,7 @@ export const QuizContent = ({
                   },
                 }}
               >
-                {isLoading ?  'Submitting...' : 'Submit Test'}
+                {isLoading ? 'Submitting...' : 'Submit Test'}
               </Button>
             ) : (
               <Button

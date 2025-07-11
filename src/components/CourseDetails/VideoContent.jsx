@@ -41,6 +41,7 @@ import { getCourseProgress, updateVideoCompletion } from '../../context/Actions/
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 export const VideoContent = ({
     currentVideo,
@@ -53,7 +54,8 @@ export const VideoContent = ({
     setIsPlaying,
     videos,
     courseId,
-    moduleId
+    moduleId,
+    isCompulsory
 }) => {
     const playerRef = useRef(null);
     
@@ -86,7 +88,9 @@ export const VideoContent = ({
         };
     }, [isPlaying]);
 
+    // console.log('so the course is compulory: ', isCompulsory)
 
+    
 useEffect(() => {
     console.log("this is the current video data: ", currentVideoData);
   const fetchSasUrl = async () => {
@@ -106,6 +110,10 @@ useEffect(() => {
   };
   fetchSasUrl();
 }, [currentVideoData]);
+
+    useEffect(() => {
+        setHasMarkedComplete(false); // this function is there to reset has marked completed when video changes so we can make api call for completed video
+    }, [currentVideo]);
 
     useEffect(() => {
         const formatDuration = (rawSeconds) => {
@@ -154,13 +162,17 @@ useEffect(() => {
     const handleSeek = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (playerRef.current) {
+        if(isCompulsory){
+            toast.error('This is a compulsory course, please watch it completely!')
+        }
+        if (playerRef.current && !isCompulsory) {
             const seekFraction = e.nativeEvent.offsetX / e.currentTarget.offsetWidth;
             playerRef.current.seekTo(seekFraction);
             const seekTime = seekFraction * duration;
             setCurrentTime(seekTime);
             setProgress(seekFraction * 100);
         }
+
     };
 
     const seekTo = (time) => {
@@ -213,7 +225,9 @@ useEffect(() => {
                     break;
                 case 'ArrowRight':
                     event.preventDefault();
-                    seekTo(Math.min(currentTime + 10, duration));
+                    if( !isCompulsory){
+                        seekTo(Math.min(currentTime + 10, duration));
+                    }
                     break;
                 case 'ArrowLeft':
                     event.preventDefault();
@@ -545,4 +559,3 @@ useEffect(() => {
         </Box>
     );
 };
-

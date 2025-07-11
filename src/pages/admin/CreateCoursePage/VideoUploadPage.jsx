@@ -72,7 +72,7 @@ const VideoUploadPage = () => {
         <Typography variant="h5" mb={2} color='black'>
           {course ? `Course: ${course.title}` : 'Course not found'}
         </Typography>
-        <Box sx={{ height: '150px', overflowY: 'auto' }}>
+        <Box sx={{ maxHeight: '140px', overflowY: 'auto' }}>
           <Typography mb={2} color='black' sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
             {course ? `Description: ${course.description}` : 'Course not found'}
           </Typography>

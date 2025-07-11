@@ -81,10 +81,14 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
     }
   };
 
+
+
   const handleNavigateToLogin = () => {
     navigate(`/login`);
 
   }
+
+  
 
   // Sync local enrolled state with context
   useEffect(() => {

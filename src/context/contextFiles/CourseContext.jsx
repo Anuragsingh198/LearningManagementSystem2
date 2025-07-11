@@ -6,10 +6,6 @@ const initialState = {
   myCourses: [],
   modules: [],
   videos: [],
-  openedCourses: [{
-    cid: 12423432,
-    moudules: []
-  }],
   courseProgress:null
 };
 

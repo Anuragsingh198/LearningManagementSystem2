@@ -46,7 +46,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
   const [module, setModule] = useState(null);
   const [videos, setVideos] = useState([]);
   const [tests, setTests] = useState([]);
-  const { state, dispatch } = useCourseContext();
+  const { state: {courses} , dispatch } = useCourseContext();
   const [activeTab, setActiveTab] = useState("chapters");
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [currentView, setCurrentView] = useState("video");
@@ -66,6 +66,10 @@ const CourseDetails = ({ courseId, moduleId }) => {
     // This function is passed to QuizContent to handle answer selection
     // The actual state management is now handled within QuizContent
   };
+
+  const particularCourse = courses.find(course => course._id === courseId);
+  const isCompulsory = particularCourse?.compulsory;
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -194,7 +198,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
             ) : (
               <NoContentPage
                 title="Assessment"
-                description="No quizzes available for this module"
+                description="No Assessments available for this module"
               />
             )
           )
@@ -220,6 +224,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
                   videos={videos}
                   courseId={courseId}
                   moduleId={moduleId}
+                  isCompulsory={isCompulsory}
                 />
               </Box>
             ) : (
