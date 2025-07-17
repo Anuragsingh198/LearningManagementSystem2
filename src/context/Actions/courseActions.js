@@ -567,7 +567,7 @@ export const courseProgress = async (courseId, userId, dispatch) => {
   }
 };
 
-export const videoProgress = async (courseId, video,videoId, moduleId, dispatch) => {
+export const videoProgress = async (courseId, video, videoId, moduleId, dispatch) => {
   const token = getAuthToken();
 
   try {
@@ -575,7 +575,7 @@ export const videoProgress = async (courseId, video,videoId, moduleId, dispatch)
 
     const response = await axios.post(
       `${serverurl}/api/users/video-progress`,
-      { courseId, videoData:video , moduleId , videoId},
+      { courseId, videoData: video, moduleId, videoId },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -587,18 +587,29 @@ export const videoProgress = async (courseId, video,videoId, moduleId, dispatch)
 
     if (data.success) {
       dispatch({ type: 'VIDEO_PROGRESS', payload: data.videoProgress });
+      dispatch({
+        type: 'SET_COURSE_PROGRESS_ALL',
+        payload: {
+          courseProgress: data.courseProgress,
+          moduleProgress: data.moduleProgress,
+          testProgress: data.testProgress,
+          videoProgress: data.videoProgressList,
+        },
+      });
+
       return data.videoProgress;
     } else {
       throw new Error(data.message);
     }
   } catch (error) {
     console.error('Error in updating video progress:', error);
-    dispatch({ type: 'COURSE_ERROR' });
+    dispatch({ type: 'COURSE_ERROR', payload: error.message });
     return null;
   } finally {
     dispatch({ type: 'COURSE_LOADING', payload: false });
   }
 };
+
 
 export const testProgress = async (courseId, test, moduleId,testId,  dispatch) => {
   const token = getAuthToken();

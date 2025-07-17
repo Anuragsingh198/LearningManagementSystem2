@@ -47,7 +47,7 @@ useEffect(() => {
   };
 
   if (!oneCourse) {
-    console.log("📡 Refetching because course data is missing...");
+    console.log("Refetching because course data is missing...");
     fetchCourseProgress();
   }
 }, []);

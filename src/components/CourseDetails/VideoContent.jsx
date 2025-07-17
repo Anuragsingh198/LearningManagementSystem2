@@ -91,6 +91,7 @@ export const VideoContent = ({
     // console.log('so the course is compulory: ', isCompulsory)
 
     
+    
 useEffect(() => {
     console.log("this is the current video data: ", currentVideoData);
   const fetchSasUrl = async () => {
@@ -115,6 +116,8 @@ useEffect(() => {
     useEffect(() => {
         setHasMarkedComplete(false); // this function is there to reset has marked completed when video changes so we can make api call for completed video
     }, [currentVideo]);
+
+
 
     useEffect(() => {
         const formatDuration = (rawSeconds) => {
