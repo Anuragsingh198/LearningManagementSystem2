@@ -12,7 +12,7 @@ const initialState = {
   oneModuleProgress: null,
   allModuleProgress: [],
   allCourseProgress:[],
-  allVideoProgess:[], 
+  allVideoProgress:[], 
   currentVideoProgress:null,
   allTestProgress:[],
   currentTestProgress:null,

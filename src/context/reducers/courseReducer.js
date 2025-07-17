@@ -87,14 +87,15 @@ case "SET_MODULE_PROGRESS":
       action.payload,
     ],
   };
-  case 'SET_COURSE_PROGRESS_ALL':
+case 'SET_COURSE_PROGRESS_ALL':
   return {
     ...state,
     oneCourseProgress: action.payload.courseProgress || null,
     allModuleProgress: action.payload.moduleProgress || [],
     allTestProgress: action.payload.testProgress || [],
-    allVideoProgess: action.payload.videoProgress || []
+    allVideoProgress: action.payload.videoProgress || [] 
   };
+
 
   case "TEST_PROGRESS":
   return {
