@@ -37,7 +37,7 @@ import {
 } from '@mui/icons-material';
 import ReactPlayer from 'react-player';
 import { useEffect, useRef, useState } from 'react';
-import { getCourseProgress, updateVideoCompletion } from '../../context/Actions/courseActions';
+import { getCourseProgress, updateVideoCompletion, videoProgress } from '../../context/Actions/courseActions';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import axios from 'axios';
@@ -76,7 +76,7 @@ export const VideoContent = ({
     const [isBuffering, setIsBuffering] = useState(false);
     const [isVideoReady, setIsVideoReady] = useState(false);
     const [videoUrl, setVideoUrl] = useState('');
-    const { state: { loading, courseProgress , allVideoProgress , oneVideoProgress}, dispatch } = useCourseContext();
+    const { state: { loading,   currentVideoProgress,  allVideoProgress ,oneCourseProgress ,oneModuleProgress, allModuleProgress}, dispatch } = useCourseContext();
     const { state: { user } } = useAuth();
     const userId = user._id;
     const hoursToExpire = 24; 
@@ -87,11 +87,46 @@ export const VideoContent = ({
             // Cleanup if needed
         };
     }, [isPlaying]);
+console.log('Course Context Values:', {
+  loading,
+  oneCourseProgress,
+  allVideoProgress,
+  oneModuleProgress,
+  allModuleProgress
+});
 
-    // console.log('so the course is compulory: ', isCompulsory)
+console.log("this is the  corrent  video progress data :" , allModuleProgress)
 
-    
-    
+const handleVideoProgress = async () => {
+  const progressExists = allVideoProgress.find((x) => {
+    return x.videoId === currentVideoData._id;
+  });
+
+  if (!progressExists) {
+    const createdProgress = await videoProgress(
+      oneCourseProgress.courseId,
+      currentVideoData,
+      currentVideoData._id,
+      oneModuleProgress.moduleId,
+      dispatch 
+    );
+    // if (createdProgress) {
+    //   dispatch({ type: 'VIDEO_PROGRESS', payload: createdProgress });
+    // }
+  } else {
+    console.log("progress Exists : " , progressExists)
+    dispatch({ type: 'VIDEO_PROGRESS', payload: progressExists });
+  }
+};
+
+useEffect(() => {
+  if (currentVideoData && oneCourseProgress?.courseId && oneModuleProgress?.moduleId) {
+   console.log("ye wala  run ho raha hai : ")
+    handleVideoProgress();
+  }
+}, [currentVideoData, oneCourseProgress, oneModuleProgress]);
+
+
 useEffect(() => {
     console.log("this is the current video data: ", currentVideoData);
   const fetchSasUrl = async () => {

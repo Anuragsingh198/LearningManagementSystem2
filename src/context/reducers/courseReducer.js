@@ -82,10 +82,6 @@ case "SET_MODULE_PROGRESS":
   return {
     ...state,
     currentVideoProgress: action.payload,
-    allVideoProgress: [
-      ...state.allVideoProgress.filter((v) => v._id !== action.payload._id),
-      action.payload,
-    ],
   };
 case 'SET_COURSE_PROGRESS_ALL':
   return {
@@ -101,10 +97,6 @@ case 'SET_COURSE_PROGRESS_ALL':
   return {
     ...state,
     currentTestProgress: action.payload,
-    allTestProgress: [
-      ...state.allTestProgress.filter((t) => t._id !== action.payload._id),
-      action.payload,
-    ],
   };
     case "COURSE_ERROR":
       return {
