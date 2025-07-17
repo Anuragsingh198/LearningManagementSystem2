@@ -45,20 +45,20 @@ export const QuizContent = ({
   if (!questions || questions.length === 0) {
     return <NoVideosFound />;
   }
-  const handleCourseProgress = async (courseId, userId) => {
-    return await getCourseProgress(courseId, userId, dispatch);
-  }
+  // const handleCourseProgress = async (courseId, userId) => {
+  //   return await getCourseProgress(courseId, userId, dispatch);
+  // }
 
-  useEffect(() => {
-    const fetchdata = async () => {
-      const courseProg = await handleCourseProgress(courseId, user._id);
-      // console.log("this is the data from quiz content:", courseProg);
-    };
-    if (user?._id && courseId) fetchdata();
-    setUserId(user._id);
-    //   setProgressId(courseProgress._id);
+  // useEffect(() => {
+  //   const fetchdata = async () => {
+  //     const courseProg = await handleCourseProgress(courseId, user._id);
+  //     // console.log("this is the data from quiz content:", courseProg);
+  //   };
+  //   if (user?._id && courseId) fetchdata();
+  //   setUserId(user._id);
+  //   //   setProgressId(courseProgress._id);
 
-  }, [user?._id, courseId]);
+  // }, [user?._id, courseId]);
 
   // console.log("quiz contetn course Content data is  : ", courseProgress)
   const handleSubmit = async () => {
@@ -68,7 +68,6 @@ export const QuizContent = ({
         correctAnswers++;
       }
     });
-
     setScore(correctAnswers);
 
     try {

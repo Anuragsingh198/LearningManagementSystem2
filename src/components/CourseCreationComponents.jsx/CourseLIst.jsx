@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { PlusCircle } from 'lucide-react';
 import CourseCard from './CourseCard';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
-
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -13,12 +13,41 @@ import {
   Container
 } from '@mui/material';
 import { useAuth } from '../../context/contextFiles/AuthContext';
+import { getCourseWithProgress } from '../../context/Actions/courseActions';
 
 const CourseList = () => {
-  const { state: { courses, loading, error, myCourses }, dispatch } = useCourseContext();
+  const { state: { courses, loading, error, myCourses , oneCourse}, dispatch } = useCourseContext();
+const navigate = useNavigate();
+
   const { state: { user } } = useAuth();
   const role = user?.role;
+const handleViewCourse = async (course) => {
+  if(!oneCourse) {
+    try {
+      dispatch({ type: 'COURSE_LOADING' });
+      await getCourseWithProgress(course._id, user._id, dispatch);
+    } catch (error) {
+      console.error('Failed to fetch course progress:', error);
+      return; 
+    }
+  }
+  
+  const alreadyLoaded = oneCourse?._id === course._id;
 
+  if (!alreadyLoaded) {
+    try {
+      dispatch({ type: 'COURSE_LOADING' });
+      await getCourseWithProgress(course._id, user._id, dispatch);
+    } catch (error) {
+      console.error('Failed to fetch course progress:', error);
+      return; 
+    }
+  }
+
+  navigate(`/course/details/${course._id}`);
+};
+
+   console.log("this is my courses data : " , myCourses);
   if (loading && myCourses?.length === 0) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
@@ -50,13 +79,14 @@ const CourseList = () => {
     );
   }
 
-  const filteredCoursesPending = myCourses?.filter(
-    (course) => course.progressStatus === 'pending' || course.progressStatus === 'enrolled'
-  );
+const filteredCoursesPending = myCourses
+  ?.filter(course => !course.isCourseCompleted)
+  .sort((a, b) => a.remainingDays - b.remainingDays);
 
-  const filteredCoursesCompleted = myCourses?.filter(
-    (course) => course.progressStatus === 'completed'
-  )
+const filteredCoursesCompleted = myCourses
+  ?.filter(course => course.isCourseCompleted)
+  .sort((a, b) => new Date(b.completionDate) - new Date(a.completionDate));
+
 
   return (
     <Container
@@ -174,7 +204,7 @@ const CourseList = () => {
               <Grid container spacing={3}>
                 {myCourses?.map((course) => (
                   <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
-                    <CourseCard course={course} />
+                  <CourseCard course={course} onViewCourse={handleViewCourse} />
                   </Grid>
                 ))}
               </Grid>
@@ -196,7 +226,7 @@ const CourseList = () => {
                   <Grid container spacing={3} sx={{ mb: 4 }}>
                     {filteredCoursesPending.map((course) => (
                       <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
-                        <CourseCard course={course} />
+                       <CourseCard course={course} onViewCourse={handleViewCourse} />
                       </Grid>
                     ))}
                   </Grid>
@@ -241,7 +271,7 @@ const CourseList = () => {
                     <Grid container spacing={3} sx={{ mb: 4 }}>
                       {filteredCoursesCompleted.map((course) => (
                         <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
-                          <CourseCard course={course} />
+                       <CourseCard course={course} onViewCourse={handleViewCourse} />
                         </Grid>
                       ))}
                     </Grid>

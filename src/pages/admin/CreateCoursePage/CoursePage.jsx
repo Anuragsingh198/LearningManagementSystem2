@@ -4,6 +4,7 @@ import CourseList from '../../../components/CourseCreationComponents.jsx/CourseL
 
 
 const CoursesPage = () => {
+  
   return (
     <>
       <CourseList />

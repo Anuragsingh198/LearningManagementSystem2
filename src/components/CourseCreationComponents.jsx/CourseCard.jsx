@@ -22,7 +22,7 @@ import { deleteCourse, getMyCoursesAction } from '../../context/Actions/courseAc
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { toast } from 'react-toastify';
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, onViewCourse }) => {
   const { state: { user } } = useAuth();
   const role = user?.role;
   const navigate = useNavigate();
@@ -38,15 +38,17 @@ const CourseCard = ({ course }) => {
     setDeleteDialogOpen(true);
   };
 
-  const {
-    completionDate: deadline,
-    courseDuration,
-    enrolledDate,
-    progressStatus: status,
-    overallPercentage,
-    remainingDays
-  } = course;
+const {
+  completionDate: deadline,
+  courseDuration,
+  enrolledDate,
+  status, 
+  overallPercentage,
+  remainingDays
+} = course;
 
+
+console.log("this is the  course data  form the  course card : ", course);
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -77,9 +79,13 @@ const CourseCard = ({ course }) => {
     navigate(`/teacher/upload-video/${course._id}`);
   };
 
-  const handleViewClick = () => {
-    navigate(`/course/details/${course._id}`)
+const handleViewClick = async () => {
+  if (onViewCourse) {
+    await onViewCourse(course);
+  } else {
+    navigate(`/course/details/${course._id}`);
   }
+};
 
   const handleViewEmployeesClick = () => {
     navigate(`/teacher/employees/${course._id}`)

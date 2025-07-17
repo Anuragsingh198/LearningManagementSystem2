@@ -181,7 +181,6 @@ export const getCoursesAction = async (dispatch) => {
 
 export const getMyCoursesAction = async (dispatch) => {
      const user = JSON.parse(localStorage.getItem('user'));
-
   if (!user || !user._id) {
     throw new Error('User not authenticated');
   }
@@ -193,7 +192,7 @@ export const getMyCoursesAction = async (dispatch) => {
   }
 
   const userId = user._id
-
+  console.log("this is the  user Id : ", userId);
     try {
     dispatch({ type: 'COURSE_LOADING' });
     const response = await axios.get(`${serverurl}/api/users/${userId}` , {
@@ -208,6 +207,7 @@ export const getMyCoursesAction = async (dispatch) => {
         console.log('No courses found');
         return [];
       }
+
       dispatch({ type: 'SET_MY_COURSES', payload: data.courses });
       // console.log('My Courses fetched:', data.courses);
       return data.courses;
@@ -277,6 +277,47 @@ export const getCourseById = async (courseId, dispatch) => {
     dispatch({ type: 'COURSE_ERROR', payload: error.message });
     console.error('Get course error:', error);
     throw error;
+  }
+};
+
+export const getCourseWithProgress = async (courseId, userId, dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'COURSE_LOADING' });
+
+    const response = await axios.post(`${serverurl}/api/users/course-progress`, {
+      courseId,
+      userId
+    }, {
+      headers: { Authorization: `Bearer ${token}`}
+    });
+
+    const data = response.data;
+
+    if (data.success) {
+      dispatch({ type: 'SET_ONECOURSE', payload: data.course });
+      dispatch({
+        type: 'SET_COURSE_PROGRESS_ALL',
+        payload: {
+          courseProgress: data.progress.courseProgress,
+          moduleProgress: data.progress.moduleProgress,
+          testProgress: data.progress.testProgress,
+          videoProgress: data.progress.videoProgress
+        }
+      });
+
+      return data;
+    } else {
+      throw new Error(data.message);
+    }
+
+  } catch (error) {
+    console.error('Error fetching course with progress:', error);
+    dispatch({ type: 'COURSE_ERROR', payload: error.message });
+    return null;
+  } finally {
+    dispatch({ type: 'COURSE_LOADING', payload: false });
   }
 };
 
@@ -359,6 +400,8 @@ export const getCourseProgress = async (courseId, userId, dispatch) => {
   }
 };
 
+
+
 export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatch) => {
   const token = getAuthToken();
   try {
@@ -391,6 +434,8 @@ export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatc
     dispatch({ type: 'SET_LOADING', payload: false });
   }
 };
+
+
 
 export const checkProgress = async (courseId, chapterId, dispatch) => {
   const token = getAuthToken();
@@ -484,6 +529,158 @@ export const deleteCourse = async ( courseToDelete, dispatch) => {
   }
 };
 
+
+
+export const courseProgress = async (courseId, userId, dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'COURSE_LOADING', payload: true });
+
+    const response = await axios.post(
+      `${serverurl}/api/users/course-progress`,
+      { courseId, userId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = response.data;
+
+    if (data.success) {
+      dispatch({ type: 'SET_COURSE_PROGRESS_ALL', payload: data.data });
+
+      console.log(" Course Progress Fetched:", data.data);
+
+      return data.data;
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error fetching course progress:', error);
+    dispatch({ type: 'COURSE_ERROR' });
+    return null;
+  } finally {
+    dispatch({ type: 'COURSE_LOADING', payload: false });
+  }
+};
+
+export const videoProgress = async (courseId, video,videoId, moduleId, dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'COURSE_LOADING', payload: true });
+
+    const response = await axios.post(
+      `${serverurl}/api/users/video-progress`,
+      { courseId, videoData:video , moduleId , videoId},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = response.data;
+
+    if (data.success) {
+      dispatch({ type: 'VIDEO_PROGRESS', payload: data.videoProgress });
+      return data.videoProgress;
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in updating video progress:', error);
+    dispatch({ type: 'COURSE_ERROR' });
+    return null;
+  } finally {
+    dispatch({ type: 'COURSE_LOADING', payload: false });
+  }
+};
+
+export const testProgress = async (courseId, test, moduleId,testId,  dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'COURSE_LOADING', payload: true });
+
+    const response = await axios.post(
+      `${serverurl}/api/users/test-progress`,
+      { courseId, testData:test , moduleId , testId},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = response.data;
+
+    if (data.success) {
+      dispatch({ type: 'TEST_PROGRESS', payload: data.testProgress });
+      return data.testProgress;
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in updating test progress:', error);
+    dispatch({ type: 'COURSE_ERROR' });
+    return null;
+  } finally {
+    dispatch({ type: 'COURSE_LOADING', payload: false });
+  }
+};
+
+
+export const moduleProgress = async (courseId, chapterId, clickedModuleProgress, dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'COURSE_LOADING', payload: true });
+
+    const response = await axios.post(
+      `${serverurl}/api/users/module-progress`,
+      {
+        courseId,
+        moduleId: chapterId,
+        moduleData: clickedModuleProgress,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = response.data;
+
+    if (data.success) {
+      dispatch({
+        type: 'SET_COURSE_PROGRESS_ALL',
+        payload: {
+          courseProgress: data.courseProgress,
+          moduleProgress: data.moduleProgressList || [],
+          videoProgress: data.videoProgress || [],
+          testProgress: data.testProgress || [],
+        },
+      });
+
+      dispatch({ type: 'SET_MODULE_PROGRESS', payload: data.moduleProgress });
+
+      return data.moduleProgress;
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in updating module progress:', error);
+    dispatch({ type: 'COURSE_ERROR' });
+    return null;
+  } finally {
+    dispatch({ type: 'COURSE_LOADING', payload: false });
+  }
+};
 
 export const deleteModule = async ( chapterId, dispatch) => {
   const token = getAuthToken();

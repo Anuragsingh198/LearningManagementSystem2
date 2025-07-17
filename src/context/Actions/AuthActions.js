@@ -74,6 +74,40 @@ export const userRegister = async (user, dispatch) => {
 };
 
 
+export const enrollCourseAction = async(courseId , dispatch)=>{
+   const token = getAuthToken();
+  //  const progressData = course;
+   try {
+    dispatch({ type: 'COURSE_LOADING', payload: true });
+
+    const response = await axios.post(
+      `${serverurl}/api/users/enroll-course`,
+      { courseId},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = response.data; 
+
+    if (data.success) {
+      dispatch({ type: 'COURSE_PROGRESS', payload: data.courseProgress });
+      console.log("this is the  course progress data : " , data.courseProgress)
+      return data.courseProgress;
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error('Error in updating course progress:', error);
+    dispatch({ type: 'COURSE_ERROR' });
+    return null;
+  } finally {
+    dispatch({ type: 'COURSE_LOADING', payload: false });
+  }
+}
+
 export const enrolledStudentsAction = async (courseId, dispatch) => {
   // console.log("the course id from enrolledStudentsAction :  ", courseId);
   const token = getAuthToken();

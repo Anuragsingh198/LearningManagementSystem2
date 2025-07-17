@@ -46,7 +46,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
   const [module, setModule] = useState(null);
   const [videos, setVideos] = useState([]);
   const [tests, setTests] = useState([]);
-  const { state: {courses} , dispatch } = useCourseContext();
+  const { state: {courses, oneCourseProgress,allModuleProgress, allVideoProgess, allTestProgress} , dispatch } = useCourseContext();
   const [activeTab, setActiveTab] = useState("chapters");
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [currentView, setCurrentView] = useState("video");
@@ -70,7 +70,6 @@ const CourseDetails = ({ courseId, moduleId }) => {
   const particularCourse = courses.find(course => course._id === courseId);
   const isCompulsory = particularCourse?.compulsory;
   
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
