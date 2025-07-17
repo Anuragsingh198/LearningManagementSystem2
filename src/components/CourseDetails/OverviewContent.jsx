@@ -87,14 +87,14 @@ const TestsDisplay = ({ tests }) => {
   );
 };
 export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, progressPercentage, setSelectedChapter, courseProgressData }) => {
-  const chapters = oneCourse.modules;
-  const courseId = oneCourse._id;
-  const courseTitle = oneCourse.title;
+  const chapters = oneCourse?.modules;
+  const courseId = oneCourse?._id;
+  const courseTitle = oneCourse?.title;
   const certificateType = 'completion'
   const [totalVideos, setTotalVideos] = useState(0);
   const [totalTests, setTotalTests] = useState(0);
   const navigate = useNavigate();
-  const percentageCompleted = oneCourse.percentageCompleted;
+  const percentageCompleted = oneCourse?.percentageCompleted;
   const [isLoading, setisLoading] = useState(false)
 
   // const  [allModuleProgress , setAllmoduleProgress] = useState([]);
@@ -205,9 +205,9 @@ useEffect(()=>{
   useEffect(() => {
     setTotalVideos(0);
     setTotalTests(0);
-    const totalVideo = chapters.reduce((acc, ele) => acc + (ele.videos?.length || 0), 0);
+    const totalVideo = chapters?.reduce((acc, ele) => acc + (ele.videos?.length || 0), 0);
     setTotalVideos(totalVideo);
-    const totalTest = chapters.reduce((acc, ele) => acc + (ele.tests?.length || 0), 0);
+    const totalTest = chapters?.reduce((acc, ele) => acc + (ele.tests?.length || 0), 0);
     setTotalTests(totalTest);
   }, [chapters]);
 
@@ -258,9 +258,9 @@ useEffect(()=>{
         color: 'white'
       }}>
         <Typography variant="h4" fontWeight="bold" mb={1}>
-          {oneCourse.title}
+          {oneCourse?.title}
         </Typography>
-        <CourseDescription description={oneCourse.description} />
+        <CourseDescription description={oneCourse?.description} />
 
         <Grid container spacing={3} mb={4} mt={2}>
        
@@ -323,7 +323,7 @@ useEffect(()=>{
         </Box>}
       </Paper>
 
-      {chapters.length === 0 ? (
+      {chapters?.length === 0 ? (
         <NoContentPage
           title="Modules"
           description="No Modules Found for this course"
@@ -350,7 +350,7 @@ useEffect(()=>{
           </Box>
 
           <Box display="flex" flexDirection="column" gap={2}>
-            {chapters.map((chapter) => (
+            {chapters?.map((chapter) => (
               <Paper
                 key={chapter._id}
                 elevation={0}

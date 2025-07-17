@@ -30,13 +30,12 @@ const OverviewPage = () => {
 
 useEffect(() => {
   const fetchCourseProgress = async () => {
-    console.log("fetch is  working : " )
-    if (!courseId || !user?._id) {
-      console.log("Missing courseId or user ID");
-      return;
-    }
-
+    console.log('we have entered use effect')
+    if (!courseId || !user?._id) return;
+    console.log('we have passed return statement')
     try {
+    console.log('we are in try block')
+
       dispatch({ type: 'COURSE_LOADING' });
       await getCourseWithProgress(courseId, user._id, dispatch);
     } catch (error) {
@@ -44,11 +43,13 @@ useEffect(() => {
     }
   };
 
-  if (!oneCourse) {
-    console.log("Refetching because course data is missing...");
+  // Always fetch on mount or when courseId changes
+    if (!oneCourse || oneCourse?._id !== courseId) {
+    // Only fetch if no data, or data is for another course
     fetchCourseProgress();
   }
-}, []);
+}, [courseId, user?._id, dispatch]);
+
 
 useEffect(() => {
   if (!oneCourse || !oneCourseProgress || !allModuleProgress) return;
