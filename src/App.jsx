@@ -23,6 +23,10 @@ import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import HomePage from './pages/common/HomePage';
 import MainAssessment from './pages/common/MainAssessment';
+import TestStartPage from './pages/common/TestStartPage';
+import TestReviewPage from './pages/common/TestReviewPage';
+import TestPage from './pages/Test/TestPage';
+import TestExitPage from './pages/Test/TestExitPage';
 
 function App() {
 
@@ -44,6 +48,14 @@ function App() {
 
           }
         /> */}
+          <Route
+    path="/assessments/start-test/test"
+    element={
+      <PrivateRoute>
+        <TestPage />
+      </PrivateRoute>
+    }
+  />
         
 
 
@@ -63,9 +75,17 @@ function App() {
                   <Route path="/course/details/:courseId" element={<OverviewPage />} />
                   <Route path="/course/module/:courseId/:moduleId" element={<ModuleDetails />} />
                   <Route path="/assessments" element={<MainAssessment/>} />
+                  <Route path="/assessments/start-test/:id" element={<TestStartPage/>} />
+                  <Route path="/assessments/start-test/test" element={<TestPage/>} />
+                  <Route path="/assessments/review/:id" element={<TestReviewPage/>} />
+                  <Route path="/assessments/test-submitted" element={<TestExitPage />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  
                 </Routes>
               </Layout>
+                  
+
+
             </PrivateRoute>
           }
         />

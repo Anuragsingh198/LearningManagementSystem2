@@ -63,7 +63,8 @@ export const Sidebar = ({
     if (moduleProgress) {
         moduleProgress.videoProgress.forEach((vp) => {
             videoStatusMap[vp.video] = vp.status;
-            //  console.log('videoStatusMap is: ', videoStatusMap)
+            
+             console.log('videoStatusMap is: ', videoStatusMap)
 
         });
     }

@@ -128,7 +128,7 @@ useEffect(() => {
 
     useEffect(() => {
         const markVideoAndFetchProgress = async () => {
-            if (progress >= 90 && !hasMarkedComplete && currentVideoData?._id) {
+            if ( progress >=10 && progress >= 90 && !hasMarkedComplete && currentVideoData?._id) {
                 setHasMarkedComplete(true);
                 try {
                     await updateVideoCompletion(courseId, currentVideoData._id, moduleId, dispatch);

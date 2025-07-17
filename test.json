@@ -1,91 +1,37 @@
-{
-    "success": true,
-    "message": "Data from course progress fetched",
-    "progress": {
-        "_id": "68625181e74631124cddc061",
-        "user": "6862510fe74631124cddbf3f",
-        "course": "686212e6f31496521841129f",
-        "moduleProgress": [
+[
+    {
+        "_id": "686cbf48c811dbae8cf9a387",
+        "title": "Introduction to POSH",
+        "description": "Assessment on Introduction to POSH",
+        "module": "686cbe1fc811dbae8cf9a36f",
+        "isCompleted": false,
+        "questions": [
             {
-                "module": "6862142af3149652184112dd",
-                "status": "completed",
-                "videoIndex": 0,
-                "percentageCompleted": 0,
-                "videoProgress": [
+                "questionText": "Which of the following is not considered sexual harassment according to the scenario?",
+                "options": [
                     {
-                        "video": "686214bbf3149652184112e5",
-                        "status": "completed",
-                        "_id": "68625181e74631124cddc063"
+                        "optionText": "Repeatedly sending inappropriate messages after being told no",
+                        "_id": "686cbf48c811dbae8cf9a38e"
                     },
                     {
-                        "video": "6862154ef3149652184112ec",
-                        "status": "completed",
-                        "_id": "68625181e74631124cddc064"
+                        "optionText": "Asking a colleague out for dinner once",
+                        "_id": "686cbf48c811dbae8cf9a38f"
+                    },
+                    {
+                        "optionText": "Sending emails with sexual overtones",
+                        "_id": "686cbf48c811dbae8cf9a390"
+                    },
+                    {
+                        "optionText": "Ignoring a clear rejection and continuing advances",
+                        "_id": "686cbf48c811dbae8cf9a391"
                     }
                 ],
-                "testStatus": [
-                    {
-                        "test": "6862160ff314965218411325",
-                        "isCompleted": true,
-                        "retakeCount": 1,
-                        "marksScored": 3,
-                        "_id": "68625181e74631124cddc065"
-                    }
-                ],
-                "_id": "68625181e74631124cddc062"
-            },
-            {
-                "module": "68621696f31496521841135c",
-                "status": "not-started",
-                "videoIndex": 0,
-                "percentageCompleted": 0,
-                "videoProgress": [
-                    {
-                        "video": "686216a7f314965218411365",
-                        "status": "not-started",
-                        "_id": "68625181e74631124cddc067"
-                    },
-                    {
-                        "video": "68621743f31496521841136c",
-                        "status": "not-started",
-                        "_id": "68625181e74631124cddc068"
-                    },
-                    {
-                        "video": "686217def3149652184113a3",
-                        "status": "not-started",
-                        "_id": "68625181e74631124cddc069"
-                    },
-                    {
-                        "video": "68621838f3149652184113e0",
-                        "status": "not-started",
-                        "_id": "68625181e74631124cddc06a"
-                    },
-                    {
-                        "video": "686218b0f3149652184113e7",
-                        "status": "not-started",
-                        "_id": "68625181e74631124cddc06b"
-                    }
-                ],
-                "testStatus": [
-                    {
-                        "test": "68621a52f3149652184113f4",
-                        "isCompleted": false,
-                        "retakeCount": 0,
-                        "marksScored": 0,
-                        "_id": "68625181e74631124cddc06c"
-                    }
-                ],
-                "_id": "68625181e74631124cddc066"
+                "_id":"686cbf48c811dbae8cf9a397"
             }
         ],
-        "overallPercentage": 50,
-        "status": "pending",
-        "isCourseCompleted": false,
-        "remainingDays": 30,
-        "completionDate": "2025-07-30T08:57:36.235Z",
-        "enrolledDate": "2025-06-30T08:57:37.124Z",
-        "createdAt": "2025-06-30T08:57:37.125Z",
-        "updatedAt": "2025-06-30T09:05:19.065Z",
+        "createdAt": "2025-07-08T06:48:40.277Z",
+        "updatedAt": "2025-07-08T06:48:40.277Z",
         "__v": 0
     }
-}
+
+]
