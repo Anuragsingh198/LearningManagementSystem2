@@ -28,7 +28,7 @@ import { enrollCourseAction } from '../context/Actions/AuthActions';
 export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) => {
   const theme = useTheme();
   const { state: { user } } = useAuth();
-  console.log("this is user from the  courseCard : ", user)
+  // console.log("this is user from the  courseCard : ", user)
   const role = user?.role;
   const token = user?.token;
   const serverurl = import.meta.env.VITE_SERVER_URL;
@@ -89,7 +89,9 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
   }
   console.log("this is hte  my courses  from the  courseCard : ", myCourses , course)
   useEffect(() => {
-    if (myCourses?.some(c => c._id === course._id)) {
+    // if (myCourses?.some(c => c._id === course._id))
+      if (myCourses?._id === course._id)
+      {
       setEnrolled(true);
     }
   }, [myCourses, course._id]);

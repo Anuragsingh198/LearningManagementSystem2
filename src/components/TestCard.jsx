@@ -12,7 +12,7 @@ function formatDuration(mins) {
 
 function TestCard({ test, role }) {
     const navigate = useNavigate();
-    console.log('the role is: ', role)
+    // console.log('the role is: ', role)
     const handleOnClick = () => {
         if (test.completed) {
             navigate(`/assessments/review/${test._id}`)

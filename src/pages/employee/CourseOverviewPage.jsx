@@ -10,9 +10,7 @@ import { getCourseWithProgress } from "../../context/Actions/courseActions";
 const OverviewPage = () => {
   const { state: { user } } = useAuth();
   const { courseId } = useParams();
-  console.log("this is the  course id from iverview page : ",  courseId)
-
-
+  // console.log("this is the  course id from iverview page : ",  courseId)
 
   const {
     state: {
@@ -24,11 +22,11 @@ const OverviewPage = () => {
     dispatch
   } = useCourseContext();
 
- console.log( "this is the  overviewPage:" , oneCourse);
+  console.log( "One course in CourseOverviewPage is:" , oneCourse);
   const [completedChapters, setCompletedChapters] = useState(0);
   const [totalChapters, setTotalChapters] = useState(0);
   const [progressPercentage, setProgressPercentage] = useState(0)
-  console.log("this is progress data from  overviewPage: " , oneCourse, oneCourseProgress , allModuleProgress)
+  console.log("one course, oneCourseProgress and allModuleProgress from CourseOverviewPage is: " , oneCourse, oneCourseProgress , allModuleProgress)
 
 useEffect(() => {
   const fetchCourseProgress = async () => {

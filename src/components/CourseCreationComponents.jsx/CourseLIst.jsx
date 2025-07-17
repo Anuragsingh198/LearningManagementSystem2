@@ -47,7 +47,7 @@ const handleViewCourse = async (course) => {
   navigate(`/course/details/${course._id}`);
 };
 
-   console.log("this is my courses data : " , myCourses);
+  //  console.log("this is my courses data from CourseList page : " , myCourses);
   if (loading && myCourses?.length === 0) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>

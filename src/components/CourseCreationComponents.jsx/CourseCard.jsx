@@ -48,7 +48,7 @@ const {
 } = course;
 
 
-console.log("this is the  course data  form the  course card : ", course);
+// console.log("this is the  course data  form the  course card : ", course);
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const options = { year: 'numeric', month: 'short', day: 'numeric' };

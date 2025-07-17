@@ -197,7 +197,8 @@ const handleGenerateCertificate = async () => {
 
 
 useEffect(()=>{
-  console.log("allModuleProgress and oneModuleProgress is : ", allModuleProgress , oneModuleProgress)
+  console.log("allModuleProgress  is : ", allModuleProgress )
+  console.log("oneModuleProgress is: ", oneModuleProgress)
 }, [allModuleProgress , oneModuleProgress])
 
 
