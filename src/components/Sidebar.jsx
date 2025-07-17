@@ -125,7 +125,7 @@ const Sidebar = () => {
 
               <Divider sx={{ marginTop: '16px', borderColor: '#e5e7eb' }} />
               <SectionTitle>Quick Actions</SectionTitle>
-              <SidebarLink to="/teacher/my-courses" icon={<Video />} label="Upload Videos" />
+              <SidebarLink to="/teacher/my-courses" icon={<Video />} label="Upload Videos"/>
               <SidebarLink to="/profile" icon={<Users />} label="View Profile" />
             </>
           ) : (

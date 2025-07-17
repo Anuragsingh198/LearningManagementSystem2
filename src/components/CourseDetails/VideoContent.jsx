@@ -76,7 +76,7 @@ export const VideoContent = ({
     const [isBuffering, setIsBuffering] = useState(false);
     const [isVideoReady, setIsVideoReady] = useState(false);
     const [videoUrl, setVideoUrl] = useState('');
-    const { state: { loading, courseProgress }, dispatch } = useCourseContext();
+    const { state: { loading, courseProgress , allVideoProgress , oneVideoProgress}, dispatch } = useCourseContext();
     const { state: { user } } = useAuth();
     const userId = user._id;
     const hoursToExpire = 24; 
@@ -111,6 +111,7 @@ useEffect(() => {
   fetchSasUrl();
 }, [currentVideoData]);
 
+
     useEffect(() => {
         setHasMarkedComplete(false); // this function is there to reset has marked completed when video changes so we can make api call for completed video
     }, [currentVideo]);
@@ -126,20 +127,20 @@ useEffect(() => {
         setReadableDuration(formatDuration(duration));
     }, [duration]);
 
-    useEffect(() => {
-        const markVideoAndFetchProgress = async () => {
-            if ( progress >=10 && progress >= 90 && !hasMarkedComplete && currentVideoData?._id) {
-                setHasMarkedComplete(true);
-                try {
-                    await updateVideoCompletion(courseId, currentVideoData._id, moduleId, dispatch);
-                    await getCourseProgress(courseId, userId, dispatch);
-                } catch (error) {
-                    console.error('Error updating video completion:', error);
-                }
-            }
-        };
-        markVideoAndFetchProgress();
-    }, [progress]);
+    // useEffect(() => {
+    //     const markVideoAndFetchProgress = async () => {
+    //         if (progress >= 90 && !hasMarkedComplete && currentVideoData?._id) {
+    //             setHasMarkedComplete(true);
+    //             try {
+    //                 await updateVideoCompletion(courseId, currentVideoData._id, moduleId, dispatch);
+    //                 await getCourseProgress(courseId, userId, dispatch);
+    //             } catch (error) {
+    //                 console.error('Error updating video completion:', error);
+    //             }
+    //         }
+    //     };
+    //     markVideoAndFetchProgress();
+    // }, [progress]);
 
     const togglePlayPause = () => {
         setIsPlaying(!isPlaying);

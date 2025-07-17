@@ -1,3 +1,5 @@
+import { all } from "axios";
+import { courseProgress } from "../Actions/courseActions";
 
 export const courseReducer = (state, action) => {
   switch (action.type) {
@@ -26,7 +28,13 @@ export const courseReducer = (state, action) => {
         loading: false,
         error: null,
       };
-
+   case "SET_ONECOURSE":
+  return {
+    ...state,
+    oneCourse: action.payload,
+    loading: false,
+    error: null,
+  };
     case "ADD_MODULE":
       return {
         ...state,
@@ -35,6 +43,18 @@ export const courseReducer = (state, action) => {
         error: null,
       };
 
+case "SET_MODULE_PROGRESS":
+  return {
+    ...state,
+    oneModuleProgress: action.payload,
+    allModuleProgress: [
+      ...state.allModuleProgress.filter((m) => m._id !== action.payload._id),
+      action.payload,
+    ],
+    loading: false,
+    error: null,
+  };
+    
     case "ADD_VIDEO":
       return {
         ...state,
@@ -49,11 +69,42 @@ export const courseReducer = (state, action) => {
         loading: true,
         error: null,
       };
-    case "COURSE_PROGRESS":
-      return {
-        ...state,
-        courseProgress: action.payload,
-      };
+   case "COURSE_PROGRESS":
+  return {
+    ...state,
+    oneCourseProgress:action.payload,
+    allCourseProgress: [
+      ...state.allCourseProgress.filter((x) => x._id !== action.payload._id),
+      action.payload,
+    ],
+  };
+  case "VIDEO_PROGRESS":
+  return {
+    ...state,
+    currentVideoProgress: action.payload,
+    allVideoProgress: [
+      ...state.allVideoProgress.filter((v) => v._id !== action.payload._id),
+      action.payload,
+    ],
+  };
+  case 'SET_COURSE_PROGRESS_ALL':
+  return {
+    ...state,
+    oneCourseProgress: action.payload.courseProgress || null,
+    allModuleProgress: action.payload.moduleProgress || [],
+    allTestProgress: action.payload.testProgress || [],
+    allVideoProgess: action.payload.videoProgress || []
+  };
+
+  case "TEST_PROGRESS":
+  return {
+    ...state,
+    currentTestProgress: action.payload,
+    allTestProgress: [
+      ...state.allTestProgress.filter((t) => t._id !== action.payload._id),
+      action.payload,
+    ],
+  };
     case "COURSE_ERROR":
       return {
         ...state,

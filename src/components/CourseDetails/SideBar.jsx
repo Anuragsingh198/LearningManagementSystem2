@@ -31,7 +31,7 @@ import {
 } from '@mui/icons-material';
 import NoContentPage from './NoContentPage';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
-import { checkVideoOrTestInUserProgressAction } from '../../context/Actions/courseActions';
+import { checkVideoOrTestInUserProgressAction, videoProgress } from '../../context/Actions/courseActions';
 
 
 export const Sidebar = ({
@@ -52,49 +52,79 @@ export const Sidebar = ({
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
+    const { state: { loading, courseProgress,allModuleProgress , oneModuleProgress:moduleProgress , oneVideoProgress , allVideoProgress}, dispatch } = useCourseContext();
     const [videoDuration, setvideoDuration] = useState(0);
-    const moduleProgress = courseProgress?.moduleProgress.find(
-        (mod) => mod.module === moduleId
-    );
+    // const moduleProgress = allModuleProgress?.find(
+    //     (mod) => mod.module === moduleId
+    // );
+    
+console.log("this is hte  corrent  video data : " ,videos[currentVideo] )
 
     const videoStatusMap = {};
 
-    if (moduleProgress) {
-        moduleProgress.videoProgress.forEach((vp) => {
-            videoStatusMap[vp.video] = vp.status;
-            
-             console.log('videoStatusMap is: ', videoStatusMap)
+if (moduleProgress && Array.isArray(allVideoProgress)) {
+  allVideoProgress.forEach((vp) => {
+    videoStatusMap[vp.video] = vp.status;
+  });
+}
+    // const checkVideoInUserProgress = async (videoId, moduleId, courseId) => {
+    //     await checkVideoOrTestInUserProgressAction({
+    //         videoId: videoId,
+    //         moduleId: moduleId,
+    //         courseId: courseId
+    //     }, dispatch);
 
-        });
+    // }
+
+const handleVideoProgress = async (videoId, moduleId, courseId, video) => {
+  try {
+    if (!videoId || !moduleId || !courseId) {
+      return;
+    }
+    await videoProgress(courseId, video, videoId, moduleId, dispatch);
+  } catch (error) {
+    console.error("Error in handleVideoProgress:", error);
+  }
+};
+
+
+    //     const checkTestInUserProgress = async (testId, moduleId, courseId) => {
+    //         // console.log('the test id and module id and course id is: ', testId, moduleId, courseId)
+    //         await checkVideoOrTestInUserProgressAction({
+    //         testId: testId,
+    //         moduleId: moduleId,
+    //         courseId: courseId
+    //     }, dispatch);
+
+    // }
+    
+const handleTestProgress = async (testId, moduleId, courseId, test) => {
+  try {
+    if (!testId || !moduleId || !courseId) {
+      console.warn("Missing required parameters for test progress:", {
+        testId,
+        moduleId,
+        courseId,
+      });
+      return;
     }
 
-    const checkVideoInUserProgress = async (videoId, moduleId, courseId) => {
-        await checkVideoOrTestInUserProgressAction({
-            videoId: videoId,
-            moduleId: moduleId,
-            courseId: courseId
-        }, dispatch);
+    await testProgress(courseId, test, moduleId, testId, dispatch);
+  } catch (error) {
+    console.error('Error in handleTestProgress:', error);
+  }
+};
 
-    }
 
-        const checkTestInUserProgress = async (testId, moduleId, courseId) => {
-            // console.log('the test id and module id and course id is: ', testId, moduleId, courseId)
-            await checkVideoOrTestInUserProgressAction({
-            testId: testId,
-            moduleId: moduleId,
-            courseId: courseId
-        }, dispatch);
-
-    }
     // this use effect is very crucial this, if only one test is there and we don't click on it and directly start giving test it will fail because 
     // console.log('tests: ', tests[0]._id)
 
-    useEffect(() => {
-    if (tests && tests.length > 0 && tests[0]?._id && moduleId && courseId) {        
-        checkTestInUserProgress(tests[0]._id, moduleId, courseId);
-    }
-}, [tests, moduleId, courseId]); // dependencies to re-run effect if they change
+//     useEffect(() => {
+//     if (tests && tests.length > 0 && tests[0]?._id && moduleId && courseId) {        
+//         checkTestInUserProgress(tests[0]._id, moduleId, courseId);
+//     }
+// }, [tests, moduleId, courseId]); 
+
 
     return (
         <Box sx={{
@@ -134,7 +164,7 @@ export const Sidebar = ({
                         onClick={() => setCurrentView('video')}
                         sx={{
 
-                            border: '1px solid #ccc', // light gray border
+                            border: '1px solid #ccc', 
                             mb: '4px',
                             borderRadius: '8px',
                             '&.Mui-selected': {
@@ -172,7 +202,7 @@ export const Sidebar = ({
                         onClick={() => setCurrentView('quiz')}
                         sx={{
 
-                            border: '1px solid #ccc', // light gray border
+                            border: '1px solid #ccc', 
                             borderRadius: '8px',
                             '&.Mui-selected': {
                                 bgcolor: 'primary.main',
@@ -230,7 +260,7 @@ export const Sidebar = ({
                                             selected={currentVideo === index}
                                             onClick={() => {
                                                 setCurrentVideo(index)
-                                                checkVideoInUserProgress(video._id, moduleId, courseId)
+                                                handleVideoProgress (video._id, moduleId,video,  courseId)
                                             }}
                                             sx={{
                                                 borderLeft: status === 'completed' ? '4px solid' : 'none',
@@ -316,7 +346,7 @@ export const Sidebar = ({
                                     <ListItemButton
                                         selected={currentTest === index}
                                         onClick={() => {setCurrentTest(index)
-                                            checkTestInUserProgress(quiz._id, moduleId, courseId)
+                                            handleTestProgress(quiz._id, moduleId, courseId,  quiz)
                                         }}
                                         sx={{
 

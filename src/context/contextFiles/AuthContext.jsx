@@ -10,6 +10,7 @@ const initialstate = {
   notifications: [],
   courseProgress:null,
   enrolledEmployees:[],
+  AllEMployees:[],
   loading :true
 };
 

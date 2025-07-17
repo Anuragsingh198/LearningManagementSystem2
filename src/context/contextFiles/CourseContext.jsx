@@ -1,12 +1,22 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import { courseReducer } from '../reducers/courseReducer';
+import { all } from 'axios';
 
 const initialState = {
   courses: [],
   myCourses: [],
   modules: [],
   videos: [],
-  courseProgress:null
+  oneCourse:null,
+  oneCourseProgress:null,
+  oneModuleProgress: null,
+  allModuleProgress: [],
+  allCourseProgress:[],
+  allVideoProgess:[], 
+  currentVideoProgress:null,
+  allTestProgress:[],
+  currentTestProgress:null,
+
 };
 
 const CourseContext = createContext(undefined);

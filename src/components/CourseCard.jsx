@@ -19,14 +19,16 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useAuth } from '../context/contextFiles/AuthContext';
 import axios from 'axios';
-import { getCoursesAction, getMyCoursesAction } from '../context/Actions/courseActions';
+import { courseProgress, getCoursesAction, getMyCoursesAction } from '../context/Actions/courseActions';
 import { useCourseContext } from '../context/contextFiles/CourseContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { enrollCourseAction } from '../context/Actions/AuthActions';
 
 export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) => {
   const theme = useTheme();
   const { state: { user } } = useAuth();
+  console.log("this is user from the  courseCard : ", user)
   const role = user?.role;
   const token = user?.token;
   const serverurl = import.meta.env.VITE_SERVER_URL;
@@ -35,7 +37,7 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const { state: { courses, loading: contextLoading, error, myCourses }, dispatch } = useCourseContext();
+  const { state: { courses, loading: contextLoading, error, myCourses, allCourseProgress, oneCourseProgress }, dispatch } = useCourseContext();
   const [liked, setLiked] = useState(false);
 
   const handleLikeToggle = () => {
@@ -50,47 +52,42 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
     setOpenModal(false);
   };
 
-  const handleEnroll = async () => {
-    if (!user || !token) return;
+  const handelClickForCourseProgressCreation = async () => {
 
+  }
+
+  const handleEnroll = async() => {
+    console.log("enroll is clicked : courseCard")
+    if (!user || !token) return;
     try {
       setLoading(true);
-      const response = await axios.post(
-        `${serverurl}/api/users/enroll-course`,
-        { courseId: course._id },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      await getMyCoursesAction(dispatch);
-      if (response.data.success) {
+      const enrolledCourse = await enrollCourseAction(course._id, dispatch);
+
+      if (enrolledCourse) {
+        // await getMyCoursesAction(dispatch);
+        console.log(" this is the  enrolled course form the course card: " ,enrolledCourse )
+        dispatch({ type: 'SET_MY_COURSES', payload: course });
         setEnrolled(true);
         navigate(`/course/details/${course._id}`);
         handleCloseModal();
         toast.success("Enrollment successful");
       }
-      // console.log('Enrollment success:', response.data);
+
+
+
     } catch (error) {
       console.error('Enrollment failed:', error?.response?.data || error.message);
-      const errorMessage = error?.response?.data || error.message || "Enrollment failed";
+      const errorMessage = error?.response?.data?.message || error.message || "Enrollment failed";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-
-
-
   const handleNavigateToLogin = () => {
     navigate(`/login`);
 
   }
-
-  
-
-  // Sync local enrolled state with context
+  console.log("this is hte  my courses  from the  courseCard : ", myCourses , course)
   useEffect(() => {
     if (myCourses?.some(c => c._id === course._id)) {
       setEnrolled(true);
@@ -118,23 +115,6 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
           alt={course.title}
         />
 
-        {/* <IconButton
-          onClick={handleLikeToggle}
-          sx={{
-            position: 'absolute',
-            top: 170,
-            right: 8,
-            backgroundColor: 'rgba(255,255,255,0.8)',
-            '&:hover': { backgroundColor: 'rgba(255,255,255,1)' }
-          }}
-        >
-          {liked ? (
-            <FavoriteIcon sx={{ color: 'red' }} />
-          ) : (
-            <FavoriteBorderIcon sx={{ color: 'grey.700' }} />
-          )}
-        </IconButton> */}
-
         {course.category && (
           <Chip
             label={course.category}
@@ -154,29 +134,29 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
       </Box>
 
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Box sx={{display: 'flex', justifyContent: 'space-between',}}>
-       <Typography variant="body2" color="text.secondary" sx={{mt: 0.3}}>
-          {course.instructorName || (course.instructor?.name ?? 'Instructor')}
-        </Typography>
-         <Chip
-  label={`Duration: ${course.courseDuration } days`}
-  size="small"
-  sx={{
-    // ml: 2,
-    backgroundColor: 'rgba(52, 152, 219, 0.1)', // light blue background
-    border: '1px solid #3498db', // blue border
-    color: '#3498db', // blue text
-    fontWeight: 600,
-    borderRadius: '20px',
-    maxWidth: 200,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  }}
-/>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.3 }}>
+            {course.instructorName || (course.instructor?.name ?? 'Instructor')}
+          </Typography>
+          <Chip
+            label={`Duration: ${course.courseDuration} days`}
+            size="small"
+            sx={{
+              // ml: 2,
+              backgroundColor: 'rgba(52, 152, 219, 0.1)', // light blue background
+              border: '1px solid #3498db', // blue border
+              color: '#3498db', // blue text
+              fontWeight: 600,
+              borderRadius: '20px',
+              maxWidth: 200,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          />
 
         </Box>
- 
+
 
         <Typography
           variant="h6"
@@ -240,9 +220,10 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
                 backgroundColor: enrolled ? 'darkgreen' : undefined
               }
             }}
-              onMouseEnter={onHoverDisablePopup}
-  onMouseLeave={onHoverEnablePopup}
+            onMouseEnter={onHoverDisablePopup}
+            onMouseLeave={onHoverEnablePopup}
             onClick={handleOpenModal}
+            // onClick={handelClickForCourseProgressCreation}
             disabled={loading || enrolled}
           >
             {user ? (loading ? (

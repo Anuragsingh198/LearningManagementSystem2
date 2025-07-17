@@ -7,11 +7,13 @@ import { getCoursesAction, getMyCoursesAction } from '../../context/Actions/cour
 import CourseCardHoverWrapper from '../common/CourseCardHoverWrapper';
 
 const TeacherDashboard = () => {
-  const { state: { courses, loading }, dispatch } = useCourseContext();
+  const { state: { courses,myCourses,  loading }, dispatch } = useCourseContext();
   const [allCourses, setAllCourses] = useState([])
 
   const compulsoryCourses = courses?.filter(course => course.compulsory);
   const regularCourses = courses?.filter(course => !course.compulsory);
+
+  console.log("this is  the  my project data : ", myCourses);
 
   return (
     <Box sx={{ padding: '0px', width: '100%' }} className="dashboard-scroll">
@@ -173,10 +175,8 @@ const TeacherDashboard = () => {
               {regularCourses?.map((course, index) => (
                 <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
                   {/* <CourseCardHoverWrapper course={course}> */}
-
                   <CourseCard course={course} />
                   {/* </CourseCardHoverWrapper> */}
-
                 </Grid>
               ))}
             </Grid>

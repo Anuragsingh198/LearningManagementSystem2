@@ -31,7 +31,6 @@ export default function Layout({ children }) {
         // console.log('in use effect of mainlayout.jsx')
         await getCoursesAction(dispatch);
         await getMyCoursesAction(dispatch);
-
       } catch (error) {
         console.error('Failed to fetch courses:', error);
       }

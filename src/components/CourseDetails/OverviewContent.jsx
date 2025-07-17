@@ -27,7 +27,8 @@ import {
   Help as HelpIcon,
   AccessTime as AccessTimeIcon,
   ChevronRight as ChevronRightIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
+  ContactPageSharp
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { NoVideosFound } from './NoContentFoundPage';
@@ -35,7 +36,7 @@ import { useEffect, useState } from 'react';
 import NoContentPage from './NoContentPage';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
-import { checkProgress, deleteModule } from '../../context/Actions/courseActions';
+import { checkProgress, deleteModule, moduleProgress } from '../../context/Actions/courseActions';
 import axios from 'axios';
 
 
@@ -96,7 +97,12 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   const percentageCompleted = oneCourse.percentageCompleted;
   const [isLoading, setisLoading] = useState(false)
 
+  // const  [allModuleProgress , setAllmoduleProgress] = useState([]);
+
+  const [clickedModuleProgress , setClickedModuleProgress] =  useState(null);
+  
   const { state: { user }, dispatch } = useAuth();
+  // const {state:{ oneModuleProgress, allModuleProgress }, dispatch:courseDispatch} = useCourseContext();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [moduleToDelete, setModuleToDelete] = useState(null);
   
@@ -104,45 +110,55 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   const token = user?.token;
   const name = user?.name;
   const empId = user?.employeeId;
-
   const serverurl = import.meta.env.VITE_SERVER_URL;
 
-  const { state: { courseProgress }, dispatch: courseDispatch } = useCourseContext();
-
+  const { state: { oneCourseProgress , allCourseProgress,   oneModuleProgress, allModuleProgress }, dispatch: courseDispatch } = useCourseContext();
 
   //just checking
   const moduleProgressMap = {};
-  courseProgress?.moduleProgress?.forEach((module) => {
+  allModuleProgress?.forEach((module) => {
     moduleProgressMap[module.module] = module.status;
     // so this function will give you
     // moduleProgressMap = { "68418edaacce3e3b7adc1f0f": "completed", ... }
   });
+ useEffect(()=>{
+  console.log("this is the  course progress data from : ",oneCourseProgress,allCourseProgress  )
+ })
 
   // console.log('progress percentage in overview content is: ', percentageCompleted)
-
-
   // console.log('progress percentage completed is: ', progressPercentage)
+
     const handleDelete = (courseId) => {
     setModuleToDelete(courseId);
     setDeleteDialogOpen(true);
   };
 
-  const handleSubmit = async (chapterId) => {
-    setSelectedChapter(chapterId);
-    // navigate(`/course/module/${chapterId}`);
-    //here we have to call the function to update user Progress in backend
+const handleSubmit = async (chapterId, chapter) => {
+  setClickedModuleProgress(null);
 
-    await checkProgress(courseId, chapterId, courseDispatch);
+  const clickedModuleExistingProgress = allModuleProgress.find(
+    (x) => x._id === chapterId
+  );
+
+  setClickedModuleProgress(clickedModuleExistingProgress);
+  setSelectedChapter(chapterId);
+
+  try {
+    await moduleProgress(courseId, chapterId, clickedModuleExistingProgress, courseDispatch);
     navigate(`/course/module/${courseId}/${chapterId}`);
+  } catch (error) {
+    console.error("Error updating module progress:", error);
+  }
+};
 
-  };
 
 const handleGenerateCertificate = async () => {
-  const newTab = window.open('', '_blank'); // Open immediately to avoid popup blockers
+  const newTab = window.open('', '_blank'); 
   if (!newTab) {
     alert('Please allow popups for this site.');
     return;
   }
+
 
   try {
     const response = await axios.post(
@@ -180,7 +196,9 @@ const handleGenerateCertificate = async () => {
 };
 
 
-
+useEffect(()=>{
+  console.log("allModuleProgress and oneModuleProgress is : ", allModuleProgress , oneModuleProgress)
+}, [allModuleProgress , oneModuleProgress])
 
 
   useEffect(() => {
@@ -407,7 +425,7 @@ const handleGenerateCertificate = async () => {
                   </Box>
                   <Box display="flex" alignItems="center" gap={1}>
                     <Button
-                      onClick={() => handleSubmit(chapter._id)}
+                      onClick={() => handleSubmit(chapter._id, chapter)}
                       endIcon={<ChevronRightIcon />}
                       sx={{
                         textTransform: 'none',
