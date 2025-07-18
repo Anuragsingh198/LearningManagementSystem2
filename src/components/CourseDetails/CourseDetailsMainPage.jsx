@@ -33,20 +33,22 @@ import {
 import { QuizContent } from "./QuizContent";
 import { VideoContent } from "./VideoContent";
 import { Sidebar } from "./SideBar";
-import { getModulebyModuleId } from "../../context/Actions/courseActions";
+import { getCourseWithProgress, getModulebyModuleId } from "../../context/Actions/courseActions";
 import { useCourseContext } from "../../context/contextFiles/CourseContext";
 import NoContentPage from "./NoContentPage";
 import QuizHistory from "./QuizHistory";
 import BlurLoading from "../../pages/common/BlurLoading";
 import { useNavigate } from "react-router-dom"; 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useAuth } from "../../context/contextFiles/AuthContext";
 
 
 const CourseDetails = ({ courseId, moduleId }) => {
+    const { state: { user } } = useAuth();
   const [module, setModule] = useState(null);
   const [videos, setVideos] = useState([]);
   const [tests, setTests] = useState([]);
-  const { state: {courses, oneCourseProgress,allModuleProgress, allVideoProgess, allTestProgress} , dispatch } = useCourseContext();
+  const { state: {courses,oneCourse, oneCourseProgress,allModuleProgress, allVideoProgess, allTestProgress} , dispatch } = useCourseContext();
   const [activeTab, setActiveTab] = useState("chapters");
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [currentView, setCurrentView] = useState("video");
@@ -63,8 +65,6 @@ const CourseDetails = ({ courseId, moduleId }) => {
   const navigate = useNavigate();
 
   const handleAnswerSelect = (questionIndex, optionText) => {
-    // This function is passed to QuizContent to handle answer selection
-    // The actual state management is now handled within QuizContent
   };
 
   const particularCourse = courses.find(course => course._id === courseId);
@@ -91,6 +91,40 @@ const CourseDetails = ({ courseId, moduleId }) => {
 
     fetchData();
   }, [moduleId, dispatch]);
+
+  useEffect(() => {
+    const fetchCourseProgress = async () => {
+      console.log('we have entered use effect')
+      if (!courseId || !user?._id) return;
+      console.log('we have passed return statement')
+      try {
+      console.log('we are in try block')
+  
+        dispatch({ type: 'COURSE_LOADING' });
+        await getCourseWithProgress(courseId, user._id, dispatch);
+      } catch (error) {
+        console.error('Failed to fetch course progress:', error);
+      }
+    };
+  
+    // Always fetch on mount or when courseId changes
+      if (!oneCourse || oneCourse?._id !== courseId) {
+      // Only fetch if no data, or data is for another course
+      fetchCourseProgress();
+    }
+  }, [courseId, user?._id, dispatch]);
+  
+useEffect(() => {
+  if (allModuleProgress?.length && moduleId && courseId) {
+    const moduleProgress = allModuleProgress.find(
+      (x) => x.moduleId === moduleId && x.courseId === courseId
+    );
+
+    if (moduleProgress) {
+      dispatch({ type: "MODULE_PROGRESS", payload: moduleProgress });
+    }
+  }
+}, [moduleId, courseId, allModuleProgress]);
 
 
   return (

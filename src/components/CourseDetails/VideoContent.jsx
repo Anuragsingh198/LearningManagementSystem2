@@ -81,10 +81,9 @@ export const VideoContent = ({
     const userId = user._id;
     const hoursToExpire = 24; 
     const userToken = user.token;
-    // Buffer and loading state handling
     useEffect(() => {
         return () => {
-            // Cleanup if needed
+         
         };
     }, [isPlaying]);
 console.log('Course Context Values:', {
@@ -96,12 +95,20 @@ console.log('Course Context Values:', {
 });
 
 console.log("this is the  corrent  video progress data :" , allModuleProgress)
+console.log("this is the  id of module : ",oneModuleProgress )
+
+
+useEffect(()=>{
+console.log("this is the  id of module : ",oneCourseProgress )
+},[oneCourseProgress])
+
+
+
 
 const handleVideoProgress = async () => {
   const progressExists = allVideoProgress.find((x) => {
     return x.videoId === currentVideoData._id;
   });
-
   if (!progressExists) {
     const createdProgress = await videoProgress(
       oneCourseProgress.courseId,
@@ -165,29 +172,39 @@ useEffect(() => {
         setReadableDuration(formatDuration(duration));
     }, [duration]);
 
-    // useEffect(() => {
-    //     const markVideoAndFetchProgress = async () => {
-    //         if (progress >= 90 && !hasMarkedComplete && currentVideoData?._id) {
-    //             setHasMarkedComplete(true);
-    //             try {
-    //                 await updateVideoCompletion(courseId, currentVideoData._id, moduleId, dispatch);
-    //                 await getCourseProgress(courseId, userId, dispatch);
-    //             } catch (error) {
-    //                 console.error('Error updating video completion:', error);
-    //             }
-    //         }
-    //     };
-    //     markVideoAndFetchProgress();
-    // }, [progress]);
+    
+    useEffect(() => {
+        console.log("this is the  current  video  data : ", currentVideoData)
+  const markVideoAndFetchProgress = async () => {
+    if (progress >=90 && !hasMarkedComplete && currentVideoData?._id) {
+      setHasMarkedComplete(true);
+      try {
+        await updateVideoCompletion(
+          oneCourseProgress.courseId,
+          currentVideoData._id,
+          oneModuleProgress.moduleId,
+          dispatch
+        );
+      } catch (error) {
+        console.error('Error updating video completion:', error);
+      }
+    }
+
+
+  };
+  console.log("this is  before  markVideoAndFetchProgress ")
+  markVideoAndFetchProgress();
+  console.log("this is  after  markVideoAndFetchProgress ")
+}, [progress]);
 
     const togglePlayPause = () => {
         setIsPlaying(!isPlaying);
     };
 
     const handleProgress = (state) => {
+        console.log("this is the  progress of  the  video  data : " , state.played)
         setProgress(state.played * 100);
         setCurrentTime(state.playedSeconds);
-        // Mark as ready when we have enough buffer
         if (state.loadedSeconds - state.playedSeconds > 2) {
             setIsVideoReady(true);
             setIsBuffering(false);

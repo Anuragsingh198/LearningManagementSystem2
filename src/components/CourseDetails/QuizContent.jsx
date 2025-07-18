@@ -15,7 +15,7 @@ import { NoVideosFound } from "./NoContentFoundPage";
 import { TestResult } from "./TestResult";
 import { useCourseContext } from "../../context/contextFiles/CourseContext";
 import { useAuth } from "../../context/contextFiles/AuthContext";
-import { getCourseProgress, SubmitTest } from "../../context/Actions/courseActions";
+import { getCourseProgress, SubmitTest, testProgress } from "../../context/Actions/courseActions";
 import { Loader } from "lucide-react";
 import { useParams } from "react-router-dom";
 
@@ -37,30 +37,46 @@ export const QuizContent = ({
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setisLoading] = useState(false)
   const [score, setScore] = useState(0);
-  const { state: { loading, courseProgress }, dispatch, } = useCourseContext();
+  const [currentTestData ,  setCurrentTestData] =  useState( currentTest);
+ const { state: { loading,oneCourseProgress ,oneModuleProgress,currentTestProgress, allTestProgress}, dispatch } = useCourseContext();
   // console.log("loading true  Quiz Content: ,", loading)
   const currentQ = questions && questions[currentQuestion];
   console.log("this is the  current question from quiz content", currentQ);
+  console.log("this is the  allTestProgress from quiz content", oneCourseProgress,oneModuleProgress, allTestProgress );
+
 
   if (!questions || questions.length === 0) {
     return <NoVideosFound />;
   }
-  // const handleCourseProgress = async (courseId, userId) => {
-  //   return await getCourseProgress(courseId, userId, dispatch);
-  // }
+  console.log("this is the  oneCourseProgress test : ", oneCourseProgress);
+  console.log("this is the  current test : ", tests[currentTest]._id);
 
-  // useEffect(() => {
-  //   const fetchdata = async () => {
-  //     const courseProg = await handleCourseProgress(courseId, user._id);
-  //     // console.log("this is the data from quiz content:", courseProg);
-  //   };
-  //   if (user?._id && courseId) fetchdata();
-  //   setUserId(user._id);
-  //   //   setProgressId(courseProgress._id);
+const handleTestProgress = async() => {
+  const progressExists = allTestProgress.find(
+    (x) => x.testId === currentTest._id
+  );
 
-  // }, [user?._id, courseId]);
+  if (!progressExists) {
+    const createdProgress = await testProgress(
+      oneCourseProgress.courseId,
+      tests[currentTest],
+      oneModuleProgress.moduleId,
+      tests[currentTest]._id,
+      dispatch
+    );
+  } else {
+    console.log("Test progress exists:", progressExists);
+    dispatch({ type: 'TEST_PROGRESS', payload: progressExists });
+  }
+};
 
-  // console.log("quiz contetn course Content data is  : ", courseProgress)
+useEffect(() => {
+    handleTestProgress();
+    // console.log("this is the  text progresss from te  useeffect : ", allTestProgress)
+}, []);
+
+
+
   const handleSubmit = async () => {
     let correctAnswers = 0;
     questions.forEach((q, index) => {

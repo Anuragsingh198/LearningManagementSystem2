@@ -42,6 +42,11 @@ export const courseReducer = (state, action) => {
         loading: false,
         error: null,
       };
+    case "MODULE_PROGRESS":
+  return {
+    ...state,
+    oneModuleProgress: action.payload,
+  };
 
 case "SET_MODULE_PROGRESS":
   return {
@@ -89,11 +94,10 @@ case 'SET_COURSE_PROGRESS_ALL':
     oneCourseProgress: action.payload.courseProgress || null,
     allModuleProgress: action.payload.moduleProgress || [],
     allTestProgress: action.payload.testProgress || [],
-    allVideoProgress: action.payload.videoProgress || [] 
+    allVideoProgress: action.payload.videoProgress || []
   };
 
-
-  case "TEST_PROGRESS":
+case 'TEST_PROGRESS':
   return {
     ...state,
     currentTestProgress: action.payload,

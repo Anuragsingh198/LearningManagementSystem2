@@ -54,10 +54,7 @@ export const Sidebar = ({
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { state: { loading, courseProgress,allModuleProgress , oneModuleProgress:moduleProgress , oneVideoProgress , allVideoProgress}, dispatch } = useCourseContext();
     const [videoDuration, setvideoDuration] = useState(0);
-    // const moduleProgress = allModuleProgress?.find(
-    //     (mod) => mod.module === moduleId
-    // );
-    
+
 console.log("this is hte  corrent  video data : " ,videos[currentVideo] )
 
     const videoStatusMap = {};
@@ -67,63 +64,26 @@ if (moduleProgress && Array.isArray(allVideoProgress)) {
     videoStatusMap[vp.video] = vp.status;
   });
 }
-    // const checkVideoInUserProgress = async (videoId, moduleId, courseId) => {
-    //     await checkVideoOrTestInUserProgressAction({
-    //         videoId: videoId,
-    //         moduleId: moduleId,
-    //         courseId: courseId
-    //     }, dispatch);
 
-    // }
-
-const handleVideoProgress = async (videoId, moduleId, courseId, video) => {
-  try {
-    if (!videoId || !moduleId || !courseId) {
-      return;
-    }
-    await videoProgress(courseId, video, videoId, moduleId, dispatch);
-  } catch (error) {
-    console.error("Error in handleVideoProgress:", error);
-  }
-};
-
-
-    //     const checkTestInUserProgress = async (testId, moduleId, courseId) => {
-    //         // console.log('the test id and module id and course id is: ', testId, moduleId, courseId)
-    //         await checkVideoOrTestInUserProgressAction({
-    //         testId: testId,
-    //         moduleId: moduleId,
-    //         courseId: courseId
-    //     }, dispatch);
-
-    // }
     
-const handleTestProgress = async (testId, moduleId, courseId, test) => {
-  try {
-    if (!testId || !moduleId || !courseId) {
-      console.warn("Missing required parameters for test progress:", {
-        testId,
-        moduleId,
-        courseId,
-      });
-      return;
-    }
-
-    await testProgress(courseId, test, moduleId, testId, dispatch);
-  } catch (error) {
-    console.error('Error in handleTestProgress:', error);
-  }
-};
-
-
-    // this use effect is very crucial this, if only one test is there and we don't click on it and directly start giving test it will fail because 
-    // console.log('tests: ', tests[0]._id)
-
-//     useEffect(() => {
-//     if (tests && tests.length > 0 && tests[0]?._id && moduleId && courseId) {        
-//         checkTestInUserProgress(tests[0]._id, moduleId, courseId);
+// const handleTestProgress = async (testId, moduleId, courseId, test) => {
+//   try {
+//     if (!testId || !moduleId || !courseId) {
+//       console.warn("Missing required parameters for test progress:", {
+//         testId,
+//         moduleId,
+//         courseId,
+//       });
+//       return;
 //     }
-// }, [tests, moduleId, courseId]); 
+
+//     await testProgress(courseId, test, moduleId, testId, dispatch);
+//   } catch (error) {
+//     console.error('Error in handleTestProgress:', error);
+//   }
+// };
+
+
 
 
     return (
@@ -260,7 +220,6 @@ const handleTestProgress = async (testId, moduleId, courseId, test) => {
                                             selected={currentVideo === index}
                                             onClick={() => {
                                                 setCurrentVideo(index)
-                                                handleVideoProgress (video._id, moduleId,video,  courseId)
                                             }}
                                             sx={{
                                                 borderLeft: status === 'completed' ? '4px solid' : 'none',
@@ -346,7 +305,7 @@ const handleTestProgress = async (testId, moduleId, courseId, test) => {
                                     <ListItemButton
                                         selected={currentTest === index}
                                         onClick={() => {setCurrentTest(index)
-                                            handleTestProgress(quiz._id, moduleId, courseId,  quiz)
+                                            // handleTestProgress(quiz._id, moduleId, courseId,  quiz)
                                         }}
                                         sx={{
 
