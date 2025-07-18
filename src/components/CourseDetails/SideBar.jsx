@@ -52,7 +52,7 @@ export const Sidebar = ({
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const { state: { loading, courseProgress,allModuleProgress , oneModuleProgress:moduleProgress , oneVideoProgress , allVideoProgress}, dispatch } = useCourseContext();
+    const { state: { oneModuleProgress:moduleProgress , currentVideoProgress , allVideoProgress}, dispatch } = useCourseContext();
     const [videoDuration, setvideoDuration] = useState(0);
 
 console.log("this is hte  corrent  video data : " ,videos[currentVideo] )
