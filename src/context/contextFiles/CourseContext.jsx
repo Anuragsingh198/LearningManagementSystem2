@@ -17,7 +17,6 @@ const initialState = {
   currentVideoProgress:null,
   allTestProgress:[],
   currentTestProgress:null,
-
 };
 
 const CourseContext = createContext(undefined);

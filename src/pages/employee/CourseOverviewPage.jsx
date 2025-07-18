@@ -10,7 +10,6 @@ import { getCourseWithProgress } from "../../context/Actions/courseActions";
 const OverviewPage = () => {
   const { state: { user } } = useAuth();
   const { courseId } = useParams();
-  // console.log("this is the  course id from iverview page : ",  courseId)
 
   const {
     state: {

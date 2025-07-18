@@ -36,7 +36,7 @@ import { useEffect, useState } from 'react';
 import NoContentPage from './NoContentPage';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
-import { checkProgress, deleteModule, moduleProgress } from '../../context/Actions/courseActions';
+import { checkProgress, deleteModule, getCoursesAction, moduleProgress } from '../../context/Actions/courseActions';
 import axios from 'axios';
 
 
@@ -116,15 +116,47 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
 
   //just checking
   const moduleProgressMap = {};
+
   allModuleProgress?.forEach((module) => {
     moduleProgressMap[module.module] = module.status;
     // so this function will give you
     // moduleProgressMap = { "68418edaacce3e3b7adc1f0f": "completed", ... }
   });
  useEffect(()=>{
-  console.log("this is the  course progress data from : ",oneCourseProgress,allCourseProgress  )
+  console.log("this is the  course progress data from : ",oneCourseProgress,allModuleProgress  )
  })
-
+useEffect(() => {
+    const fetchCourseProgress = async () => {
+      console.log('we have entered use effect')
+      if (!courseId || !user?._id) return;
+      console.log('we have passed return statement')
+      try {
+      console.log('we are in try block')
+  
+        dispatch({ type: 'COURSE_LOADING' });
+        await getCoursesAction(courseId, user._id, dispatch);
+      } catch (error) {
+        console.error('Failed to fetch course progress:', error);
+      }
+    };
+  
+    // Always fetch on mount or when courseId changes
+      if (!oneCourse || oneCourse?._id !== courseId) {
+      // Only fetch if no data, or data is for another course
+      fetchCourseProgress();
+    }
+  }, [courseId, user?._id, dispatch]);
+  // useEffect(() => {
+  //   if (allModuleProgress?.length && moduleId && courseId) {
+  //     const moduleProgress = allModuleProgress.find(
+  //       (x) => x.moduleId === moduleId && x.courseId === courseId
+  //     );
+  
+  //     if (moduleProgress) {
+  //       dispatch({ type: "MODULE_PROGRESS", payload: moduleProgress });
+  //     }
+  //   }
+  // }, [moduleId, courseId, allModuleProgress]);
   // console.log('progress percentage in overview content is: ', percentageCompleted)
   // console.log('progress percentage completed is: ', progressPercentage)
 
@@ -139,7 +171,6 @@ const handleSubmit = async (chapterId, chapter) => {
   const clickedModuleExistingProgress = allModuleProgress.find(
     (x) => x._id === chapterId
   );
-
   setClickedModuleProgress(clickedModuleExistingProgress);
   setSelectedChapter(chapterId);
 

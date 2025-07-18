@@ -411,37 +411,40 @@ export const getCourseProgress = async (courseId, userId, dispatch) => {
 export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatch) => {
   const token = getAuthToken();
   try {
-    dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'COURSE_LOADING', payload: true });
 
-    const response = await axios.post(`${serverurl}/api/users/video-progress`, {
-      courseId,
-      videoId,
-      moduleId
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await axios.post(
+      `${serverurl}/api/users/video-progress/complete`,
+      { courseId, videoId, moduleId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    });
+    );
 
     const data = response.data;
 
     if (data.success) {
-      dispatch({ type: 'COURSE_PROGRESS', payload: data.progress });
-      const updatedData = data.progress;
-      console.log('so the automatic update as soon as the video is 90% complete is: ', updatedData)
-      return data.progress;
-    } else {
-      throw new Error(data.message);
+      dispatch({
+        type: 'SET_COURSE_PROGRESS_ALL',
+        payload: {
+          courseProgress: data.courseProgress,
+          moduleProgress: data.moduleProgress || [],
+          videoProgress: data.videoProgress || [],
+          testProgress: data.testProgress || [],
+        },
+      });
+
+      dispatch({ type: 'VIDEO_PROGRESS', payload: data.videoProgressItem });
     }
   } catch (error) {
-    console.error('Error in updating video progress:', error);
-    return null;
+    console.error('Error updating video completion:', error);
+    dispatch({ type: 'COURSE_ERROR' });
   } finally {
-    dispatch({ type: 'SET_LOADING', payload: false });
+    dispatch({ type: 'COURSE_LOADING', payload: false });
   }
 };
-
-
 
 export const checkProgress = async (courseId, chapterId, dispatch) => {
   const token = getAuthToken();
@@ -575,6 +578,7 @@ export const courseProgress = async (courseId, userId, dispatch) => {
 
 export const videoProgress = async (courseId, video, videoId, moduleId, dispatch) => {
   const token = getAuthToken();
+  console.log(" this is  the data from  video progress : ", courseId , videoId);
 
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
@@ -636,7 +640,18 @@ export const testProgress = async (courseId, test, moduleId, testId, dispatch) =
     const data = response.data;
 
     if (data.success) {
+      dispatch({
+        type: 'SET_COURSE_PROGRESS_ALL',
+        payload: {
+          courseProgress: data.courseProgress,
+          moduleProgress: data.moduleProgress || [],
+          videoProgress: data.videoProgress || [],
+          testProgress: data.testProgress ? [data.testProgress] : [],
+        },
+      });
+
       dispatch({ type: 'TEST_PROGRESS', payload: data.testProgress });
+
       return data.testProgress;
     } else {
       throw new Error(data.message);
@@ -649,6 +664,7 @@ export const testProgress = async (courseId, test, moduleId, testId, dispatch) =
     dispatch({ type: 'COURSE_LOADING', payload: false });
   }
 };
+
 
 
 export const moduleProgress = async (courseId, chapterId, clickedModuleProgress, dispatch) => {
