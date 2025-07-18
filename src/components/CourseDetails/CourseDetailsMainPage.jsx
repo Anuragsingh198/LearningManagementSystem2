@@ -48,7 +48,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
   const [module, setModule] = useState(null);
   const [videos, setVideos] = useState([]);
   const [tests, setTests] = useState([]);
-  const { state: {courses,oneCourse, oneCourseProgress,allModuleProgress, allVideoProgess, allTestProgress} , dispatch } = useCourseContext();
+  const { state: {courses,oneCourse, oneCourseProgress,allModuleProgress, allVideoProgess, allTestProgress , currentVideoProgress} , dispatch } = useCourseContext();
   const [activeTab, setActiveTab] = useState("chapters");
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [currentView, setCurrentView] = useState("video");
@@ -92,7 +92,13 @@ const CourseDetails = ({ courseId, moduleId }) => {
     fetchData();
   }, [moduleId, dispatch]);
 
-  useEffect(() => {
+  
+  useEffect(()=>{
+    console.log("this is sidebar",currentVideoProgress, allModuleProgress );
+  }, [currentVideoProgress, allModuleProgress]);
+
+
+  useEffect(() => { 
     const fetchCourseProgress = async () => {
       console.log('we have entered use effect')
       if (!courseId || !user?._id) return;
