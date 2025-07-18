@@ -38,16 +38,16 @@ export const createCourseAction = async (course, dispatch) => {
     // formData.append('instructor', course.instructor);
     // formData.append('thumbnail', course.thumbnail); 
 
-const response = await axios.post(
-  `${serverurl}/api/courses/create-course`,
-  course,  // this is a FormData instance now
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      // 'Content-Type': 'multipart/form-data',
-    },
-  }
-)
+    const response = await axios.post(
+      `${serverurl}/api/courses/create-course`,
+      course,  // this is a FormData instance now
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // 'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
 
     const data = response.data;
 
@@ -69,8 +69,8 @@ const response = await axios.post(
 };
 
 export const createModuleAction = async (module, dispatch) => {
-  console.log( 'this is  the  module  action ' , module);
-   const user = JSON.parse(localStorage.getItem('user'));
+  console.log('this is  the  module  action ', module);
+  const user = JSON.parse(localStorage.getItem('user'));
 
   if (!user || !user._id) {
     throw new Error('User not authenticated');
@@ -84,7 +84,7 @@ export const createModuleAction = async (module, dispatch) => {
 
   try {
     dispatch({ type: 'COURSE_LOADING' });
-    const response = await axios.post(`${serverurl}/api/courses/course-module`, module ,{
+    const response = await axios.post(`${serverurl}/api/courses/course-module`, module, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ export const createModuleAction = async (module, dispatch) => {
     console.error('Create module error:', error);
     throw error;
   }
-}   
+}
 
 export const createVideoAction = async (formData, dispatch) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -144,7 +144,7 @@ export const createVideoAction = async (formData, dispatch) => {
 
 
 export const getCoursesAction = async (dispatch) => {
-    //  const user = JSON.parse(localStorage.getItem('user'));
+  //  const user = JSON.parse(localStorage.getItem('user'));
 
   // if (!user || !user._id) {
   //   throw new Error('User not authenticated');
@@ -161,7 +161,7 @@ export const getCoursesAction = async (dispatch) => {
     const response = await axios.get(`${serverurl}/api/courses`);
     const data = response.data;
     if (data.success) {
-      if(!data.courses || data.courses.length === 0) {
+      if (!data.courses || data.courses.length === 0) {
         dispatch({ type: 'SET_COURSES', payload: [] });
         console.log('No courses found');
         return [];
@@ -180,7 +180,7 @@ export const getCoursesAction = async (dispatch) => {
 }
 
 export const getMyCoursesAction = async (dispatch) => {
-     const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem('user'));
   if (!user || !user._id) {
     throw new Error('User not authenticated');
   }
@@ -193,24 +193,30 @@ export const getMyCoursesAction = async (dispatch) => {
 
   const userId = user._id
   console.log("this is the  user Id : ", userId);
-    try {
+  try {
     dispatch({ type: 'COURSE_LOADING' });
-    const response = await axios.get(`${serverurl}/api/users/${userId}` , {
+    const response = await axios.get(`${serverurl}/api/users/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     const data = response.data;
     if (data.success) {
-      if(!data.courses || data.courses.length === 0) {
+      const myCourses = data.courses || data.adminCourses || [];
+
+      if (myCourses.length === 0) {
         dispatch({ type: 'SET_MY_COURSES', payload: [] });
         console.log('No courses found');
         return [];
       }
 
-      dispatch({ type: 'SET_MY_COURSES', payload: data.courses });
-      // console.log('My Courses fetched:', data.courses);
-      return data.courses;
+      dispatch({
+        type: 'SET_MY_COURSES',
+        payload: myCourses
+      });
+
+      console.log('My Courses fetched:', myCourses);
+      return myCourses;
     } else {
       throw new Error(data.message || 'Failed to fetch my courses');
     }
@@ -268,8 +274,8 @@ export const getCourseById = async (courseId, dispatch) => {
         return null;
       }
       // console.log('Course fetched successfully:', data.course);
-      dispatch({type:'SET_ONECOURSE' , payload:data.course});
-      return data.course; 
+      dispatch({ type: 'SET_ONECOURSE', payload: data.course });
+      return data.course;
     } else {
       throw new Error(data.message || 'Failed to fetch course');
     }
@@ -290,7 +296,7 @@ export const getCourseWithProgress = async (courseId, userId, dispatch) => {
       courseId,
       userId
     }, {
-      headers: { Authorization: `Bearer ${token}`}
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     const data = response.data;
@@ -348,12 +354,12 @@ export const getModulebyModuleId = async (moduleId, dispatch) => {
     throw error;
   }
 };
-export const SubmitTest = async ({testId , userAnswers, moduleId , progressId, dispatch}) => {
+export const SubmitTest = async ({ testId, userAnswers, moduleId, progressId, dispatch }) => {
   const token = getAuthToken();
-  console.log("  submit action data is  : " , progressId , moduleId)
+  console.log("  submit action data is  : ", progressId, moduleId)
   try {
     dispatch({ type: 'COURSE_LOADING' });
-    const response = await axios.post(`${serverurl}/api/users/test-submit`,{testId , userAnswers , moduleId , progressId}, {
+    const response = await axios.post(`${serverurl}/api/users/test-submit`, { testId, userAnswers, moduleId, progressId }, {
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log("this the test score from  action submittest: ", response);
@@ -388,7 +394,7 @@ export const getCourseProgress = async (courseId, userId, dispatch) => {
     const data = response.data;
     if (data.success) {
       dispatch({ type: 'COURSE_PROGRESS', payload: data.progress });
-      return data.progress; 
+      return data.progress;
     } else {
       throw new Error(data.message);
     }
@@ -445,7 +451,7 @@ export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatc
 export const checkProgress = async (courseId, chapterId, dispatch) => {
   const token = getAuthToken();
 
-  try{
+  try {
     dispatch({ type: 'SET_LOADING', payload: true });
 
     const response = await axios.post(`${serverurl}/api/users/check-progress`, {
@@ -458,11 +464,11 @@ export const checkProgress = async (courseId, chapterId, dispatch) => {
 
     const data = response.data;
 
-    if(data.success){
-     dispatch({ type: 'COURSE_PROGRESS', payload: data.progress });
+    if (data.success) {
+      dispatch({ type: 'COURSE_PROGRESS', payload: data.progress });
       return data.progress;
 
-    }else {
+    } else {
       throw new Error(data.message);
     }
   } catch (error) {
@@ -506,7 +512,7 @@ export const checkVideoOrTestInUserProgressAction = async ({ videoId, testId, mo
   }
 };
 
-export const deleteCourse = async ( courseToDelete, dispatch) => {
+export const deleteCourse = async (courseToDelete, dispatch) => {
   const token = getAuthToken();
 
   try {
@@ -521,9 +527,9 @@ export const deleteCourse = async ( courseToDelete, dispatch) => {
     const data = response.data;
 
     if (data.success) {
-      
+
       console.log('course deleted, message from backend: ', data.message)
-      
+
     } else {
       throw new Error(data.message);
     }
@@ -711,7 +717,7 @@ export const moduleProgress = async (courseId, chapterId, clickedModuleProgress,
   }
 };
 
-export const deleteModule = async ( chapterId, dispatch) => {
+export const deleteModule = async (chapterId, dispatch) => {
   const token = getAuthToken();
 
   try {
@@ -726,9 +732,9 @@ export const deleteModule = async ( chapterId, dispatch) => {
     const data = response.data;
 
     if (data.success) {
-      
+
       console.log('Module deleted, message from backend: ', data.message)
-      
+
     } else {
       throw new Error(data.message);
     }

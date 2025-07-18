@@ -7,6 +7,7 @@ const initialState = {
   myCourses: [],
   modules: [],
   videos: [],
+  adminCourses: [],
   oneCourse:null,
   oneCourseProgress:null,
   oneModuleProgress: null,

@@ -27,6 +27,7 @@ import TestStartPage from './pages/common/TestStartPage';
 import TestReviewPage from './pages/common/TestReviewPage';
 import TestPage from './pages/Test/TestPage';
 import TestExitPage from './pages/Test/TestExitPage';
+import CreateAssessment from './pages/admin/CreateAssesment';
 
 function App() {
 
@@ -79,6 +80,7 @@ function App() {
                   <Route path="/assessments/start-test/test" element={<TestPage/>} />
                   <Route path="/assessments/review/:id" element={<TestReviewPage/>} />
                   <Route path="/assessments/test-submitted" element={<TestExitPage />} />
+                  <Route path="/assessments/create" element={<CreateAssessment  />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                   
                 </Routes>

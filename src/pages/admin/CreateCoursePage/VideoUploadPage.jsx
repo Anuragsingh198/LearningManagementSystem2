@@ -83,7 +83,7 @@ const VideoUploadPage = () => {
       <Box>
         {activeTab === 'video' && <VideoUploadForm courseId={courseId} />}
         {activeTab === 'quiz' && <QuizCreationForm courseId={courseId} />}
-        {activeTab === 'assessment' && <AddAssessment courseId={courseId} />}
+        {/* {activeTab === 'assessment' && <AddAssessment courseId={courseId} />} */}
       </Box>
     </Box>
   );
