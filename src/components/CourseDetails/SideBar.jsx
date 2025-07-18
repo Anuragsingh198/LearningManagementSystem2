@@ -65,6 +65,9 @@ if (moduleProgress && Array.isArray(allVideoProgress)) {
   });
 }
 
+useEffect(()=>{
+  console.log(" side bar useeffect  video  status changed : ",oneVideoProgress, allModuleProgress );
+}, [oneVideoProgress, allModuleProgress]);
     
 // const handleTestProgress = async (testId, moduleId, courseId, test) => {
 //   try {

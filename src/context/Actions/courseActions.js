@@ -401,7 +401,6 @@ export const getCourseProgress = async (courseId, userId, dispatch) => {
 };
 
 
-
 export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatch) => {
   const token = getAuthToken();
   try {
@@ -430,15 +429,18 @@ export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatc
         },
       });
 
+      // Individual progress items
       dispatch({ type: 'VIDEO_PROGRESS', payload: data.videoProgressItem });
+      dispatch({ type: 'MODULE_PROGRESS', payload: data.oneModuleProgress }); // If it's a single object in array
     }
   } catch (error) {
     console.error('Error updating video completion:', error);
-    dispatch({ type: 'COURSE_ERROR' });
+    dispatch({ type: 'COURSE_ERROR', payload: error.message || 'Unknown error' });
   } finally {
     dispatch({ type: 'COURSE_LOADING', payload: false });
   }
 };
+
 
 export const checkProgress = async (courseId, chapterId, dispatch) => {
   const token = getAuthToken();
