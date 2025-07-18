@@ -52,39 +52,39 @@ export const Sidebar = ({
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const { state: { loading, courseProgress,allModuleProgress , oneModuleProgress:moduleProgress , oneVideoProgress , allVideoProgress}, dispatch } = useCourseContext();
+    const { state: { loading, courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
     const [videoDuration, setvideoDuration] = useState(0);
 
-console.log("this is hte  corrent  video data : " ,videos[currentVideo] )
+    console.log("this is hte  corrent  video data : ", videos[currentVideo])
 
     const videoStatusMap = {};
 
-if (moduleProgress && Array.isArray(allVideoProgress)) {
-  allVideoProgress.forEach((vp) => {
-    videoStatusMap[vp.video] = vp.status;
-  });
-}
+    allVideoProgress.forEach((vp) => {
+        videoStatusMap[vp.videoId] = vp.status;
+    });
 
-useEffect(()=>{
-  console.log(" side bar useeffect  video  status changed : ",oneVideoProgress, allModuleProgress );
-}, [oneVideoProgress, allModuleProgress]);
-    
-// const handleTestProgress = async (testId, moduleId, courseId, test) => {
-//   try {
-//     if (!testId || !moduleId || !courseId) {
-//       console.warn("Missing required parameters for test progress:", {
-//         testId,
-//         moduleId,
-//         courseId,
-//       });
-//       return;
-//     }
+    console.log("all video progress videoStatusMap from   side bar is : ", videoStatusMap)
 
-//     await testProgress(courseId, test, moduleId, testId, dispatch);
-//   } catch (error) {
-//     console.error('Error in handleTestProgress:', error);
-//   }
-// };
+    useEffect(() => {
+        console.log("this is sidebar", currentVideoProgress, allModuleProgress, allVideoProgress);
+    }, [currentVideoProgress, allModuleProgress, allVideoProgress]);
+
+    // const handleTestProgress = async (testId, moduleId, courseId, test) => {
+    //   try {
+    //     if (!testId || !moduleId || !courseId) {
+    //       console.warn("Missing required parameters for test progress:", {
+    //         testId,
+    //         moduleId,
+    //         courseId,
+    //       });
+    //       return;
+    //     }
+
+    //     await testProgress(courseId, test, moduleId, testId, dispatch);
+    //   } catch (error) {
+    //     console.error('Error in handleTestProgress:', error);
+    //   }
+    // };
 
 
 
@@ -127,7 +127,7 @@ useEffect(()=>{
                         onClick={() => setCurrentView('video')}
                         sx={{
 
-                            border: '1px solid #ccc', 
+                            border: '1px solid #ccc',
                             mb: '4px',
                             borderRadius: '8px',
                             '&.Mui-selected': {
@@ -165,7 +165,7 @@ useEffect(()=>{
                         onClick={() => setCurrentView('quiz')}
                         sx={{
 
-                            border: '1px solid #ccc', 
+                            border: '1px solid #ccc',
                             borderRadius: '8px',
                             '&.Mui-selected': {
                                 bgcolor: 'primary.main',
@@ -215,8 +215,8 @@ useEffect(()=>{
                         />
                         <List >
                             {videos.map((video, index) => {
-                                const status = videoStatusMap[video._id]; // or video.id depending on your ID type
-                                // console.log('the status for particular video is: ',video._id,  status)
+                                const status = videoStatusMap[video._id];
+                                console.log("the status for particular video is:", video._id, status);
                                 return (
                                     <ListItem key={video._id} disablePadding>
                                         <ListItemButton
@@ -307,7 +307,8 @@ useEffect(()=>{
                                 <ListItem key={quiz.id} disablePadding>
                                     <ListItemButton
                                         selected={currentTest === index}
-                                        onClick={() => {setCurrentTest(index)
+                                        onClick={() => {
+                                            setCurrentTest(index)
                                             // handleTestProgress(quiz._id, moduleId, courseId,  quiz)
                                         }}
                                         sx={{
