@@ -77,29 +77,33 @@ useEffect(() => {
 
 
 
-  const handleSubmit = async () => {
-    let correctAnswers = 0;
-    questions.forEach((q, index) => {
-      if (userAnswers[index] === q.correctAnswer) {
-        correctAnswers++;
-      }
-    });
-    setScore(correctAnswers);
-
-    try {
-      setisLoading(true)
-      const testId = tests[currentTest]._id;
-      const result = await SubmitTest({ testId, userAnswers, moduleId, progressId: courseProgress?._id, dispatch });
-      // console.log("Test submission result:", result);
-      await getCourseProgress(courseId, user._id, dispatch)
-      setisLoading(false)
-      setSubmitted(true);
-
-    } catch (error) {
-      console.error("Error submitting test:", error);
+const handleSubmit = async () => {
+  let correctAnswers = 0;
+  questions.forEach((q, index) => {
+    if (userAnswers[index] === q.correctAnswer) {
+      correctAnswers++;
     }
-  };
+  });
+  setScore(correctAnswers);
 
+  try {
+    setisLoading(true);
+
+    const testId = tests[currentTest]._id;
+
+    const result = await SubmitTest({testId,userAnswers,moduleId,courseId,dispatch});
+    // await getCourseProgress(courseId, user._id, dispatch);
+    setisLoading(false);
+    setSubmitted(true);
+  } catch (error) {
+    console.error("Error submitting test:", error);
+    setisLoading(false);
+  }
+};
+
+ useEffect(()=>{
+  console.log("this is the current test progress : " , currentTestProgress)
+ },[currentTestProgress])
   const handleRetake = () => {
     setUserAnswers({});
     setSubmitted(false);
