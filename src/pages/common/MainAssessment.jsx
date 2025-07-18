@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography, Button } from '@mui/material';
 import React from 'react';
 import TestCard from '../../components/TestCard';
 import { Link } from 'react-router-dom';
@@ -87,6 +87,19 @@ function MainAssessment() {
 
   return (
     <Box p={2}>
+
+       {role === 'instructor' && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, mr: '2vw' }}>
+          <Button
+            component={Link}
+            to="/assessments/create"
+            variant="contained"
+            color="primary"
+          >
+            Create Assessment
+          </Button>
+        </Box>
+      )}
     
       <Grid container spacing={2} sx={{display: 'flex', justifyContent: 'center'}}>
         {mockTests.map((test, idx) => (
