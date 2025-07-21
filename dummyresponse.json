@@ -1,0 +1,17 @@
+{
+    "_id": "6878d222d8439ce83996349c",
+    "userId": "686e39f0d7d0e66cb9fa58e4",
+    "courseId": "686cbcb8c811dbae8cf9a35c",
+    "courseInstructor": "686aa82ec811dbae8cf9a27a",
+    "overallPercentage": 0,
+    "status": "enrolled",
+    "isCourseCompleted": false,
+    "remainingDays": 30,
+    "enrolledDate": "2025-07-17T10:36:18.590Z",
+    "totalModules": 2,
+    "completedModules": 0,
+    "completionDate": "2025-08-16T10:36:18.590Z",
+    "createdAt": "2025-07-17T10:36:18.599Z",
+    "updatedAt": "2025-07-17T10:36:18.599Z",
+    "__v": 0
+}

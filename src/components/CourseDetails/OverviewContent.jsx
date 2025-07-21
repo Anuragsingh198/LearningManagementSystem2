@@ -118,13 +118,18 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   const moduleProgressMap = {};
 
   allModuleProgress?.forEach((module) => {
-    moduleProgressMap[module.module] = module.status;
+    moduleProgressMap[module.moduleId] = module.status;
     // so this function will give you
     // moduleProgressMap = { "68418edaacce3e3b7adc1f0f": "completed", ... }
   });
  useEffect(()=>{
-  console.log("this is the  course progress data from : ",oneCourseProgress,allModuleProgress  )
+  console.log("this is the  course progress data from : ",oneCourseProgress,allModuleProgress, oneModuleProgress )
  })
+
+ useEffect(()=> {
+  moduleProgressMap
+ }, [moduleProgressMap])
+
 useEffect(() => {
     const fetchCourseProgress = async () => {
       console.log('we have entered use effect')

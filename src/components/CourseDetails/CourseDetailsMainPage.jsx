@@ -94,7 +94,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
 
   
   useEffect(()=>{
-    console.log("this is sidebar",currentVideoProgress, allModuleProgress );
+    // console.log("this is sidebar",currentVideoProgress, allModuleProgress );
   }, [currentVideoProgress, allModuleProgress]);
 
 

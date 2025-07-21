@@ -682,15 +682,15 @@ export const videoProgress = async (courseId, video, videoId, moduleId, dispatch
 };
 
 
-export const testProgress = async (courseId, test, moduleId, testId, dispatch) => {
+export const testProgress = async (courseId, currentTestProgress, moduleId, testId, dispatch) => {
   const token = getAuthToken();
-
+  console.log('the test from test progress action is: ', currentTestProgress)
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
     const response = await axios.post(
       `${serverurl}/api/users/test-progress`,
-      { courseId, testData: test, moduleId, testId },
+      { courseId, testData: currentTestProgress, moduleId, testId },
       {
         headers: {
           Authorization: `Bearer ${token}`,

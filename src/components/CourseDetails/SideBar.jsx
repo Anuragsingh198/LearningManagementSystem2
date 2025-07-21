@@ -49,7 +49,7 @@ export const Sidebar = ({
     setCurrentQuestion,
 }) => {
     const { state: { loading, courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
-    console.log("this is hte  corrent  video data : ", videos[currentVideo])
+    // console.log("this is hte  corrent  video data : ", videos[currentVideo])
     const videoStatusMap = {};
     const totalVideos = moduleProgress?.totalVideos || 0;
     const completedVideos = moduleProgress?.completedVideos || 0;
@@ -58,10 +58,10 @@ export const Sidebar = ({
         videoStatusMap[vp.videoId] = vp.status;
     });
 
-    console.log("all video progress videoStatusMap from   side bar is : ", videoStatusMap)
+    // console.log("all video progress videoStatusMap from   side bar is : ", videoStatusMap)
 
     useEffect(() => {
-        console.log("this is sidebar", currentVideoProgress, allModuleProgress, allVideoProgress);
+        // console.log("this is sidebar", currentVideoProgress, allModuleProgress, allVideoProgress);
     }, [currentVideoProgress, allModuleProgress, allVideoProgress]);
 
     const handleAssessmentTabSelection = () => {
@@ -76,7 +76,7 @@ export const Sidebar = ({
     }
 
     useEffect(()=> {
-        console.log('the tests are: ', tests)
+        // console.log('the tests are: ', tests)
     }, [tests])
 
     return (
@@ -206,7 +206,7 @@ export const Sidebar = ({
                         <List >
                             {videos.map((video, index) => {
                                 const status = videoStatusMap[video._id];
-                                console.log("the status for particular video is:", video._id, status);
+                                // console.log("the status for particular video is:", video._id, status);
                                 return (
                                     <ListItem key={video._id} disablePadding>
                                         <ListItemButton

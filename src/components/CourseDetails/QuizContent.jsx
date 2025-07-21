@@ -10,6 +10,7 @@ import {
   Chip,
   Avatar,
   useAutocomplete,
+  CircularProgress,
 } from "@mui/material";
 import { NoVideosFound } from "./NoContentFoundPage";
 import { TestResult } from "./TestResult";
@@ -37,73 +38,81 @@ export const QuizContent = ({
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setisLoading] = useState(false)
   const [score, setScore] = useState(0);
-  const [currentTestData ,  setCurrentTestData] =  useState( currentTest);
- const { state: { loading,oneCourseProgress ,oneModuleProgress,currentTestProgress, allTestProgress}, dispatch } = useCourseContext();
+  const [currentTestData, setCurrentTestData] = useState(currentTest);
+  const { state: { loading, oneCourseProgress, oneModuleProgress, currentTestProgress, allTestProgress }, dispatch } = useCourseContext();
   // console.log("loading true  Quiz Content: ,", loading)
   const currentQ = questions && questions[currentQuestion];
-  console.log("this is the  current question from quiz content", currentQ);
-  console.log("this is the  allTestProgress from quiz content", oneCourseProgress,oneModuleProgress, allTestProgress );
+  // console.log("this is the  current question from quiz content", currentQ);
+  // console.log("this is the  allTestProgress from quiz content", oneCourseProgress,oneModuleProgress, allTestProgress );
 
+  const isPassed = currentTestProgress?.isPassed;
 
   if (!questions || questions.length === 0) {
     return <NoVideosFound />;
   }
-  console.log("this is the  oneCourseProgress test : ", oneCourseProgress);
-  console.log("this is the  current test : ", tests[currentTest]._id);
+  // console.log("this is the  oneCourseProgress test : ", oneCourseProgress);
+  // console.log("this is the  current test : ", tests[currentTest]._id);
 
-const handleTestProgress = async() => {
-  const progressExists = allTestProgress.find(
-    (x) => x.testId === currentTest._id
-  );
-
-  if (!progressExists) {
-    const createdProgress = await testProgress(
-      oneCourseProgress.courseId,
-      tests[currentTest],
-      oneModuleProgress.moduleId,
-      tests[currentTest]._id,
-      dispatch
+  const handleTestProgress = async () => {
+    const progressExists = allTestProgress.find(
+      (x) => x.testId === currentTest._id
     );
-  } else {
-    console.log("Test progress exists:", progressExists);
-    dispatch({ type: 'TEST_PROGRESS', payload: progressExists });
-  }
-};
 
-useEffect(() => {
-    handleTestProgress();
-    // console.log("this is the  text progresss from te  useeffect : ", allTestProgress)
-}, []);
-
-
-
-const handleSubmit = async () => {
-  let correctAnswers = 0;
-  questions.forEach((q, index) => {
-    if (userAnswers[index] === q.correctAnswer) {
-      correctAnswers++;
+    if (!progressExists) {
+      const createdProgress = await testProgress(
+        oneCourseProgress.courseId,
+        currentTestProgress,
+        oneModuleProgress.moduleId,
+        tests[currentTest]._id,
+        dispatch
+      );
+    } else {
+      // console.log("Test progress exists:", progressExists);
+      dispatch({ type: 'TEST_PROGRESS', payload: progressExists });
     }
-  });
-  setScore(correctAnswers);
+  };
 
-  try {
-    setisLoading(true);
+  useEffect(() => {
+    handleTestProgress();
+    console.log("this is the  text progresss from te  useeffect : ", allTestProgress)
+  }, []);
 
-    const testId = tests[currentTest]._id;
+  useEffect(() => {
+    console.log('the questiosn are: ', questions)
+  }, [questions])
 
-    const result = await SubmitTest({testId,userAnswers,moduleId,courseId,dispatch});
-    // await getCourseProgress(courseId, user._id, dispatch);
-    setisLoading(false);
-    setSubmitted(true);
-  } catch (error) {
-    console.error("Error submitting test:", error);
-    setisLoading(false);
-  }
-};
 
- useEffect(()=>{
-  console.log("this is the current test progress : " , currentTestProgress)
- },[currentTestProgress])
+
+
+  const handleSubmit = async () => {
+    let correctAnswers = 0;
+    questions.forEach((q, index) => {
+      if (userAnswers[index] === q.correctAnswer) {
+        correctAnswers++;
+      }
+    });
+    setScore(correctAnswers);
+
+    try {
+      setisLoading(true);
+
+      const testId = tests[currentTest]._id;
+
+      const result = await SubmitTest({ testId, userAnswers, moduleId, courseId, dispatch });
+      // await getCourseProgress(courseId, user._id, dispatch);
+      setisLoading(false);
+      setSubmitted(true);
+      // console.log('the current test progress is: ', currentTestProgress)
+    } catch (error) {
+      console.error("Error submitting test:", error);
+      setisLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("this is the current test progress : ", currentTestProgress)
+  }, [currentTestProgress])
+
   const handleRetake = () => {
     setUserAnswers({});
     setSubmitted(false);
@@ -118,31 +127,108 @@ const handleSubmit = async () => {
     }));
   };
 
-  if (submitted) {
+if (!currentTestProgress) {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '60vh', // or "100vh" to center in full viewport
+        width: '100%',
+      }}
+    >
+      <CircularProgress color="primary" />
+    </Box>
+  );
+}
+
+
+  // if (submitted) {
+  //   return (
+  //     //   <>
+  //     //     {loading ? (
+  //     //       <Loader />
+  //     //     ) : (
+  //     <Box
+  //       sx={{
+  //         position: "relative",
+  //         display: "flex",
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         minHeight: "100%",
+  //         overflow: "scroll",
+  //         p: 3,
+  //         '&::-webkit-scrollbar': {
+  //           width: '8px',
+  //           height: '8px', // also styles horizontal scroll if needed
+  //         },
+  //         '&::-webkit-scrollbar-track': {
+  //           backgroundColor: '#f0f0f0',
+  //           borderRadius: '4px',
+  //         },
+  //         '&::-webkit-scrollbar-thumb': {
+  //           backgroundColor: '#a0a0a0',
+  //           borderRadius: '4px',
+  //         },
+  //         '&::-webkit-scrollbar-thumb:hover': {
+  //           backgroundColor: '#808080',
+  //         }
+  //       }}
+  //     >
+
+  //       <TestResult
+  //         questions={questions}
+  //         currentTestProgress={currentTestProgress}
+  //         totalQuestions={questions.length}
+  //         onRetake={handleRetake}
+  //       />
+  //     </Box>
+  //     //     )}
+  //     //   </>
+  //   );
+  // }
+
+  if (isPassed) {
     return (
-      //   <>
-      //     {loading ? (
-      //       <Loader />
-      //     ) : (
+
       <Box
         sx={{
           position: "relative",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100%",
+          minHeight: "100%",
+          overflow: "scroll",
           p: 3,
+          '&::-webkit-scrollbar': {
+            width: '8px',
+            height: '8px', // also styles horizontal scroll if needed
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: '#f0f0f0',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#a0a0a0',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#808080',
+          }
         }}
       >
+
+        {console.log('this is good, we are in if conding ')}
+
         <TestResult
-          score={score}
+          questions={questions}
+          currentTestProgress={currentTestProgress}
           totalQuestions={questions.length}
           onRetake={handleRetake}
         />
       </Box>
-      //     )}
-      //   </>
-    );
+    )
   }
 
   return (
@@ -248,12 +334,12 @@ const handleSubmit = async () => {
               Progress
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
+              {Math.round(((currentQuestion) / questions.length) * 100)}%
             </Typography>
           </Box>
           <LinearProgress
             variant="determinate"
-            value={((currentQuestion + 1) / questions.length) * 100}
+            value={((currentQuestion) / questions.length) * 100}
             sx={{
               height: 8,
               borderRadius: 4,
@@ -348,8 +434,8 @@ const handleSubmit = async () => {
                       />
                     )}
                   </Avatar>
-                  <Typography color="text.primary" sx={{textTransform:"none"}}>
-                    {console.log(option.optionText)}
+                  <Typography color="text.primary" sx={{ textTransform: "none" }}>
+                    {/* {console.log(option.optionText)} */}
                     {option.optionText}
                   </Typography>
                 </Box>
