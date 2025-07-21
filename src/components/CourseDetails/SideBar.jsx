@@ -29,6 +29,8 @@ import {
     CheckCircle as CheckCircleIcon,
     Close as CloseIcon
 } from '@mui/icons-material';
+import { toast } from 'react-toastify';
+
 import NoContentPage from './NoContentPage';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { checkVideoOrTestInUserProgressAction, videoProgress } from '../../context/Actions/courseActions';
@@ -37,8 +39,6 @@ import { checkVideoOrTestInUserProgressAction, videoProgress } from '../../conte
 export const Sidebar = ({
     currentView,
     setCurrentView,
-    sidebarOpen,
-    setSidebarOpen,
     videos,
     currentVideo,
     setCurrentVideo,
@@ -47,17 +47,12 @@ export const Sidebar = ({
     setCurrentTest,
     currentQuestion,
     setCurrentQuestion,
-    moduleId,
-    courseId
 }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { state: { loading, courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
-    const [videoDuration, setvideoDuration] = useState(0);
-
     console.log("this is hte  corrent  video data : ", videos[currentVideo])
-
     const videoStatusMap = {};
+    const totalVideos = moduleProgress?.totalVideos || 0;
+    const completedVideos = moduleProgress?.completedVideos || 0;
 
     allVideoProgress.forEach((vp) => {
         videoStatusMap[vp.videoId] = vp.status;
@@ -69,25 +64,20 @@ export const Sidebar = ({
         console.log("this is sidebar", currentVideoProgress, allModuleProgress, allVideoProgress);
     }, [currentVideoProgress, allModuleProgress, allVideoProgress]);
 
-    // const handleTestProgress = async (testId, moduleId, courseId, test) => {
-    //   try {
-    //     if (!testId || !moduleId || !courseId) {
-    //       console.warn("Missing required parameters for test progress:", {
-    //         testId,
-    //         moduleId,
-    //         courseId,
-    //       });
-    //       return;
-    //     }
+    const handleAssessmentTabSelection = () => {
+        // if()
+        // setCurrentView('quiz');
+        if(completedVideos >= totalVideos){
+            setCurrentView('quiz');
+        } else {
+            toast.error('Please complete all the Videos')
+        }
 
-    //     await testProgress(courseId, test, moduleId, testId, dispatch);
-    //   } catch (error) {
-    //     console.error('Error in handleTestProgress:', error);
-    //   }
-    // };
+    }
 
-
-
+    useEffect(()=> {
+        console.log('the tests are: ', tests)
+    }, [tests])
 
     return (
         <Box sx={{
@@ -162,7 +152,7 @@ export const Sidebar = ({
                 <ListItem disablePadding>
                     <ListItemButton
                         selected={currentView === 'quiz'}
-                        onClick={() => setCurrentView('quiz')}
+                        onClick={handleAssessmentTabSelection}
                         sx={{
 
                             border: '1px solid #ccc',

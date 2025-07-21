@@ -16,9 +16,7 @@ import { ModuleDetails } from './pages/employee/ModuleDetails';
 import EnrolledEmployees from './pages/admin/EnrolledEmployees';
 import ForgotPasswordPage from './pages/AuthPage/ForgotPassword';
 import MuiLoading from './pages/common/Loading';
-
 import { useAuth } from './context/contextFiles/AuthContext';
-
 import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import HomePage from './pages/common/HomePage';
