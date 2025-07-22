@@ -94,10 +94,6 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   const [totalVideos, setTotalVideos] = useState(0);
   const [totalTests, setTotalTests] = useState(0);
   const navigate = useNavigate();
-  const percentageCompleted = oneCourse?.percentageCompleted;
-  const [isLoading, setisLoading] = useState(false)
-
-  // const  [allModuleProgress , setAllmoduleProgress] = useState([]);
 
   const [clickedModuleProgress , setClickedModuleProgress] =  useState(null);
   
@@ -117,11 +113,15 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   //just checking
   const moduleProgressMap = {};
 
-  allModuleProgress?.forEach((module) => {
+  if (Array.isArray(allModuleProgress)) {
+  allModuleProgress.forEach((module) => {
     moduleProgressMap[module.moduleId] = module.status;
-    // so this function will give you
-    // moduleProgressMap = { "68418edaacce3e3b7adc1f0f": "completed", ... }
   });
+} else {
+  console.warn('Expected allModuleProgress to be an array:', allModuleProgress);
+}
+
+
  useEffect(()=>{
   console.log("this is the  course progress data from : ",oneCourseProgress,allModuleProgress, oneModuleProgress )
  })

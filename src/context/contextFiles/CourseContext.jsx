@@ -6,6 +6,7 @@ const initialState = {
   courses: [],
   myCourses: [],
   modules: [],
+  moduleNames: [],
   videos: [],
   adminCourses: [],
   oneCourse:null,

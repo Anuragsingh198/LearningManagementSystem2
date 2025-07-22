@@ -1,0 +1,22 @@
+{
+  "_id": {
+    "$oid": "687f2d1137bd11109dc4a8d7"
+  },
+  "userId": {
+    "$oid": "687f114366219208cb1bb62b"
+  },
+  "courseId": {
+    "$oid": "686cbcb8c811dbae8cf9a35c"
+  },
+  "moduleId": {
+    "$oid": "686cbe1fc811dbae8cf9a36f"
+  },
+  "status": "in-progress",
+  "videoIndex": 0,
+  "totalVideos": 2,
+  "totalTests": 1,
+  "completedTest": 1,
+  "completedVideos": 2,
+  "percentageCompleted": 100,
+  "__v": 0
+}

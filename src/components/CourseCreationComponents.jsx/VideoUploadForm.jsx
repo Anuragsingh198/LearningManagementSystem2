@@ -68,10 +68,20 @@ const Header = () => (
 
 
 const VideoUploadForm = ({ courseId }) => {
-const { state: { modules }, dispatch } = useCourseContext();
+const { state: { modules, courses, moduleNames, loading }, dispatch } = useCourseContext();
 
 const [course, setCourse] = useState(null);
 const [existingModules, setExistingModules] = useState([]);
+
+useEffect(()=> {
+setExistingModules(moduleNames);
+}, [moduleNames])
+
+useEffect(() => {
+  const foundCourse = courses.find(c => c._id === courseId);
+  setCourse(foundCourse);
+}, [courses, courseId]);
+
 
 
   
@@ -94,6 +104,8 @@ const [existingModules, setExistingModules] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploaded, setIsUploaded] = useState(false);
+  
+
 
   useEffect(() => {
   if (isUploaded) {
@@ -221,7 +233,7 @@ const [existingModules, setExistingModules] = useState([]);
       setModuleData({ title: '', description: '' });
 
       getModulesByCourseId(courseId, dispatch)
-      .then((fetchedModules) => setExistingModules(fetchedModules))
+      // .then((fetchedModules) => setExistingModules(fetchedModules))
       .catch((err) => console.error(err));
       
       setShowModuleForm(false);
@@ -273,20 +285,6 @@ const handleUploadVideo = async (e) => {
 };
 
 
-useEffect(() => {
-  if (!courseId) return; 
-
-  // Fetch course
-  getCourseById(courseId, dispatch)
-    .then((fetchedCourse) => setCourse(fetchedCourse))
-    .catch((err) => console.error(err));
-
-  // Fetch modules
-  getModulesByCourseId(courseId, dispatch)
-    .then((fetchedModules) => setExistingModules(fetchedModules))
-    .catch((err) => console.error(err));
-
-}, [courseId, dispatch]); 
 
   if (!course) {
     return (
@@ -314,7 +312,8 @@ useEffect(() => {
             {/* First Row - Two Sections */}
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 3, mb: 3 }}>
               {/* Module Section - Left Column */}
-              <Box sx={{ width: { lg: '50%' } }}>
+
+            { !loading ? ( <Box sx={{ width: { lg: '50%' } }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <Typography variant="h6" fontWeight="semibold">
                     {showModuleForm ? "Create New Module" : "Select Module"}
@@ -418,7 +417,13 @@ useEffect(() => {
                     )}
                   </Box>
                 )}
+              </Box>) : 
+              <Box  sx={{ width: { lg: '50%' } }}>
+
+              <CircularProgress/>
               </Box>
+              
+              }
 
               {/* Video Info Section - Right Column */}
               <Box sx={{ width: { lg: '50%' } }}>

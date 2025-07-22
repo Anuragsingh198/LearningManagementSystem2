@@ -5,27 +5,22 @@ import QuizCreationForm from './QuizCreationForm';
 import { useCourseContext } from '../../../context/contextFiles/CourseContext';
 import { Box, Button, Typography } from '@mui/material';
 import AddAssessment from '../AddAssessment';
-import { getMyCoursesAction } from '../../../context/Actions/courseActions';
+import { getModulesByCourseId, getMyCoursesAction } from '../../../context/Actions/courseActions';
 
 const VideoUploadPage = () => {
   const { courseId } = useParams();
-  const { state: { courses, myCourses }, dispatch } = useCourseContext();
+  const { state: { courses, myCourses, moduleNames }, dispatch } = useCourseContext();
+  const [existingModules, setExistingModules] = useState([]);
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('video'); // 'video' or 'quiz' or 'assessment'
 
-  useEffect(() => {
-    if (!courseId) return;
-    const fetchMyCourses = async () => {
-      try {
-        await getMyCoursesAction(dispatch);
-      } catch {
-        console.error('unable to fetch my courses');
-      }
-    };
-
-    fetchMyCourses();
-  }, [courseId, courses, navigate]);
+  useEffect(()=> {
+        getModulesByCourseId(courseId, dispatch)
+            // .then((fetchedModules) => setExistingModules(fetchedModules))
+            .catch((err) => console.error(err));
+            console.log('the modules from context are: ', moduleNames)
+  }, [dispatch])
 
   if (!courseId) {
     return <div>Loading...</div>;

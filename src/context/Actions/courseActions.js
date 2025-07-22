@@ -246,6 +246,7 @@ export const getModulesByCourseId = async (courseId, dispatch) => {
         return [];
       }
       console.log('Modules fetched successfully:', data.modules);
+      dispatch({type: 'SET_MY_MODULES', payload: data.modules})
       return data.modules;
     } else {
       throw new Error(data.message || 'Failed to fetch modules for course');
@@ -377,7 +378,7 @@ export const SubmitTest = async ({ testId, userAnswers, courseId, moduleId, disp
         type: 'SET_COURSE_PROGRESS_ALL',
         payload: {
           courseProgress: data.courseProgress,
-          moduleProgress: data.moduleProgress || [],
+          moduleProgress: data.moduleProgressList || [],
           testProgress: data.testProgressList || [],
           videoProgress: data.videoProgressList||[],
         },
@@ -495,49 +496,6 @@ export const checkProgress = async (courseId, chapterId, dispatch) => {
     dispatch({ type: 'SET_LOADING', payload: false });
   }
 }
-
-
-export const submitTest = async ({ testId, userAnswers, courseId, moduleId, dispatch }) => {
-  const token = getAuthToken();
-
-  try {
-    dispatch({ type: 'COURSE_LOADING', payload: true });
-
-    const response = await axios.post(
-      `${serverurl}/api/users/test-submit`,
-      { testId, userAnswers, courseId, moduleId },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const data = response.data;
-
-    if (data.success) {
-      dispatch({
-        type: 'SET_COURSE_PROGRESS_ALL',
-        payload: {
-          courseProgress: data.courseProgress,
-          moduleProgress: data.moduleProgress || [],
-          testProgress: data.testProgressList || [],
-          videoProgress: data.videoProgressList ||[],
-        },
-      });
-
-      dispatch({ type: 'TEST_PROGRESS', payload: data.testProgress });
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Error submitting test:', error);
-    dispatch({ type: 'COURSE_ERROR', payload: error.message || 'Unknown error' });
-  } finally {
-    dispatch({ type: 'COURSE_LOADING', payload: false });
-  }
-};
-
 
 export const checkVideoOrTestInUserProgressAction = async ({ videoId, testId, moduleId, courseId }, dispatch) => {
   const token = getAuthToken();

@@ -211,11 +211,11 @@ useEffect(() => {
           moduleId={moduleId}
           courseId={courseId}
         />
-        {tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
+        {/*tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
           <QuizHistory questions={tests[currentQuiz]?.questions || []} moduleId={moduleId}
             currentTest={currentQuiz}
           />
-        ) : null}
+        ) : null*/}
       </Box>
 
       <Box sx={{ width: "60%", overflow: "hidden" }}>

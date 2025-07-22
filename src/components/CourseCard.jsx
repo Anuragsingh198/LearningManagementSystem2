@@ -57,7 +57,6 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
   }
 
   const handleEnroll = async() => {
-    console.log("enroll is clicked : courseCard")
     if (!user || !token) return;
     try {
       setLoading(true);
@@ -66,7 +65,7 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
       if (enrolledCourse) {
         // await getMyCoursesAction(dispatch);
         console.log(" this is the  enrolled course form the course card: " ,enrolledCourse )
-        dispatch({ type: 'SET_MY_COURSES', payload: [course] });
+        dispatch({ type: 'SET_MY_COURSES', payload: [...myCourses, course] });
         setEnrolled(true);
         navigate(`/course/details/${course._id}`);
         handleCloseModal();

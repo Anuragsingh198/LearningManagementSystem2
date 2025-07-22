@@ -11,6 +11,14 @@ export const courseReducer = (state, action) => {
         error: null,
       };
 
+    case "SET_MY_MODULES":
+      return {
+        ...state,
+        moduleNames: action.payload,
+        loading: false,
+        error: null
+      };
+
     case "SET_MY_COURSES":
       return {
         ...state,
@@ -19,7 +27,7 @@ export const courseReducer = (state, action) => {
         error: null,
       };
 
-      case "SET_ADMIN_MY_COURSES":
+    case "SET_ADMIN_MY_COURSES":
       return {
         ...state,
         adminCourses: action.payload,
@@ -31,18 +39,18 @@ export const courseReducer = (state, action) => {
       console.log("Adding course: course  reducer", action.payload);
       return {
         ...state,
-        
+
         courses: [action.payload, ...state.courses],
         loading: false,
         error: null,
       };
-   case "SET_ONECOURSE":
-  return {
-    ...state,
-    oneCourse: action.payload,
-    loading: false,
-    error: null,
-  };
+    case "SET_ONECOURSE":
+      return {
+        ...state,
+        oneCourse: action.payload,
+        loading: false,
+        error: null,
+      };
     case "ADD_MODULE":
       return {
         ...state,
@@ -51,23 +59,23 @@ export const courseReducer = (state, action) => {
         error: null,
       };
     case "MODULE_PROGRESS":
-  return {
-    ...state,
-    oneModuleProgress: action.payload,
-  };
+      return {
+        ...state,
+        oneModuleProgress: action.payload,
+      };
 
-case "SET_MODULE_PROGRESS":
-  return {
-    ...state,
-    oneModuleProgress: action.payload,
-    allModuleProgress: [
-      ...state.allModuleProgress.filter((m) => m._id !== action.payload._id),
-      action.payload,
-    ],
-    loading: false,
-    error: null,
-  };
-    
+    case "SET_MODULE_PROGRESS":
+      return {
+        ...state,
+        oneModuleProgress: action.payload,
+        allModuleProgress: [
+          ...state.allModuleProgress.filter((m) => m._id !== action.payload._id),
+          action.payload,
+        ],
+        loading: false,
+        error: null,
+      };
+
     case "ADD_VIDEO":
       return {
         ...state,
@@ -82,34 +90,34 @@ case "SET_MODULE_PROGRESS":
         loading: true,
         error: null,
       };
-   case "COURSE_PROGRESS":
-  return {
-    ...state,
-    oneCourseProgress:action.payload,
-    allCourseProgress: [
-      ...state.allCourseProgress.filter((x) => x._id !== action.payload._id),
-      action.payload,
-    ],
-  };
-  case "VIDEO_PROGRESS":
-  return {
-    ...state,
-    currentVideoProgress: action.payload,
-  };
-case 'SET_COURSE_PROGRESS_ALL':
-  return {
-    ...state,
-    oneCourseProgress: action.payload.courseProgress || null,
-    allModuleProgress: action.payload.moduleProgress || [],
-    allTestProgress: action.payload.testProgress || [],
-    allVideoProgress: action.payload.videoProgress || []
-  };
+    case "COURSE_PROGRESS":
+      return {
+        ...state,
+        oneCourseProgress: action.payload,
+        allCourseProgress: [
+          ...state.allCourseProgress.filter((x) => x._id !== action.payload._id),
+          action.payload,
+        ],
+      };
+    case "VIDEO_PROGRESS":
+      return {
+        ...state,
+        currentVideoProgress: action.payload,
+      };
+    case 'SET_COURSE_PROGRESS_ALL':
+      return {
+        ...state,
+        oneCourseProgress: action.payload.courseProgress || null,
+        allModuleProgress: action.payload.moduleProgress || [],
+        allTestProgress: action.payload.testProgress || [],
+        allVideoProgress: action.payload.videoProgress || []
+      };
 
-case 'TEST_PROGRESS':
-  return {
-    ...state,
-    currentTestProgress: action.payload,
-  };
+    case 'TEST_PROGRESS':
+      return {
+        ...state,
+        currentTestProgress: action.payload,
+      };
     case "COURSE_ERROR":
       return {
         ...state,

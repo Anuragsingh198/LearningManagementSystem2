@@ -41,7 +41,7 @@ import BlurLoading from '../../common/BlurLoading';
 
 
 function QuizCreationForm({ courseId }) {
-    const { state: { modules }, dispatch } = useCourseContext();
+    const { state: { modules, courses, moduleNames }, dispatch } = useCourseContext();
 
     const [showModuleForm, setShowModuleForm] = useState(false);
     const [moduleData, setModuleData] = useState({
@@ -62,31 +62,6 @@ function QuizCreationForm({ courseId }) {
     const { state: { user } } = useAuth();
     const role = user?.role;
     const token = user?.token;
-
-
-    useEffect(() => {
-        if (!courseId) return;
-
-        // Fetch course
-        getCourseById(courseId, dispatch)
-            .then((fetchedCourse) => setCourse(fetchedCourse))
-            .catch((err) => console.error(err));
-
-        // Fetch modules
-        getModulesByCourseId(courseId, dispatch)
-            .then((fetchedModules) => setExistingModules(fetchedModules))
-            .catch((err) => console.error(err));
-
-        // console.log('Existing modules are: ', existingModules)
-
-
-
-    }, [courseId, dispatch]);
-
-
-
-
-
     const [questions, setQuestions] = useState([
         {
             id: Date.now(),
@@ -95,6 +70,16 @@ function QuizCreationForm({ courseId }) {
             correctAnswer: ''
         }
     ]);
+
+    useEffect(()=> {
+        const foundCourse = courses.find(c => c._id === courseId)
+        setCourse(foundCourse)
+    }, courses, courseId)
+
+    useEffect(()=> {
+    setExistingModules(moduleNames);
+    }, [moduleNames])
+    
 
     const handleAddQuestion = () => {
         setQuestions([

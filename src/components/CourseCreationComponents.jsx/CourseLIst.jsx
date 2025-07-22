@@ -34,15 +34,15 @@ const handleViewCourse = async (course) => {
   
   const alreadyLoaded = oneCourse?._id === course._id;
 
-  if (!alreadyLoaded) {
-    try {
-      dispatch({ type: 'COURSE_LOADING' });
-      await getCourseWithProgress(course._id, user._id, dispatch);
-    } catch (error) {
-      console.error('Failed to fetch course progress:', error);
-      return; 
-    }
-  }
+  // if (!alreadyLoaded) {
+  //   try {
+  //     dispatch({ type: 'COURSE_LOADING' });
+  //     await getCourseWithProgress(course._id, user._id, dispatch);
+  //   } catch (error) {
+  //     console.error('Failed to fetch course progress:', error);
+  //     return; 
+  //   }
+  // }
 
   navigate(`/course/details/${course._id}`);
 };
