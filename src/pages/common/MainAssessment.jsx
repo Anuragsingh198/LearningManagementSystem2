@@ -88,6 +88,26 @@ function MainAssessment() {
   return (
     <Box p={2}>
 
+      <Typography
+  sx={{
+    color: '#d32f2f', // Red shade for warning
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    mb: 6,
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    backgroundColor: '#fff3cd', // light yellow background
+    padding: '1rem 2rem',
+    borderRadius: '12px',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+    border: '1px solid #f5c6cb'
+  }}
+>
+  ⚠️ This section is under development
+</Typography>
+
+
        {role === 'instructor' && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, mr: '2vw' }}>
           <Button

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, Typography, Chip, Stack, Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 
 function formatDuration(mins) {
     const hrs = String(Math.floor(mins / 60)).padStart(2, '0');
@@ -14,11 +16,13 @@ function TestCard({ test, role }) {
     const navigate = useNavigate();
     // console.log('the role is: ', role)
     const handleOnClick = () => {
-        if (test.completed) {
-            navigate(`/assessments/review/${test._id}`)
-        } else {
-            navigate(`/assessments/start-test/${test._id}`)
-        }
+
+        toast.warning('This section is under development')
+        // if (test.completed) {
+        //     navigate(`/assessments/review/${test._id}`)
+        // } else {
+        //     navigate(`/assessments/start-test/${test._id}`)
+        // }
     }
 
     const handleOnAdminClick = () => {
