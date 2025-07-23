@@ -313,7 +313,10 @@ const handleUploadVideo = async (e) => {
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 3, mb: 3 }}>
               {/* Module Section - Left Column */}
 
-            { !loading ? ( <Box sx={{ width: { lg: '50%' } }}>
+            {
+            //  !loading ? 
+            
+            ( <Box sx={{ width: { lg: '50%' } }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <Typography variant="h6" fontWeight="semibold">
                     {showModuleForm ? "Create New Module" : "Select Module"}
@@ -417,11 +420,13 @@ const handleUploadVideo = async (e) => {
                     )}
                   </Box>
                 )}
-              </Box>) : 
-              <Box  sx={{ width: { lg: '50%' } }}>
+              </Box>) 
+              
+              // : 
+              // <Box  sx={{ width: { lg: '50%' } }}>
 
-              <CircularProgress/>
-              </Box>
+              // <CircularProgress/>
+              // </Box>
               
               }
 
