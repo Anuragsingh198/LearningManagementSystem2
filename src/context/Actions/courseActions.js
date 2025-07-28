@@ -441,6 +441,10 @@ export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatc
     );
 
     const data = response.data;
+    console.log('the data after complition is: ', data)
+    console.log('the data video progress is: ', data.videoProgress)
+    console.log('the data after complition is: ', data.moduleProgress)
+
 
     if (data.success) {
       dispatch({
@@ -761,5 +765,49 @@ export const deleteModule = async (chapterId, dispatch) => {
     dispatch({ type: 'SET_LOADING', payload: false });
   }
 };
+
+export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
+  const token = getAuthToken();
+  console.log('the data is: ', payloadData)
+  try {
+    dispatch({type: 'SET_LOADING', payload: true});
+
+    console.log('timer save req started');
+    const response = await axios.post(`${serverurl}/api/courses/module/video-update`,
+      payloadData
+    ,  {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = response.data;
+
+    dispatch({
+      type: 'SET_VIDEO_PROGRESS',
+      payload: {
+        currentVideoProgress: data.videoProgress || [],
+        oneModuleProgress: data.moduleProgress || [],
+        allVideoProgress: data.videoProgressList || []
+        
+      }
+    })
+
+    if(data.success){
+      console.log('the data is: ', data)
+          dispatch({
+      type: 'SET_VIDEO_PROGRESS',
+      payload: {
+        currentVideoProgress: data.videoProgress || [],
+        oneModuleProgress: data.moduleProgress || [],
+        allVideoProgress: data.videoProgressList || []
+        
+      }
+    })
+    }
+
+  } catch (error){
+    console.error('Error in updating video progress: ', error)
+  }
+}
 
 

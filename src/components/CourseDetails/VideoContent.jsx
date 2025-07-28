@@ -3,11 +3,8 @@ import {
     Typography,
     Button,
     Paper,
-    Divider,
     Avatar,
     IconButton,
-    LinearProgress,
-    Grid,
     Chip,
     CircularProgress
 } from '@mui/material';
@@ -33,11 +30,10 @@ import {
     Download as DownloadIcon,
     Article as FileTextIcon,
     MenuBook as BookOpenIcon,
-    DuoTwoTone
 } from '@mui/icons-material';
 import ReactPlayer from 'react-player';
 import { useEffect, useRef, useState } from 'react';
-import { getCourseProgress, updateVideoCompletion, videoProgress } from '../../context/Actions/courseActions';
+import { updateVideoCompletion, videoProgress, updateVideoLastTimeWatched } from '../../context/Actions/courseActions';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import axios from 'axios';
@@ -58,7 +54,7 @@ export const VideoContent = ({
     isCompulsory
 }) => {
     const playerRef = useRef(null);
-    
+
     // Get current video data first
     const currentVideoData = Array.isArray(videos) && videos.length > currentVideo && currentVideo >= 0
         ? videos[currentVideo]
@@ -76,83 +72,94 @@ export const VideoContent = ({
     const [isBuffering, setIsBuffering] = useState(false);
     const [isVideoReady, setIsVideoReady] = useState(false);
     const [videoUrl, setVideoUrl] = useState('');
-    const { state: { loading,   currentVideoProgress,  allVideoProgress ,oneCourseProgress ,oneModuleProgress, allModuleProgress}, dispatch } = useCourseContext();
+    const { state: { loading, currentVideoProgress, allVideoProgress, oneCourseProgress, oneModuleProgress, allModuleProgress }, dispatch } = useCourseContext();
     const { state: { user } } = useAuth();
     const userId = user._id;
-    const hoursToExpire = 24; 
+    const hoursToExpire = 24;
     const userToken = user.token;
+    const [intervalId, setIntervalId] = useState(null);
+    const currentTimeRef = useRef(currentTime);
+    // const hasSeekedRef = useRef(false);
+
+    // useEffect(() => {
+    //     hasSeekedRef.current = false;
+    // }, [currentVideoData?._id]);
+
+
+    // useEffect(() => {
+    //     currentTimeRef.current = currentTime;
+    //     console.log(" ")
+    //     console.log('the current time ref is: ', currentTimeRef.current)
+    //     console.log(" ")
+
+    // }, [currentTime]);
+
+    // const lastWatchedTime = currentVideoProgress?.lastWatchedTime
+
+    //     useEffect(() => {
+    //   if (playerRef.current && lastWatchedTime > 0 && isVideoReady) {
+    //     playerRef.current.seekTo(lastWatchedTime);
+    //     setCurrentTime(lastWatchedTime);
+    //     setProgress((lastWatchedTime / duration) * 100);
+    //     console.log("⏩ Seeking to last watched time:", lastWatchedTime);
+    //   }
+    // }, [isVideoReady, currentVideoData?._id]);
+
+
+
     useEffect(() => {
         return () => {
-         
+
         };
     }, [isPlaying]);
-console.log('Course Context Values:', {
-  loading,
-  oneCourseProgress,
-  allVideoProgress,
-  oneModuleProgress,
-  allModuleProgress
-});
 
-console.log("this is the  corrent  video progress data :" , allModuleProgress)
-console.log("this is the  id of module : ",oneModuleProgress )
-
-
-useEffect(()=>{
-console.log("this is the  id of module : ",oneCourseProgress )
-},[oneCourseProgress])
-
-
-
-
-const handleVideoProgress = async () => {
-  const progressExists = allVideoProgress.find((x) => {
-    return x.videoId === currentVideoData._id;
-  });
-  if (!progressExists) {
-    const createdProgress = await videoProgress(
-      oneCourseProgress.courseId,
-      currentVideoData,
-      currentVideoData._id,
-      oneModuleProgress.moduleId,
-      dispatch 
-    );
-    // if (createdProgress) {
-    //   dispatch({ type: 'VIDEO_PROGRESS', payload: createdProgress });
-    // }
-  } else {
-    console.log("progress Exists : " , progressExists)
-    dispatch({ type: 'VIDEO_PROGRESS', payload: progressExists });
-  }
-};
-
-useEffect(() => {
-  if (currentVideoData && oneCourseProgress?.courseId && oneModuleProgress?.moduleId) {
-   console.log("ye wala  run ho raha hai : ")
-    handleVideoProgress();
-  }
-}, [currentVideoData, oneCourseProgress, oneModuleProgress]);
-
-
-useEffect(() => {
-    console.log("this is the current video data: ", currentVideoData);
-  const fetchSasUrl = async () => {
-    try {
-      const res = await axios.get(
-        `${serverURL}/api/courses/videos/${currentVideoData?.videoBlobName}/expires?hours=${hoursToExpire}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`
-          }
+    const handleVideoProgress = async () => {
+        const progressExists = allVideoProgress.find((x) => {
+            return x.videoId === currentVideoData._id;
+        });
+        if (!progressExists) {
+            const createdProgress = await videoProgress(
+                oneCourseProgress.courseId,
+                currentVideoData,
+                currentVideoData._id,
+                oneModuleProgress.moduleId,
+                dispatch
+            );
+            // if (createdProgress) {
+            //   dispatch({ type: 'VIDEO_PROGRESS', payload: createdProgress });
+            // }
+        } else {
+            // console.log("progress Exists : ", progressExists)
+            dispatch({ type: 'VIDEO_PROGRESS', payload: progressExists });
         }
-      );
-      setVideoUrl(res.data.sasToken);
-    } catch (error) {
-      console.error('Failed to fetch SAS URL:', error);
-    }
-  };
-  fetchSasUrl();
-}, [currentVideoData]);
+    };
+
+    useEffect(() => {
+        if (currentVideoData && oneCourseProgress?.courseId && oneModuleProgress?.moduleId) {
+            handleVideoProgress();
+        }
+    }, [currentVideoData, oneCourseProgress, oneModuleProgress]);
+
+
+    useEffect(() => {
+        // console.log("this is the current video data: ", currentVideoData);
+        const fetchSasUrl = async () => {
+            try {
+                const res = await axios.get(
+                    `${serverURL}/api/courses/videos/${currentVideoData?.videoBlobName}/expires?hours=${hoursToExpire}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${userToken}`
+                        }
+                    }
+                );
+                setVideoUrl(res.data.sasToken);
+            } catch (error) {
+                console.error('Failed to fetch SAS URL:', error);
+            }
+        };
+        fetchSasUrl();
+    }, [currentVideoData]);
 
 
     useEffect(() => {
@@ -172,37 +179,56 @@ useEffect(() => {
         setReadableDuration(formatDuration(duration));
     }, [duration]);
 
-    
+
     useEffect(() => {
-        console.log("this is the  current  video  data : ", currentVideoData)
-  const markVideoAndFetchProgress = async () => {
-    if (progress >=90 && !hasMarkedComplete && currentVideoData?._id) {
-      setHasMarkedComplete(true);
-      try {
-        await updateVideoCompletion(
-          oneCourseProgress.courseId,
-          currentVideoData._id,
-          oneModuleProgress.moduleId,
-          dispatch
-        );
-      } catch (error) {
-        console.error('Error updating video completion:', error);
-      }
-    }
+        // console.log("this is the  current  video  data : ", currentVideoData)
+        console.log('progress is: ', progress);
+        const boolVal = (progress >= 90)
+        console.log('is progress is greater than 90', boolVal)
+        const markVideoAndFetchProgress = async () => {
+            if (progress >= 85 && !hasMarkedComplete && currentVideoData?._id) {
+                setHasMarkedComplete(true);
+                try {
+                    await updateVideoCompletion(
+                        courseId,
+                        currentVideoData._id,
+                        moduleId,
+                        dispatch
+                    );
+                } catch (error) {
+                    console.error('Error updating video completion:', error);
+                }
+            }
 
 
-  };
-  console.log("this is  before  markVideoAndFetchProgress ")
-  markVideoAndFetchProgress();
-  console.log("this is  after  markVideoAndFetchProgress ")
-}, [progress]);
+        };
+        // console.log("this is  before  markVideoAndFetchProgress ")
+        markVideoAndFetchProgress();
+        // console.log("this is  after  markVideoAndFetchProgress ")
+    }, [progress]);
 
     const togglePlayPause = () => {
         setIsPlaying(!isPlaying);
     };
 
+    // useEffect(() => {
+    //     if (
+    //         playerRef.current &&
+    //         isVideoReady &&
+    //         typeof currentVideoProgress?.lastWatchedTime === 'number'
+    //     ) {
+    //         playerRef.current.seekTo(currentVideoProgress.lastWatchedTime);
+    //         setCurrentTime(currentVideoProgress.lastWatchedTime);
+    //         setProgress(
+    //             (currentVideoProgress.lastWatchedTime / duration) * 100
+    //         );
+    //         console.log("✅ Sought to last watched time:", currentVideoProgress.lastWatchedTime);
+    //     }
+    // }, [isVideoReady, currentVideoData?._id]);
+
+
     const handleProgress = (state) => {
-        console.log("this is the  progress of  the  video  data : " , state.played)
+        if (!isVideoReady) return; // Skip early
         setProgress(state.played * 100);
         setCurrentTime(state.playedSeconds);
         if (state.loadedSeconds - state.playedSeconds > 2) {
@@ -211,6 +237,7 @@ useEffect(() => {
         }
     };
 
+
     const handleDuration = (duration) => {
         setDuration(duration);
     };
@@ -218,7 +245,7 @@ useEffect(() => {
     const handleSeek = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if(isCompulsory){
+        if (isCompulsory) {
             toast.error('This is a compulsory course, please watch it completely!')
         }
         if (playerRef.current && !isCompulsory) {
@@ -281,7 +308,7 @@ useEffect(() => {
                     break;
                 case 'ArrowRight':
                     event.preventDefault();
-                    if( !isCompulsory){
+                    if (!isCompulsory) {
                         seekTo(Math.min(currentTime + 10, duration));
                     }
                     break;
@@ -307,21 +334,85 @@ useEffect(() => {
         return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
     }, []);
 
+    // Function to update last watched time
+    // const updateLastWatchedTime = async () => {
+    //     if (!currentVideoData?._id) return;
+
+    //     try {
+    //         console.log(" ")
+    //         console.log('the courseId is:', courseId)
+    //         console.log('the moduleId is:', moduleId)
+    //         console.log('the videoId is:', currentVideoData._id)
+    //         console.log('the current time is:', currentTimeRef.current)
+    //         console.log('the current video index is:', currentVideo)
+    //         console.log(" ")
+
+
+    //         await updateVideoLastTimeWatched({
+    //             courseId,
+    //             moduleId,
+    //             currentTime: currentTimeRef.current,
+    //             currentVideoIndex: currentVideo,
+    //             videoId: currentVideoData._id,
+    //         }, dispatch);
+
+    //     } catch (error) {
+    //         console.error('Error updating last watched time:', error);
+    //     }
+    // };
+
+
+    // // Effect for setting up the interval
+    // useEffect(() => {
+    //     if (isPlaying) {
+    //         // Call immediately when playback starts
+    //         updateLastWatchedTime();
+
+    //         // Then set up interval for every 20 seconds
+    //         const id = setInterval(updateLastWatchedTime, 20000); // 20 seconds
+    //         setIntervalId(id);
+
+    //         return () => {
+    //             if (id) clearInterval(id);
+    //         };
+    //     } else {
+    //         // Clear interval when paused
+    //         if (intervalId) {
+    //             clearInterval(intervalId);
+    //             setIntervalId(null);
+    //         }
+    //     }
+    // }, [isPlaying]);
+
+    // Cleanup interval on unmount
+    // useEffect(() => {
+    //     return () => {
+    //         if (intervalId) {
+    //             clearInterval(intervalId);
+    //         }
+    //     };
+    // }, [intervalId]);
+
     return (
-        <Box sx={{ display: 'flex',
-                flexDirection: 'column',
-                height: '100vh',       
-                overflowY: 'auto',
-                '&::-webkit-scrollbar': {
-                    display: 'none',
-                },
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',}}>
-            <Box sx={{  height: '80%',
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+            overflowY: 'auto',
+            '&::-webkit-scrollbar': {
+                display: 'none',
+            },
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+        }}>
+            <Box sx={{
+                height: '80%',
                 display: 'flex',
                 flexDirection: 'column',
-                p: 1}}>
-                <Paper sx={{ backgroundColor: 'black',
+                p: 1
+            }}>
+                <Paper sx={{
+                    backgroundColor: 'black',
                     borderRadius: isVideoFullscreen ? 0 : 3,
                     overflow: 'hidden',
                     transition: 'all 0.3s',
@@ -334,7 +425,8 @@ useEffect(() => {
                     transform: isVideoZoomed && !isVideoFullscreen ? 'scale(1.1)' : undefined,
                     height: '100%',
                     display: 'flex',
-                    flexDirection: 'column'}}>
+                    flexDirection: 'column'
+                }}>
                     <Box className="player-wrapper" sx={{
                         aspectRatio: '16/9',
                         background: 'linear-gradient(135deg, #1e293b, #0f172a)',
@@ -608,7 +700,7 @@ useEffect(() => {
 
                         </Box>
 
-                      
+
                     </Box>
                 </Paper>
             </Box>

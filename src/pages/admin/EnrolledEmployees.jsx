@@ -46,6 +46,8 @@ const EnrolledEmployees = () => {
     }
   }, [courseId, dispatch]);
 
+  console.log('enrolled employees are: ', enrolledEmployees)
+
   const filteredEmployees = enrolledEmployees?.students?.filter((emp) => {
     // Filter by status tab
     if (activeTab !== 'all' && emp.status.toLowerCase() !== activeTab) {

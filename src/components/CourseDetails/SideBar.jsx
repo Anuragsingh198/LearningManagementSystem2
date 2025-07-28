@@ -47,6 +47,7 @@ export const Sidebar = ({
     setCurrentTest,
     currentQuestion,
     setCurrentQuestion,
+    sendWatchTime
 }) => {
     const { state: { loading, courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
     // console.log("this is hte  corrent  video data : ", videos[currentVideo])
@@ -67,6 +68,8 @@ export const Sidebar = ({
     const handleAssessmentTabSelection = () => {
         // if()
         // setCurrentView('quiz');
+        sendWatchTime();
+        
         if(completedVideos >= totalVideos){
             setCurrentView('quiz');
         } else {
@@ -206,7 +209,7 @@ export const Sidebar = ({
                         <List >
                             {videos.map((video, index) => {
                                 const status = videoStatusMap[video._id];
-                                // console.log("the status for particular video is:", video._id, status);
+                                console.log("the status for particular video is:", video._id, status);
                                 return (
                                     <ListItem key={video._id} disablePadding>
                                         <ListItemButton

@@ -222,7 +222,7 @@ function QuizCreationForm({ courseId }) {
 
             const createdModule = await createModuleAction(newModule, dispatch);
             setSelectedModule(createdModule._id);
-            console.log("this is   createed module id  from videoUploadform: ", createdModule._id)
+            // console.log("this is   createed module id  from videoUploadform: ", createdModule._id)
             setModuleData({ title: '', description: '' });
             setShowModuleForm(false);
         } catch (error) {

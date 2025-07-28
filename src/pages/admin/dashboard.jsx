@@ -13,7 +13,7 @@ const TeacherDashboard = () => {
   const compulsoryCourses = courses?.filter(course => course.compulsory);
   const regularCourses = courses?.filter(course => !course.compulsory);
 
-  console.log("this is  the  my project data : ", myCourses);
+  // console.log("this is  the  my project data : ", myCourses);
 
   return (
     <Box sx={{ padding: '0px', width: '100%' }} className="dashboard-scroll">

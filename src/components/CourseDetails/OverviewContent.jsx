@@ -31,7 +31,6 @@ import {
   ContactPageSharp
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { NoVideosFound } from './NoContentFoundPage';
 import { useEffect, useState } from 'react';
 import NoContentPage from './NoContentPage';
 import { useAuth } from '../../context/contextFiles/AuthContext';
@@ -123,7 +122,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
 
 
  useEffect(()=>{
-  console.log("this is the  course progress data from : ",oneCourseProgress,allModuleProgress, oneModuleProgress )
+  console.log("this is the  course progress data one course progress, all module progress and one module progress: ",oneCourseProgress,allModuleProgress, oneModuleProgress )
  })
 
  useEffect(()=> {
@@ -132,11 +131,11 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
 
 useEffect(() => {
     const fetchCourseProgress = async () => {
-      console.log('we have entered use effect')
+      
       if (!courseId || !user?._id) return;
-      console.log('we have passed return statement')
+      
       try {
-      console.log('we are in try block')
+      
   
         dispatch({ type: 'COURSE_LOADING' });
         await getCoursesAction(courseId, user._id, dispatch);
@@ -232,10 +231,10 @@ const handleGenerateCertificate = async () => {
 };
 
 
-useEffect(()=>{
-  console.log("allModuleProgress  is : ", allModuleProgress )
-  console.log("oneModuleProgress is: ", oneModuleProgress)
-}, [allModuleProgress , oneModuleProgress])
+
+  
+  
+
 
 
   useEffect(() => {
@@ -251,9 +250,6 @@ useEffect(()=>{
     setModuleToDelete(courseId);
     setDeleteDialogOpen(true);    
   };
-
-
-  
 
    const cancelDelete = () => {
     setDeleteDialogOpen(false);

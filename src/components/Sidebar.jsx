@@ -105,7 +105,6 @@ const Sidebar = () => {
   const isActive = (path) => pathname.startsWith(path);
 
    useEffect(() => {
-    console.log('use role is (sidebar):', role);
     if (!isAuthenticated) { 
         navigate('/auth/login');
         }       
