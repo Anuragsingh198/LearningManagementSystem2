@@ -68,7 +68,7 @@ export const Sidebar = ({
     const handleAssessmentTabSelection = () => {
         // if()
         // setCurrentView('quiz');
-        sendWatchTime();
+        // sendWatchTime();
         
         if(completedVideos >= totalVideos){
             setCurrentView('quiz');
