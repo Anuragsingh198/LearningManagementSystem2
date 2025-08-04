@@ -14,7 +14,7 @@ import {
   DialogContent,
   DialogActions,
   LinearProgress,
-  
+
 } from '@mui/material';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import IconButton from '@mui/material/IconButton';
@@ -38,17 +38,19 @@ const CourseCard = ({ course, onViewCourse }) => {
     setDeleteDialogOpen(true);
   };
 
-const {
-  completionDate: deadline,
-  courseDuration,
-  enrolledDate,
-  status, 
-  overallPercentage,
-  remainingDays
-} = course;
+  const {
+    completionDate: deadline,
+    courseDuration,
+    enrolledDate,
+    status,
+    overallPercentage,
+    remainingDays
+  } = course;
+
+  console.log('course is: ', course)
 
 
-// console.log("this is the  course data  form the  course card : ", course);
+  // console.log("this is the  course data  form the  course card : ", course);
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -79,13 +81,13 @@ const {
     navigate(`/teacher/upload-video/${course._id}`);
   };
 
-const handleViewClick = async () => {
-  if (onViewCourse) {
-    await onViewCourse(course);
-  } else {
-    navigate(`/course/details/${course._id}`);
-  }
-};
+  const handleViewClick = async () => {
+    if (onViewCourse) {
+      await onViewCourse(course);
+    } else {
+      navigate(`/course/details/${course._id}`);
+    }
+  };
 
   const handleViewEmployeesClick = () => {
     navigate(`/teacher/employees/${course._id}`)
@@ -170,9 +172,9 @@ const handleViewClick = async () => {
               color={isLoading ? 'inherit' : 'error'}
               autoFocus
               disabled={isLoading}
-              
+
               variant="contained"
-              sx={{width: 205}}
+              sx={{ width: 205 }}
             >
               {isLoading ? 'Deleting...' : 'Delete Permanently'}
             </Button>
@@ -237,12 +239,15 @@ const handleViewClick = async () => {
             <Box>
               <Chip
                 label={
-  status === 'pending'
-    ? 'Ongoing'
-    : status === 'completed'
-    ? 'Completed'
-    : 'N/A'
-}
+                  status === 'pending'
+                    ? 'Ongoing'
+                    : status === 'completed'
+                      ? 'Completed'
+                      : status === 'enrolled'
+                        ? 'Pending'
+                        : 'N/A'
+                }
+
                 size="small"
                 sx={{
                   ml: 2,
@@ -353,7 +358,7 @@ const handleViewClick = async () => {
               <span>Deadline: {formatDate(deadline)}</span>
             </Box>
             {courseDuration && (
-              <Box sx={{ display: 'flex', alignItems: 'center',  }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', }}>
                 <Clock size={14} style={{ marginRight: 4 }} />
                 <span>Duration: {courseDuration} days</span>
               </Box>

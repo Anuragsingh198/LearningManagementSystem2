@@ -1,56 +1,30 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
-  Container,
-  Paper,
-  Tabs,
-  Tab,
-  Typography,
-  Grid,
   Button,
-  LinearProgress,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Chip,
   CircularProgress,
-  IconButton,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {
-  Book as BookIcon,
-  PlayCircle as PlayCircleIcon,
-  Help as HelpIcon,
-  CheckCircle as CheckCircleIcon,
-  Close as CloseIcon,
-} from "@mui/icons-material";
 import { QuizContent } from "./QuizContent";
 import { VideoContent } from "./VideoContent";
 import { Sidebar } from "./SideBar";
 import { getCourseWithProgress, getModulebyModuleId } from "../../context/Actions/courseActions";
 import { useCourseContext } from "../../context/contextFiles/CourseContext";
 import NoContentPage from "./NoContentPage";
-import QuizHistory from "./QuizHistory";
-import BlurLoading from "../../pages/common/BlurLoading";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate, useLocation } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAuth } from "../../context/contextFiles/AuthContext";
+// const serverurl = import.meta.env.VITE_SERVER_URL;
+
 
 
 const CourseDetails = ({ courseId, moduleId }) => {
-    const { state: { user } } = useAuth();
+  const { state: { user } } = useAuth();
   const [module, setModule] = useState(null);
   const [videos, setVideos] = useState([]);
   const [tests, setTests] = useState([]);
-  const { state: {courses,oneCourse, oneCourseProgress,allModuleProgress, allVideoProgess, allTestProgress , currentVideoProgress} , dispatch } = useCourseContext();
-  const [activeTab, setActiveTab] = useState("chapters");
-  const [selectedChapter, setSelectedChapter] = useState(null);
+  const { state: { courses, oneCourse, oneCourseProgress, allModuleProgress, oneModuleProgress, allVideoProgess, allTestProgress, currentVideoProgress }, dispatch } = useCourseContext();
   const [currentView, setCurrentView] = useState("video");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentVideo, setCurrentVideo] = useState(0);
@@ -60,20 +34,34 @@ const CourseDetails = ({ courseId, moduleId }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [lastTimeTracker, setLastTimeTracker] = useState(0);
+  const [currVidData, setCurrVidData] = useState(null);
+
+
   const navigate = useNavigate();
+
+  // const hasSetInitialVideo = useRef(false);
+
+  // useEffect(() => {
+  //   const currVid = oneModuleProgress?.videoIndex;
+
+  //   if (!hasSetInitialVideo.current && currVid !== undefined) {
+  //     setCurrentVideo(currVid);
+  //     hasSetInitialVideo.current = true;
+  //   }
+  // }, [oneModuleProgress]);
 
   const handleAnswerSelect = (questionIndex, optionText) => {
   };
 
   const particularCourse = courses.find(course => course._id === courseId);
   const isCompulsory = particularCourse?.compulsory;
-  
+
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      // console.log('loading in courseDetailsMainPage just after calling the function: ', isLoading)
+      console.log('loading in courseDetailsMainPage just after calling the use effect: get module by moduleId called', isLoading)
       try {
         const allModule = await getModulebyModuleId(moduleId, dispatch);
         setModule(allModule || []);
@@ -92,45 +80,39 @@ const CourseDetails = ({ courseId, moduleId }) => {
     fetchData();
   }, [moduleId, dispatch]);
 
-  
-  useEffect(()=>{
-    // console.log("this is sidebar",currentVideoProgress, allModuleProgress );
-  }, [currentVideoProgress, allModuleProgress]);
 
 
-  useEffect(() => { 
+  useEffect(() => {
     const fetchCourseProgress = async () => {
-      console.log('we have entered use effect')
+      console.log('fetch course progress use effect, fetch Course progress')
       if (!courseId || !user?._id) return;
-      console.log('we have passed return statement')
       try {
-      console.log('we are in try block')
-  
+
         dispatch({ type: 'COURSE_LOADING' });
         await getCourseWithProgress(courseId, user._id, dispatch);
       } catch (error) {
         console.error('Failed to fetch course progress:', error);
       }
     };
-  
+
     // Always fetch on mount or when courseId changes
-      if (!oneCourse || oneCourse?._id !== courseId) {
+    if (!oneCourse || oneCourse?._id !== courseId) {
       // Only fetch if no data, or data is for another course
       fetchCourseProgress();
     }
   }, [courseId, user?._id, dispatch]);
-  
-useEffect(() => {
-  if (allModuleProgress?.length && moduleId && courseId) {
-    const moduleProgress = allModuleProgress.find(
-      (x) => x.moduleId === moduleId && x.courseId === courseId
-    );
 
-    if (moduleProgress) {
-      dispatch({ type: "MODULE_PROGRESS", payload: moduleProgress });
+  useEffect(() => {
+    if (allModuleProgress?.length && moduleId && courseId) {
+      const moduleProgress = allModuleProgress.find(
+        (x) => x.moduleId === moduleId && x.courseId === courseId
+      );
+
+      if (moduleProgress) {
+        dispatch({ type: "MODULE_PROGRESS", payload: moduleProgress });
+      }
     }
-  }
-}, [moduleId, courseId, allModuleProgress]);
+  }, [moduleId, courseId, allModuleProgress]);
 
 
   return (
@@ -149,31 +131,33 @@ useEffect(() => {
         scrollbarWidth: "none",
       }}
     >
-<Button
-  onClick={() => navigate(-1)}
-  startIcon={<ArrowBackIcon sx={{ color: '#1976D2', fontSize: 10 }} />}
-  sx={{
-    position: 'absolute',
-    top: 143,
-    left: 32,
-    backgroundColor: 'transparent',
-    color: '#1976D2',
-    textTransform: 'none',
-    fontSize: 12,
-    padding: '5px 8px',
-    minWidth: 'auto',
-    boxShadow: 'none',
-    '& .MuiButton-startIcon': {
-      marginRight: '4px', // reduce this value as needed (default is 8px)
-    },
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-      boxShadow: 'none',
-    },
-  }}
->
-  Back
-</Button>
+      <Button
+        onClick={() => {
+          setTimeout(() => navigate(-1), 100);
+        }}
+        startIcon={<ArrowBackIcon sx={{ color: '#1976D2', fontSize: 10 }} />}
+        sx={{
+          position: 'absolute',
+          top: 143,
+          left: 32,
+          backgroundColor: 'transparent',
+          color: '#1976D2',
+          textTransform: 'none',
+          fontSize: 12,
+          padding: '5px 8px',
+          minWidth: 'auto',
+          boxShadow: 'none',
+          '& .MuiButton-startIcon': {
+            marginRight: '4px', // reduce this value as needed (default is 8px)
+          },
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+            boxShadow: 'none',
+          },
+        }}
+      >
+        Back
+      </Button>
 
       <Box sx={{
         width: "30%", display: 'flex', flexDirection: 'column', px: 6,
@@ -210,6 +194,8 @@ useEffect(() => {
           setCurrentQuestion={setCurrentQuestion}
           moduleId={moduleId}
           courseId={courseId}
+          currVidData={currVidData}
+          lastTimeTracker={lastTimeTracker}
         />
         {/*tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
           <QuizHistory questions={tests[currentQuiz]?.questions || []} moduleId={moduleId}
@@ -264,6 +250,7 @@ useEffect(() => {
                   courseId={courseId}
                   moduleId={moduleId}
                   isCompulsory={isCompulsory}
+
                 />
               </Box>
             ) : (

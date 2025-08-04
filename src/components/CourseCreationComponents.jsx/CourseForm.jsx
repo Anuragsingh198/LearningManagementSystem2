@@ -61,11 +61,9 @@ const CourseForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    console.log('submit button clicked')
     e.preventDefault();
     if (!validateForm()) return;
     setIsSubmitting(true);
-    console.log('form data is: ', formData)
     try {
       const formDataToSend = new FormData();
       for (const key in formData) {

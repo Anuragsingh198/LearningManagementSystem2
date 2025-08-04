@@ -113,6 +113,14 @@ export const courseReducer = (state, action) => {
         allVideoProgress: action.payload.videoProgress || []
       };
 
+    case 'SET_VIDEO_PROGRESS':
+      return {
+        ...state,
+        currentVideoProgress: action.payload.currentVideoProgress || null,
+        oneModuleProgress: action.payload.moduleProgress || [],
+        allVideoProgress: action.payload.allVideoProgress || [],
+      }
+
     case 'TEST_PROGRESS':
       return {
         ...state,

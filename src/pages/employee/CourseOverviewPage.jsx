@@ -62,7 +62,6 @@ useEffect(() => {
   setProgressPercentage(percentage);
 }, [oneCourse, oneCourseProgress, allModuleProgress]);
 
-  
   // const isPageLoading = loading || !oneCourse || !oneCourseProgress;
   const isPageLoading =false;
   return (

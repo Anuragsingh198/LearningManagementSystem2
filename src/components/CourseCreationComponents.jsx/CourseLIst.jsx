@@ -92,8 +92,8 @@ const filteredCoursesCompleted = myCourses
     <Container
       sx={{
         p: 2,
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)', // Custom subtle shadow
-        borderRadius: 10, // Smaller radius (4px)
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
+        borderRadius: 10, 
         width: '100%'
       }}
     >

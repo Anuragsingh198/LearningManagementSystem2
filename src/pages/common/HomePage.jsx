@@ -15,7 +15,7 @@ function HomePage() {
           const data = await getCoursesAction(dispatch);
           if (data.length !== 0) {
             setAllCourses(data);
-            console.log('data in home page is: ', data)
+            // console.log('data in home page is: ', data)
           }
         } catch (error) {
           console.error('Failed to fetch courses:', error);

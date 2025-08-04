@@ -28,7 +28,6 @@ import { enrollCourseAction } from '../context/Actions/AuthActions';
 export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) => {
   const theme = useTheme();
   const { state: { user } } = useAuth();
-  console.log("this is user from the  courseCard : ", user)
   const role = user?.role;
   const token = user?.token;
   const serverurl = import.meta.env.VITE_SERVER_URL;
@@ -64,7 +63,6 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
 
       if (enrolledCourse) {
         // await getMyCoursesAction(dispatch);
-        console.log(" this is the  enrolled course form the course card: " ,enrolledCourse )
         dispatch({ type: 'SET_MY_COURSES', payload: [...myCourses, course] });
         setEnrolled(true);
         navigate(`/course/details/${course._id}`);
@@ -86,9 +84,8 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
     navigate(`/login`);
 
   }
-  console.log("this is hte  my courses  from the  courseCard : ", myCourses , course)
   useEffect(() => {
-    console.log("use effect running in course card of dashboard")
+  
     if (myCourses?.some(c => c._id === course._id)) {
       setEnrolled(true);
     }

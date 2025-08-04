@@ -104,7 +104,6 @@ const handleLogout = async () => {
           px: { xs: 2, md: 4 },
         }}
       >
-        {/* Left: Logo and Title */}
         <Box
           sx={{
             display: 'flex',
@@ -146,7 +145,6 @@ const handleLogout = async () => {
           </Box>
         </Box>
 
-        {/* Center: Search Bar */}
         <Box
           sx={{
             flex: 1,
@@ -186,8 +184,6 @@ const handleLogout = async () => {
             />
           </Box>
         </Box>
-
-        {/* Right: Icons and Profile */}
         <Box
           sx={{
             display: 'flex',

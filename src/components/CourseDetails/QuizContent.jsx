@@ -77,12 +77,9 @@ export const QuizContent = ({
     console.log("this is the  text progresss from te  useeffect : ", allTestProgress)
   }, []);
 
-  useEffect(() => {
-    console.log('the questiosn are: ', questions)
-  }, [questions])
-
-
-
+  // useEffect(() => {
+  //   console.log('the questiosn are: ', questions)
+  // }, [questions])
 
   const handleSubmit = async () => {
     let correctAnswers = 0;
