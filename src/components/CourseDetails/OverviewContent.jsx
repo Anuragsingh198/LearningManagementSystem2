@@ -38,7 +38,8 @@ import axios from 'axios';
 const CourseDescription = ({ description }) => {
   return (
     <Box sx={{
-      maxHeight: 120,
+      minHeight: 60,
+      maxHeight:100,
       overflowY: 'auto',
       pr: 1,
       '&::-webkit-scrollbar': {
@@ -52,7 +53,7 @@ const CourseDescription = ({ description }) => {
         borderRadius: 2,
       },
     }}>
-      <Typography color="rgba(255, 255, 255, 0.8)" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+      <Typography color="rgba(255, 255, 255, 0.8)" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize:'15px' }}>
         {description}
       </Typography>
     </Box>
@@ -90,12 +91,12 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   const moduleProgressMap = {};
 
   if (Array.isArray(allModuleProgress)) {
-    allModuleProgress.forEach((module) => {
-      moduleProgressMap[module.moduleId] = module.status;
-    });
-  } else {
-    console.warn('Expected allModuleProgress to be an array:', allModuleProgress);
-  }
+  allModuleProgress.forEach((module) => {
+    moduleProgressMap[module.moduleId] = module.status;
+  });
+} else {
+  console.warn('Expected allModuleProgress to be an array:', allModuleProgress);
+}
 
 
   //  useEffect(()=>{
@@ -112,7 +113,8 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
       if (!courseId || !user?._id) return;
       console.log('we are fetching course')
       try {
-
+      
+  
         dispatch({ type: 'COURSE_LOADING' });
         await getCoursesAction(courseId, user._id, dispatch);
         setLoading(false)
@@ -131,7 +133,19 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
       fetchCourseProgress();
     }
   }, [courseId, user?._id, dispatch]);
-
+  // useEffect(() => {
+  //   if (allModuleProgress?.length && moduleId && courseId) {
+  //     const moduleProgress = allModuleProgress.find(
+  //       (x) => x.moduleId === moduleId && x.courseId === courseId
+  //     );
+  
+  //     if (moduleProgress) {
+  //       dispatch({ type: "MODULE_PROGRESS", payload: moduleProgress });
+  //     }
+  //   }
+  // }, [moduleId, courseId, allModuleProgress]);
+  // console.log('progress percentage in overview content is: ', percentageCompleted)
+  // console.log('progress percentage completed is: ', progressPercentage)
 
   const handleDelete = (courseId) => {
     setModuleToDelete(courseId);
@@ -217,53 +231,59 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
     setDeleteDialogOpen(true);
   };
 
-  const cancelDelete = () => {
+   const cancelDelete = () => {
     setDeleteDialogOpen(false);
     setModuleToDelete(null);
   };
 
+  const confirmDelete = async () => {
+    
 
-
-
-  // if (loading) return <CircularProgress />;
-
+  };
+  
 
   return (
-    <Box sx={{
-      display: 'flex', flexDirection: 'column', gap: 4, width: '100%',
-
-      overflowY: 'auto', // Ensure scrolling is possible
-      // maxHeight: '400px', // or any max height you need
-      '&::-webkit-scrollbar': {
-        width: '6px', // small width
-      },
-      '&::-webkit-scrollbar-track': {
-        background: 'transparent',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: 'lightGray',
-        borderRadius: '8px',
-      },
-      '&::-webkit-scrollbar-thumb:hover': {
-        backgroundColor: '#e0e0e0',
-      },
-
-    }}>
+    <Box
+  sx={{
+    width: '100%', 
+    boxSizing: 'border-box', 
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 3,
+    py: 3, 
+    px: 4,
+    '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'lightGray',
+      borderRadius: '8px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+  }}
+>
       <Paper sx={{
         background: 'linear-gradient(to right, #2563eb, #9333ea)',
         borderRadius: 3,
-        p: 4,
-        color: 'white'
+        p: 3,
+        color: 'white',
+        // height:"27vh"
       }}>
-        <Typography variant="h4" fontWeight="bold" mb={1}>
+        <Typography variant="h4" fontWeight="bold" mb={1} fontSize={25}>
           {oneCourse?.title}
         </Typography>
+
         <CourseDescription description={oneCourse?.description} />
 
         <Grid container spacing={3} mb={4} mt={2}>
 
           <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
               {totalChapters}
             </Typography>
             <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
@@ -271,7 +291,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
             </Typography>
           </Grid>
           <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
               {totalVideos}
             </Typography>
             <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
@@ -279,15 +299,15 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
             </Typography>
           </Grid>
           <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
               {totalTests}
             </Typography>
             <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
               Tests
             </Typography>
           </Grid>
-          {role !== 'instructor' && <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
+          {role !== 'instructor' && <Grid item xs={6} sm={3} textAlign="center" fontSize='25px'>
+            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
               {completedChapters}
             </Typography>
             <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
@@ -296,9 +316,9 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
           </Grid>}
         </Grid>
 
-        {role !== 'instructor' && <Box sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 2, p: 2 }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-            <Typography variant="body2" fontWeight="medium">
+        {role !== 'instructor' && <Box sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 2, py:1 , px:2,  position:'relative'}}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" >
+            <Typography variant="body2" fontWeight="medium" mb='4px'>
               Course Progress
             </Typography>
             <Typography variant="body2">
@@ -309,7 +329,8 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
             variant="determinate"
             value={progressPercentage}
             sx={{
-              height: 8,
+              height: 6,
+              mb:'4px',
               borderRadius: 4,
               backgroundColor: 'rgba(255, 255, 255, 0.2)',
               '& .MuiLinearProgress-bar': {
@@ -347,7 +368,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
             </Box>
           </Box>
 
-          <Box display="flex" flexDirection="column" gap={2}>
+          <Box display="flex" flexDirection="column" gap={1}>
             {chapters?.map((chapter) => (
               <Paper
                 key={chapter._id}
@@ -356,7 +377,9 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                   border: '1px solid',
                   borderColor: 'divider',
                   borderRadius: 3,
-                  p: 3,
+                  height:'60px',
+                  py:1,
+                  px:2,
                   '&:hover': {
                     boxShadow: 3
                   },
@@ -385,7 +408,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                     <Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-arounds', alignItems: 'center' }}>
 
-                        <Typography variant="h6" fontWeight={600} color="text.primary">
+                        <Typography variant="h6" fontWeight={600} color="text.primary" fontSize='16px'>
                           {chapter.title}
                         </Typography>
                         {role !== 'instructor' && <Typography variant="body2" fontWeight={400} sx={{ ml: 1 }} color="text.secondary">
@@ -432,6 +455,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                         textTransform: 'none',
                         backgroundColor: 'primary.light',
                         color: 'white',
+                        height:'35px',
                         '&:hover': {
                           backgroundColor: 'primary.main'
                         }

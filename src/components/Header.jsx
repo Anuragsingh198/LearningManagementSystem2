@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   AppBar,
@@ -85,18 +86,13 @@ const handleLogout = async () => {
 
   return (
     <Box
-      // position="fixed"
       sx={{
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
         boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
         borderBottom: `1px solid ${theme.palette.divider}`,
-        // width: '100%',
-        padding: '5px 0px',
-        // height: 80,
-        // display: 'flex',
+        padding: '1px',
         justifyContent: 'space-evenly',
-        // zIndex: theme.zIndex.drawer + 1,
       }}
     >
       <Toolbar
@@ -104,10 +100,10 @@ const handleLogout = async () => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          height:'40px',
           px: { xs: 2, md: 4 },
         }}
       >
-        {/* Left: Logo and Title */}
         <Box
           sx={{
             display: 'flex',
@@ -149,7 +145,6 @@ const handleLogout = async () => {
           </Box>
         </Box>
 
-        {/* Center: Search Bar */}
         <Box
           sx={{
             flex: 1,
@@ -189,8 +184,6 @@ const handleLogout = async () => {
             />
           </Box>
         </Box>
-
-        {/* Right: Icons and Profile */}
         <Box
           sx={{
             display: 'flex',

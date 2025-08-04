@@ -26,6 +26,7 @@ import TestReviewPage from './pages/common/TestReviewPage';
 import TestPage from './pages/Test/TestPage';
 import TestExitPage from './pages/Test/TestExitPage';
 import CreateAssessment from './pages/admin/CreateAssesment';
+import CourseList from './components/CourseCreationComponents.jsx/CourseLIst';
 
 function App() {
 
@@ -66,8 +67,8 @@ function App() {
                 <Routes>
                   <Route path="/dashboard" element={<TeacherDashboard />} />
                   <Route path="/teacher/create-course" element={<CreateCoursePage />} />
-                  <Route path="/teacher/my-courses" element={<CoursesPage />} />
-                  <Route path="/student/my-courses" element={<CoursesPage />} />
+                  <Route path="/teacher/my-courses" element={<CourseList />} />
+                  <Route path="/student/my-courses" element={<CourseList />} />
                   <Route path="/teacher/upload-video/:courseId" element={<VideoUploadPage />} />
                   <Route path="/teacher/employees/:courseId" element={<EnrolledEmployees />} />
                   <Route path="/Profile" element={<ProfilePage />} />
@@ -80,7 +81,6 @@ function App() {
                   <Route path="/assessments/test-submitted" element={<TestExitPage />} />
                   <Route path="/assessments/create" element={<CreateAssessment  />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                  
                 </Routes>
               </Layout>
                   

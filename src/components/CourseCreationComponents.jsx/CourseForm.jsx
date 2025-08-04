@@ -26,7 +26,7 @@ const HeaderForm = () => (
 
 const CourseForm = () => {
   const navigate = useNavigate();
-  const { dispatch } = useCourseContext();
+  const { state:{myCourses}, dispatch } = useCourseContext();
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
@@ -74,7 +74,7 @@ const CourseForm = () => {
       for (let pair of formDataToSend.entries()) {
         console.log(pair[0], pair[1]);
       }
-      const newCourse = await createCourseAction(formDataToSend, dispatch);
+      const newCourse = await createCourseAction(formDataToSend,myCourses,  dispatch);
       if (newCourse) navigate(`/teacher/upload-video/${newCourse._id}`);
     } catch (error) {
       console.error('Failed to create course:', error);

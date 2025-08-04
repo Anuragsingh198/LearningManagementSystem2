@@ -53,6 +53,7 @@ export const createCourseAction = async (course, dispatch) => {
 
     if (data.success) {
       dispatch({ type: 'ADD_COURSE', payload: data.course });
+      dispatch({type:'SET_MY_COURSES', payload:[...myCourses , data.course]})
       console.log('Course created successfully:', data.course);
       return data.course;
     } else {

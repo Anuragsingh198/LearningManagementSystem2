@@ -65,7 +65,6 @@ useEffect(() => {
   setProgressPercentage(percentage);
 }, [oneCourse, oneCourseProgress, allModuleProgress]);
 
-  
   // const isPageLoading = loading || !oneCourse || !oneCourseProgress;
   // const isPageLoading =false;
 
@@ -123,11 +122,8 @@ useEffect(() => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: "99%",
-        height: "100vh",
-        overflowY: "auto",
+        // display: "flex",
+        width: "100%",
       }}
     >
  

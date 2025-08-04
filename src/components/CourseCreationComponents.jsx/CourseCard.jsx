@@ -231,12 +231,10 @@ const CourseCard = ({ course, onViewCourse }) => {
         </Box>
       </Box>
 
-      {/* Card Content */}
       <CardContent sx={{ p: 1.5 }}>
-        {/* Progress and Status */}
         {role !== 'instructor' ? <Box sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" fontSize="13px" fontWeight='700'>
               Progress: {overallPercentage || 0}%
             </Typography>
             <Box>
@@ -250,22 +248,27 @@ const CourseCard = ({ course, onViewCourse }) => {
                         ? 'Pending'
                         : 'N/A'
                 }
-
                 size="small"
                 sx={{
                   ml: 2,
                   mb: 0.5,
+                  px: 1,
+                  height: 20,
+                  fontSize: '12px',
+                  width: 80,
+                  borderRadius: '10px',
+                  fontWeight: 500,
                   backgroundColor:
                     status === 'completed'
-                      ? 'rgba(11, 208, 93, 0.2)' // dull green
+                      ? 'rgba(11, 208, 93, 0.2)'
                       : status === 'pending'
-                        ? 'rgba(149, 165, 166, 0.1)' // dull grey
-                        : 'rgba(241, 196, 15, 0.1)', // dull yellow/fallback
+                        ? 'rgba(149, 165, 166, 0.1)'
+                        : 'rgba(241, 196, 15, 0.1)',
                   border: `1px solid ${status === 'completed'
-                    ? '#2ecc71'
-                    : status === 'pending'
-                      ? '#95a5a6'
-                      : '#f1c40f'
+                      ? '#2ecc71'
+                      : status === 'pending'
+                        ? '#95a5a6'
+                        : '#f1c40f'
                     }`,
                   color:
                     status === 'completed'
@@ -273,28 +276,32 @@ const CourseCard = ({ course, onViewCourse }) => {
                       : status === 'pending'
                         ? '#95a5a6'
                         : '#f1c40f',
-                  width: 90,
-                  fontWeight: 600,
                 }}
               />
             </Box>
 
-            {remainingDays !== undefined && status !== 'completed' && (
-              <Chip
-                label={remainingDays === 0 ? 'Overdue' : `${remainingDays} Days left`}
-                size="small"
-                sx={{
-                  backgroundColor:
-                    remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
-                  border: `1px solid ${remainingDays === 0 ? '#e74c3c' : '#3498db'
-                    }`,
-                  color: remainingDays === 0 ? '#ffffff' : '#3498db',
-                  mb: 0.5,
-                  width: 100,
-                  fontWeight: 600,
-                }}
-              />
-            )}
+{remainingDays !== undefined && status !== 'completed' && (
+  <Chip
+    label={remainingDays === 0 ? 'Overdue' : `${remainingDays} Days left`}
+    size="small"
+    sx={{
+      height: 20,
+      fontSize: '12px',
+      px: 1, 
+      width: 100,
+      borderRadius: '10px',
+      fontWeight: 500,
+      mb: 0.5,
+      backgroundColor:
+        remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
+      border: `1px solid ${
+        remainingDays === 0 ? '#e74c3c' : '#3498db'
+      }`,
+      color: remainingDays === 0 ? '#ffffff' : '#3498db',
+    }}
+  />
+)}
+
 
           </Box>
           <LinearProgress
