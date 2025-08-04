@@ -61,7 +61,6 @@ const CourseDetails = ({ courseId, moduleId }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      console.log('loading in courseDetailsMainPage just after calling the use effect: get module by moduleId called', isLoading)
       try {
         const allModule = await getModulebyModuleId(moduleId, dispatch);
         setModule(allModule || []);
@@ -213,6 +212,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
           ) : (
             tests.length > 0 && tests[0]?.questions?.length > 0 ? (
               <QuizContent
+                key={`${courseId}-${moduleId}`}
                 questions={tests[currentQuiz]?.questions || []}
                 currentQuestion={currentQuestion}
                 handleAnswerSelect={handleAnswerSelect}

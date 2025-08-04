@@ -17,12 +17,12 @@ function TestCard({ test, role }) {
     // console.log('the role is: ', role)
     const handleOnClick = () => {
 
-        toast.warning('This section is under development')
-        // if (test.completed) {
-        //     navigate(`/assessments/review/${test._id}`)
-        // } else {
-        //     navigate(`/assessments/start-test/${test._id}`)
-        // }
+        // toast.warning('This section is under development')
+        if (test.completed) {
+            navigate(`/assessments/review/${test._id}`)
+        } else {
+            navigate(`/assessments/start-test/${test._id}`)
+        }
     }
 
     const handleOnAdminClick = () => {

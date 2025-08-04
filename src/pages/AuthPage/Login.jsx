@@ -84,6 +84,7 @@ const RightSection = styled(Box)(({ theme }) => ({
 
 const LoginPage = () => {
   const { state: { isAuthenticated, user }, dispatch } = useAuth();
+  const [loading, setLoading] = useState(false)
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -112,12 +113,14 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
     try {
       await userLogin(formData, dispatch);
       toast.success("user Logged in successfully ")
-      
+      setLoading(false)
     } catch (error) {
       toast.error("Please enter correct Email and Password")
+      setLoading(false)
     }
   };
 
@@ -279,7 +282,7 @@ const LoginPage = () => {
                 }}
               >
                 {/* Sign in as {formData.userType === 'student' ? 'Student' : 'Teacher'} */}
-                Sign In
+                {loading ? "Loading..." : "Sign In"}
               </Button>
             </Box>
           </Box>

@@ -1,10 +1,10 @@
 // TestResult.js
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Button, 
-  Avatar, 
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  Avatar,
   Chip,
   Divider,
   List,
@@ -16,7 +16,7 @@ import {
 import { CheckCircle, Close, Check, Clear } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 
-export const TestResult = ({ questions, currentTestProgress , onRetake}) => {
+export const TestResult = ({ questions, currentTestProgress, onRetake }) => {
   const theme = useTheme();
   const score = currentTestProgress?.score || 0;
   const isPassed = currentTestProgress?.isPassed;
@@ -31,148 +31,165 @@ export const TestResult = ({ questions, currentTestProgress , onRetake}) => {
   });
 
   return (
-    <Container maxWidth="md" sx={{ mb: 4, mt: 2,  }}>
+    <Container maxWidth="md" >
       {/* Result Summary Section */}
-      <Paper 
-        sx={{ 
-          p: 4,
-          borderRadius: 4, 
+      <Paper
+        sx={{
+          p: 2,
+          borderRadius: 4,
           textAlign: "center",
-          mb: 4,
+          mb: 2,
           boxShadow: theme.shadows[3]
         }}
       >
-        <Box sx={{ mb: 3 }}>
-          <Avatar
-            sx={{
-              width: 80,
-              height: 80,
-              bgcolor: passed ? "success.light" : "error.light",
-              mx: "auto",
-              mb: 2,
-            }}
+        <Box >
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Avatar
+              sx={{
+                width: 30,
+                height: 30,
+                bgcolor: passed ? "success.light" : "error.light",
+                mr: 1
+              }}
+            >
+              {passed ? (
+                <CheckCircle sx={{ fontSize: 20, color: "success.main" }} />
+              ) : (
+                <Close sx={{ fontSize: 20, color: "error.main" }} />
+              )}
+            </Avatar>
+            <Typography variant="h6" gutterBottom>
+              {passed ? "Congratulations!" : "Try Again"}
+            </Typography>
+          </Box>
+
+
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            gutterBottom
+
           >
-            {passed ? (
-              <CheckCircle sx={{ fontSize: 60, color: "success.main" }} />
-            ) : (
-              <Close sx={{ fontSize: 60, color: "error.main" }} />
-            )}
-          </Avatar>
-          <Typography variant="h4" gutterBottom>
-            {passed ? "Congratulations!" : "Try Again"}
-          </Typography>
-          <Typography variant="body1" color="text.secondary" gutterBottom>
             You scored {score} out of {totalQuestions} ({percentage}%)
           </Typography>
-          <Chip
-            label={passed ? "Passed" : "Failed"}
-            color={passed ? "success" : "error"}
-            sx={{ mt: 1, mb: 2 }}
-          />
-          
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item>
-              <Typography variant="body2">
-                <Check sx={{ color: "success.main", verticalAlign: "middle" }} /> 
-                Correct: {score}
-              </Typography>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1,
+              mt: 1
+            }}
+          >
+            <Chip
+              size="small"
+              label={passed ? "Passed" : "Failed"}
+              color={passed ? "success" : "error"}
+              sx={{ mt: 0.2, fontSize: '0.75rem', height: 20 }}
+            />
+
+            <Grid container spacing={1} alignItems="center" wrap="nowrap">
+              <Grid item>
+                <Typography variant="caption">
+                  <Check sx={{ color: "success.main", fontSize: 16, verticalAlign: "middle", mb: 0.5 }} />
+                  Correct: {score}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="caption">
+                  <Clear sx={{ color: "error.main", fontSize: 16, verticalAlign: "middle", mb: 0.5 }} />
+                  Incorrect: {totalQuestions - score}
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Typography variant="body2">
-                <Clear sx={{ color: "error.main", verticalAlign: "middle" }} /> 
-                Incorrect: {totalQuestions - score}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="body2">
-                Attempts: {currentTestProgress?.retakeCount + 1 || 1}
-              </Typography>
-            </Grid>
-          </Grid>
+          </Box>
+
+
+
         </Box>
       </Paper>
 
       {/* Questions Review Section */}
-   <Paper 
-  sx={{ 
-    p: 3,
-    borderRadius: 4,
-    boxShadow: theme.shadows[3],
-    maxHeight: "40vh",
-    overflowY: "auto",
-    mb: 8,
-    '&::-webkit-scrollbar': {
-      width: '8px',
-    },
-    '&::-webkit-scrollbar-track': {
-      backgroundColor: '#f0f0f0',
-      borderRadius: '4px',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#a0a0a0',
-      borderRadius: '4px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: '#808080',
-    }
-  }}
->
-
-        <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
+      <Paper
+        sx={{
+          p: 2,
+          borderRadius: 2,
+          boxShadow: theme.shadows[1],
+          maxHeight: "46vh",
+          overflowY: "auto",
+          mb: 2,
+          '&::-webkit-scrollbar': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: '#f0f0f0',
+            borderRadius: '3px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#a0a0a0',
+            borderRadius: '3px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#808080',
+          }
+        }}
+      >
+        <Typography variant="subtitle1" gutterBottom>
           Question Review
         </Typography>
-        
+
         <List>
           {questions?.map((question, index) => {
             const userAnswer = userAnswersMap[question._id];
             const isCorrect = userAnswer === question.correctAnswer;
-            
+
             return (
-              <Box key={question._id} sx={{ mb: 3 }}>
+              <Box key={question._id} sx={{ mb: 0.5 }}>
                 <ListItem alignItems="flex-start" sx={{ px: 0 }}>
                   <ListItemText
                     primary={
-                      <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
                         {index + 1}. {question.questionText}
                       </Typography>
                     }
                     secondary={
                       <>
-                        <Box 
-                          sx={{ 
-                            mt: 2,
-                            p: 2,
-                            borderRadius: 2,
-                            backgroundColor: isCorrect 
-                              ? "success.light" 
+                        <Box
+                          sx={{
+                            mt: 1,
+                            p: 1,
+                            borderRadius: 1,
+                            backgroundColor: isCorrect
+                              ? "success.light"
                               : "error.light",
                             display: "flex",
                             alignItems: "center"
                           }}
                         >
                           {isCorrect ? (
-                            <Check sx={{ mr: 1, color: "success.main" }} />
+                            <Check sx={{ mr: 0.5, fontSize: 18, color: "success.main" }} />
                           ) : (
-                            <Clear sx={{ mr: 1, color: "error.main" }} />
+                            <Clear sx={{ mr: 0.5, fontSize: 18, color: "error.main" }} />
                           )}
-                          <Typography variant="body2">
+                          <Typography variant="caption">
                             <strong>Your answer:</strong> {userAnswer}
                           </Typography>
                         </Box>
-                        
+
                         {!isCorrect && (
-                          <Box 
-                            sx={{ 
-                              mt: 1,
-                              p: 2,
-                              borderRadius: 2,
+                          <Box
+                            sx={{
+                              mt: 0.5,
+                              p: 1,
+                              borderRadius: 1,
                               backgroundColor: "success.light",
                               display: "flex",
                               alignItems: "center"
                             }}
                           >
-                            <Check sx={{ mr: 1, color: "success.main" }} />
-                            <Typography variant="body2">
+                            <Check sx={{ mr: 0.5, fontSize: 18, color: "success.main" }} />
+                            <Typography variant="caption">
                               <strong>Correct answer:</strong> {question.correctAnswer}
                             </Typography>
                           </Box>
@@ -181,15 +198,16 @@ export const TestResult = ({ questions, currentTestProgress , onRetake}) => {
                     }
                   />
                 </ListItem>
-                
-                {index < questions.length - 1 && <Divider sx={{ my: 2 }} />}
+
+                {index < questions.length - 1 && <Divider sx={{ my: 1 }} />}
               </Box>
             );
           })}
         </List>
       </Paper>
-      
-    { !isPassed && <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+
+
+      {!isPassed && <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Button variant="contained" onClick={onRetake}>
           Retake Test
         </Button>

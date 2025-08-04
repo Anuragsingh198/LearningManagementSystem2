@@ -47,7 +47,7 @@ const CourseCard = ({ course, onViewCourse }) => {
     remainingDays
   } = course;
 
-  console.log('course is: ', course)
+  // console.log('course is: ', course)
 
 
   // console.log("this is the  course data  form the  course card : ", course);
@@ -82,10 +82,13 @@ const CourseCard = ({ course, onViewCourse }) => {
   };
 
   const handleViewClick = async () => {
+    setisLoading(true)
     if (onViewCourse) {
       await onViewCourse(course);
+      setisLoading(false)
     } else {
       navigate(`/course/details/${course._id}`);
+      setisLoading(false)
     }
   };
 
@@ -435,7 +438,7 @@ const CourseCard = ({ course, onViewCourse }) => {
             }
           }}
         >
-          View Course
+          { isLoading ? "Loading...": " View Course"}
         </Button>
         {role !== 'instructor' ? '' : (
           <Button

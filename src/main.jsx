@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { CourseProvider } from './context/contextFiles/CourseContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <AuthProvider>
     <CourseProvider>
     <BrowserRouter>
@@ -15,5 +15,5 @@ createRoot(document.getElementById('root')).render(
     </BrowserRouter>
     </CourseProvider>
     </AuthProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )

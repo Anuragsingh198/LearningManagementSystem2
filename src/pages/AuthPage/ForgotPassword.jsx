@@ -112,6 +112,8 @@ const ForgotPasswordPage = () => {
     const navigate = useNavigate();
      const role = user?.role;
     const token = user?.token;
+      const [loading, setLoading] = useState(false)
+    
 
     const [formData, setFormData] = useState({
         email: "",
@@ -178,7 +180,7 @@ const handleChange = (e) => {
         }
 
         setDisableSendOtp(true);
-        setCountdown(20); // 20 seconds
+        setCountdown(60); // 20 seconds
         try {
 
             const response = await axios.post(
@@ -214,6 +216,7 @@ const handleChange = (e) => {
         }, [countdown, disableSendOtp]);
 
     const handleVerifyOtp = async () => {
+        
 
         if(!formData.email){
             toast.error("Please provide email address for OTP verification")
@@ -229,6 +232,8 @@ const handleChange = (e) => {
             // alert('Please enter otp')
             return
         }
+
+        setLoading(true)
 
         try {
 
@@ -253,9 +258,12 @@ const handleChange = (e) => {
                 toast.error(" verification failed! OTP is not valid :(")
                 console.error('otp not valid, verification failed')
             }
+
+            setLoading(false)
         } catch (error) {
                 toast.error(" verification failed! OTP is not valid :(")
-            console.error('could not verify otp', error)
+            setLoading(false)
+
         }     
 
     }
@@ -453,7 +461,7 @@ const handleChange = (e) => {
                             marginBottom: '1.5rem'
                         }}
                     >
-                        Verify OTP
+                        {loading ? "Verifying...":"Verify OTP"}
                     </Button>}
 
 
@@ -562,7 +570,7 @@ const handleChange = (e) => {
                                     }
                                 }}
                             >
-                               Reset Password
+                               {loading ? "Loading...":"Reset Password"}
                             </Button>
                         </Box>
                     </Box>}

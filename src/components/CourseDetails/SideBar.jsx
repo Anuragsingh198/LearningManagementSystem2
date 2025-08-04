@@ -49,17 +49,17 @@ export const Sidebar = ({
     setCurrentQuestion,
     sendWatchTime
 }) => {
-    const { state: { loading, courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
+    const { state: { courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
     // console.log("this is hte  corrent  video data : ", videos[currentVideo])
     const videoStatusMap = {};
     const totalVideos = moduleProgress?.totalVideos || 0;
     const completedVideos = moduleProgress?.completedVideos || 0;
-
+    
     allVideoProgress.forEach((vp) => {
         videoStatusMap[vp.videoId] = vp.status;
     });
 
-    // console.log("all video progress videoStatusMap from   side bar is : ", videoStatusMap)
+    console.log("all video progress videoStatusMap from   side bar is : ", videoStatusMap)
 
     useEffect(() => {
         // console.log("this is sidebar", currentVideoProgress, allModuleProgress, allVideoProgress);

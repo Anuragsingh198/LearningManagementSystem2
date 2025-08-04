@@ -94,7 +94,7 @@ const LeftSection = styled(Box)(({ theme }) => ({
     [theme.breakpoints.up('lg')]: {
         display: 'flex',
         width: '50%',
-                backgroundImage: `url(${landingImg})`,
+        backgroundImage: `url(${landingImg})`,
 
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -159,6 +159,8 @@ const RegisterPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [confirmation, setConfirmation] = useState(false);
+    const [loading, setLoading] = useState(false)
+
 
     const role = user?.role;
     const token = user?.token;
@@ -195,15 +197,15 @@ const RegisterPage = () => {
             return;
         }
 
-  if (name === "employeeId") {
-    const hasSpecialChar = /[^a-zA-Z0-9]/.test(value);
-    setCheckEmployeeId(hasSpecialChar);
-  }
+        if (name === "employeeId") {
+            const hasSpecialChar = /[^a-zA-Z0-9]/.test(value);
+            setCheckEmployeeId(hasSpecialChar);
+        }
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
 
         if (name === "email") {
             if (value && !value.endsWith("@ielektron.com")) {
@@ -240,7 +242,8 @@ const RegisterPage = () => {
         }
 
         setDisableSendOtp(true);
-        setCountdown(20); // 20 seconds
+        setCountdown(60); // 20 seconds
+        setLoading(true);
         try {
 
             const response = await axios.post(
@@ -254,10 +257,12 @@ const RegisterPage = () => {
                     }
                 }
             )
+            setLoading(false);
         } catch (error) {
             console.error("OTP send error:", error);
             const errorMessage = error.response?.data?.message || "Failed to send OTP.";
             toast.error(errorMessage);
+            setLoading(false);
         }
 
     };
@@ -274,16 +279,16 @@ const RegisterPage = () => {
         setConfirmation(false);
     };
 
-    const handleUserTypeChange = (e) => {   
-        const   currenSelection = e.target.value  ;
-        console.log("selected type : " , currenSelection)
-        if(formData.userType !== "instructor" && currenSelection === "instructor"){
+    const handleUserTypeChange = (e) => {
+        const currenSelection = e.target.value;
+        console.log("selected type : ", currenSelection)
+        if (formData.userType !== "instructor" && currenSelection === "instructor") {
             setNewUserType(currenSelection)
             setConfirmation(true)
         }
-       if(currenSelection === "employee"){
+        if (currenSelection === "employee") {
             setFormData({ ...formData, userType: currenSelection });
-       }
+        }
     };
 
     useEffect(() => {
@@ -311,6 +316,8 @@ const RegisterPage = () => {
             return
         }
 
+        setLoading(true);
+
         try {
 
             const response = await axios.post(
@@ -327,17 +334,18 @@ const RegisterPage = () => {
             )
 
             if (response.data.success) {
-
                 setIsOtpVerified((prev) => !prev)
                 toast.success("OTP verification successful")
 
             } else {
                 toast.error("otp not valid, verification failed")
             }
+            setLoading(false);
         } catch (error) {
             console.error("OTP send error:", error);
             const errorMessage = error.response?.data?.message || "Failed to send OTP.";
             toast.error(errorMessage);
+            setLoading(false);
         }
     }
 
@@ -353,18 +361,20 @@ const RegisterPage = () => {
             toast.error("password  do  not match")
             return;
         }
-        if(checkEmployeeId){
+        if (checkEmployeeId) {
             toast.error("Please remove specail characters from employee id")
             return;
         }
-        console.log("Form Data:", formData);
+        setLoading(true);
         try {
             await userRegister(formData, dispatch);
             toast.success('User registration successful')
+            setLoading(false);
         } catch (error) {
             console.error("OTP send error:", error);
             const errorMessage = error.response?.data?.message || "Failed to send OTP.";
             toast.error(errorMessage);
+            setLoading(false);
         }
     };
 
@@ -426,12 +436,12 @@ const RegisterPage = () => {
                     </Box>
                     {
                         !isOtpVerified && <Box> <FormControl fullWidth error={!!emailError} sx={{
-                            marginBottom: '0.5rem', 
+                            marginBottom: '0.5rem',
                             '& .MuiFormHelperText-root': {
-                                height: '20px', 
+                                height: '20px',
                                 display: 'flex',
                                 alignItems: 'center',
-                                visibility: emailError ? 'visible' : 'hidden', 
+                                visibility: emailError ? 'visible' : 'hidden',
                                 marginLeft: 0,
                                 fontSize: '0.75rem'
                             }
@@ -545,7 +555,7 @@ const RegisterPage = () => {
                             marginBottom: '1.5rem'
                         }}
                     >
-                        Verify OTP
+                        {loading ? "Verifying..." : "Verify OTP"}
                     </Button>}
 
 
@@ -737,7 +747,9 @@ const RegisterPage = () => {
                                     }
                                 }}
                             >
-                                Create {formData.userType === 'employee' ? 'Employee' : 'Instructor'} Account
+                                {loading
+                                    ? "Loading..."
+                                    : `Create ${formData.userType === 'employee' ? 'Employee' : 'Instructor'} Account`}
                             </Button>
                         </Box>
                     </Box>}

@@ -4,54 +4,46 @@ import {
   Typography,
   Button,
   Paper,
-  Divider,
   LinearProgress,
   Grid,
   Chip,
   Avatar,
-  useAutocomplete,
   CircularProgress,
 } from "@mui/material";
 import { NoVideosFound } from "./NoContentFoundPage";
 import { TestResult } from "./TestResult";
 import { useCourseContext } from "../../context/contextFiles/CourseContext";
-import { useAuth } from "../../context/contextFiles/AuthContext";
-import { getCourseProgress, SubmitTest, testProgress } from "../../context/Actions/courseActions";
-import { Loader } from "lucide-react";
+import { SubmitTest, testProgress } from "../../context/Actions/courseActions";
 import { useParams } from "react-router-dom";
 
-// add progress in  inital state and add the the  test also;
 export const QuizContent = ({
   questions,
   currentQuestion,
-  handleAnswerSelect,
   setCurrentQuestion,
   currentTest,
   tests,
 }) => {
-  const { state: { user } } = useAuth();
   const moduleId = useParams().moduleId;
   const courseId = useParams().courseId;
-  const [userId, setUserId] = useState(null)
-  const [progressId, setProgressId] = useState(null);
   const [userAnswers, setUserAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setisLoading] = useState(false)
-  const [score, setScore] = useState(0);
-  const [currentTestData, setCurrentTestData] = useState(currentTest);
-  const { state: { loading, oneCourseProgress, oneModuleProgress, currentTestProgress, allTestProgress }, dispatch } = useCourseContext();
-  // console.log("loading true  Quiz Content: ,", loading)
+  const { state: { oneCourseProgress, oneModuleProgress, currentTestProgress, allTestProgress }, dispatch } = useCourseContext();
   const currentQ = questions && questions[currentQuestion];
-  // console.log("this is the  current question from quiz content", currentQ);
-  // console.log("this is the  allTestProgress from quiz content", oneCourseProgress,oneModuleProgress, allTestProgress );
+  const TestStatus = currentTestProgress?.status;
+  const [isRetaking, setIsRetaking] = useState(false);
 
-  const isPassed = currentTestProgress?.isPassed;
-
+  
   if (!questions || questions.length === 0) {
     return <NoVideosFound />;
   }
-  // console.log("this is the  oneCourseProgress test : ", oneCourseProgress);
-  // console.log("this is the  current test : ", tests[currentTest]._id);
+
+  useEffect(() => {
+  setUserAnswers({});
+  setSubmitted(false);
+  setIsRetaking(false);
+  setCurrentQuestion(0);
+}, [moduleId, courseId]);
 
   const handleTestProgress = async () => {
     const progressExists = allTestProgress.find(
@@ -67,7 +59,6 @@ export const QuizContent = ({
         dispatch
       );
     } else {
-      // console.log("Test progress exists:", progressExists);
       dispatch({ type: 'TEST_PROGRESS', payload: progressExists });
     }
   };
@@ -77,10 +68,6 @@ export const QuizContent = ({
     console.log("this is the  text progresss from te  useeffect : ", allTestProgress)
   }, []);
 
-  // useEffect(() => {
-  //   console.log('the questiosn are: ', questions)
-  // }, [questions])
-
   const handleSubmit = async () => {
     let correctAnswers = 0;
     questions.forEach((q, index) => {
@@ -88,18 +75,14 @@ export const QuizContent = ({
         correctAnswers++;
       }
     });
-    setScore(correctAnswers);
 
     try {
       setisLoading(true);
-
       const testId = tests[currentTest]._id;
-
-      const result = await SubmitTest({ testId, userAnswers, moduleId, courseId, dispatch });
-      // await getCourseProgress(courseId, user._id, dispatch);
+      await SubmitTest({ testId, userAnswers, moduleId, courseId, dispatch });
       setisLoading(false);
       setSubmitted(true);
-      // console.log('the current test progress is: ', currentTestProgress)
+      setIsRetaking(false)
     } catch (error) {
       console.error("Error submitting test:", error);
       setisLoading(false);
@@ -110,12 +93,18 @@ export const QuizContent = ({
     console.log("this is the current test progress : ", currentTestProgress)
   }, [currentTestProgress])
 
-  const handleRetake = () => {
-    setUserAnswers({});
-    setSubmitted(false);
-    setScore(0);
-    setCurrentQuestion(0);
-  };
+const handleRetake = () => {
+  console.log('handle retake clicked: ');
+  setUserAnswers({});
+  setSubmitted(false);
+  setIsRetaking(true);  // now in retake mode
+  setCurrentQuestion(0);
+};
+
+
+    useEffect(() => {
+    console.log("submitted ", submitted)
+  }, [submitted])
 
   const handleAnswerClick = (questionIndex, optionText) => {
     setUserAnswers((prev) => ({
@@ -124,83 +113,37 @@ export const QuizContent = ({
     }));
   };
 
-if (!currentTestProgress) {
+if (!currentTestProgress || currentTestProgress.testId !== tests[currentTest]._id) {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '60vh', // or "100vh" to center in full viewport
-        width: '100%',
-      }}
-    >
-      <CircularProgress color="primary" />
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+      <CircularProgress />
     </Box>
   );
 }
 
 
-  // if (submitted) {
-  //   return (
-  //     //   <>
-  //     //     {loading ? (
-  //     //       <Loader />
-  //     //     ) : (
-  //     <Box
-  //       sx={{
-  //         position: "relative",
-  //         display: "flex",
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //         minHeight: "100%",
-  //         overflow: "scroll",
-  //         p: 3,
-  //         '&::-webkit-scrollbar': {
-  //           width: '8px',
-  //           height: '8px', // also styles horizontal scroll if needed
-  //         },
-  //         '&::-webkit-scrollbar-track': {
-  //           backgroundColor: '#f0f0f0',
-  //           borderRadius: '4px',
-  //         },
-  //         '&::-webkit-scrollbar-thumb': {
-  //           backgroundColor: '#a0a0a0',
-  //           borderRadius: '4px',
-  //         },
-  //         '&::-webkit-scrollbar-thumb:hover': {
-  //           backgroundColor: '#808080',
-  //         }
-  //       }}
-  //     >
+if(!TestStatus )
+{ return (
+    <Box
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',  height: '60vh',  width: '100%',  }} >
+      <CircularProgress color="primary" />
+    </Box>
+  );}
 
-  //       <TestResult
-  //         questions={questions}
-  //         currentTestProgress={currentTestProgress}
-  //         totalQuestions={questions.length}
-  //         onRetake={handleRetake}
-  //       />
-  //     </Box>
-  //     //     )}
-  //     //   </>
-  //   );
-  // }
+  if ((TestStatus === 'completed' || TestStatus === 'failed')  && !isRetaking) {
 
-  if (isPassed) {
     return (
 
       <Box
         sx={{
-          position: "relative",
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: "start",
           minHeight: "100%",
           overflow: "scroll",
-          p: 3,
+          p: 2,
           '&::-webkit-scrollbar': {
             width: '8px',
-            height: '8px', // also styles horizontal scroll if needed
+            height: '8px', 
           },
           '&::-webkit-scrollbar-track': {
             backgroundColor: '#f0f0f0',
@@ -216,9 +159,8 @@ if (!currentTestProgress) {
         }}
       >
 
-        {console.log('this is good, we are in if conding ')}
-
         <TestResult
+         key={`${courseId}-${moduleId}`}
           questions={questions}
           currentTestProgress={currentTestProgress}
           totalQuestions={questions.length}
@@ -254,245 +196,261 @@ if (!currentTestProgress) {
           border: "1px solid",
           borderColor: "divider",
           borderRadius: 3,
-          p: 3,
+          py: 1,
+          px: 3
         }}
       >
-        <Typography variant="h6" fontWeight="semibold" mb={2}>
+        <Typography variant="h6" fontWeight="semibold" >
           Assessment Statistics
         </Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h4" fontWeight="bold" color="success.main">
-                {Object.keys(userAnswers).length}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Answered
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h4" fontWeight="bold" color="warning.main">
-                {questions.length - Object.keys(userAnswers).length}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Remaining
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h4" fontWeight="bold" color="primary.main">
-                {questions.length}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Total
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </Paper>
-
-      <Paper
-        sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 3,
-          p: 3,
-        }}
+    <Grid container spacing={1}>
+  <Grid item xs={4}>
+    <Box textAlign="center">
+      <Typography 
+        variant="h6" // smaller than h4
+        fontWeight="bold" 
+        color="success.main"
+        sx={{ fontSize: '1.25rem' }} // force smaller if needed
       >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={3}
-        >
-          <Typography variant="h4" fontWeight="bold">
-            Assessment
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Question {currentQuestion + 1} of {questions.length}
-          </Typography>
-        </Box>
+        {Object.keys(userAnswers).length}
+      </Typography>
+      <Typography 
+        variant="caption" // smaller than body2
+        color="text.secondary"
+        sx={{ fontSize: '0.7rem' }}
+      >
+        Answered
+      </Typography>
+    </Box>
+  </Grid>
 
-        <Box mb={4}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            mb={1}
-          >
-            <Typography
-              variant="body2"
-              fontWeight="medium"
-              color="text.secondary"
-            >
-              Progress
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {Math.round(((currentQuestion) / questions.length) * 100)}%
-            </Typography>
-          </Box>
-          <LinearProgress
-            variant="determinate"
-            value={((currentQuestion) / questions.length) * 100}
-            sx={{
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: "grey.200",
-              "& .MuiLinearProgress-bar": {
-                borderRadius: 4,
-                backgroundColor: "primary.main",
-              },
-            }}
-          />
-        </Box>
+  <Grid item xs={4}>
+    <Box textAlign="center">
+      <Typography 
+        variant="h6"
+        fontWeight="bold" 
+        color="warning.main"
+        sx={{ fontSize: '1.25rem' }}
+      >
+        {questions.length - Object.keys(userAnswers).length}
+      </Typography>
+      <Typography 
+        variant="caption"
+        color="text.secondary"
+        sx={{ fontSize: '0.7rem' }}
+      >
+        Remaining
+      </Typography>
+    </Box>
+  </Grid>
 
-        <Paper
-          sx={{ backgroundColor: "grey.50", borderRadius: 3, p: 3, mb: 3 }}
-        >
-          <Box
-            display="flex"
-            alignItems="flex-start"
-            justifyContent="space-between"
-            mb={2}
-          >
-            <Typography variant="h6" fontWeight="semibold">
-              Question {currentQuestion + 1}
-            </Typography>
-            <Chip
-              label="5 marks"
-              sx={{ backgroundColor: "primary.light", color: "primary.dark" }}
-            />
-          </Box>
-          <Typography variant="body1" color="text.primary" mb={3}>
-            {currentQ.questionText}
-          </Typography>
+  <Grid item xs={4} sx={{ml: 1}}>
+    <Box textAlign="center">
+      <Typography 
+        variant="h6"
+        fontWeight="bold" 
+        color="primary.main"
+        sx={{ fontSize: '1.25rem' }}
+      >
+        {questions.length}
+      </Typography>
+      <Typography 
+        variant="caption"
+        color="text.secondary"
+        sx={{ fontSize: '0.7rem' }}
+      >
+        Total
+      </Typography>
+    </Box>
+  </Grid>
+</Grid>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {currentQ.options.map((option, index) => (
-              <Button
-                key={option._id}
-                onClick={() =>
-                  handleAnswerClick(currentQuestion, option.optionText)
-                }
-                fullWidth
-                sx={{
-                  justifyContent: "flex-start",
-                  textAlign: "left",
-                  p: 2,
-                  border: "2px solid",
-                  borderColor:
-                    userAnswers[currentQuestion] === option.optionText
-                      ? "primary.main"
-                      : "grey.300",
-                  backgroundColor:
-                    userAnswers[currentQuestion] === option.optionText
-                      ? "primary.light"
-                      : "background.paper",
-                  "&:hover": {
-                    borderColor:
-                      userAnswers[currentQuestion] === option.optionText
-                        ? "primary.main"
-                        : "grey.400",
-                    backgroundColor:
-                      userAnswers[currentQuestion] === option.optionText
-                        ? "primary.light"
-                        : "grey.100",
-                  },
-                  transition: "all 0.3s",
-                }}
-              >
-                <Box display="flex" alignItems="center" gap={2}>
-                  <Avatar
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      border: "2px solid",
-                      borderColor:
-                        userAnswers[currentQuestion] === option.optionText
-                          ? "primary.main"
-                          : "grey.400",
-                      backgroundColor:
-                        userAnswers[currentQuestion] === option.optionText
-                          ? "primary.main"
-                          : "transparent",
-                    }}
-                  >
-                    {userAnswers[currentQuestion] === option.optionText && (
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          backgroundColor: "white",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    )}
-                  </Avatar>
-                  <Typography color="text.primary" sx={{ textTransform: "none" }}>
-                    {/* {console.log(option.optionText)} */}
-                    {option.optionText}
-                  </Typography>
-                </Box>
-              </Button>
-            ))}
-          </Box>
-        </Paper>
-
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Button
-            onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
-            disabled={currentQuestion === 0}
-            variant="outlined"
-            sx={{
-              color: "text.primary",
-              borderColor: "grey.300",
-              "&:hover": {
-                backgroundColor: "grey.50",
-                borderColor: "grey.400",
-              },
-            }}
-          >
-            Previous
-          </Button>
-
-          <Box display="flex" gap={1}>
-            {currentQuestion === questions.length - 1 ? (
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleSubmit}
-                disabled={isLoading}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "success.dark",
-                  },
-                }}
-              >
-                {isLoading ? 'Submitting...' : 'Submit Test'}
-              </Button>
-            ) : (
-              <Button
-                onClick={() =>
-                  setCurrentQuestion(
-                    Math.min(questions.length - 1, currentQuestion + 1)
-                  )
-                }
-                variant="contained"
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "primary.dark",
-                  },
-                }}
-              >
-                Next
-              </Button>
-            )}
-          </Box>
-        </Box>
       </Paper>
+
+<Paper
+  sx={{
+    border: "1px solid",
+    borderColor: "divider",
+    borderRadius: 2,
+    p: 2
+  }}
+>
+  {/* Header */}
+  <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+    <Typography variant="h6" fontWeight="bold">
+      Assessment
+    </Typography>
+    <Typography variant="caption" color="text.secondary">
+      Q {currentQuestion + 1} / {questions.length}
+    </Typography>
+  </Box>
+
+  {/* Progress */}
+  <Box mb={2}>
+    <Box display="flex" alignItems="center" justifyContent="space-between" mb={0.5}>
+      <Typography variant="caption" fontWeight="medium" color="text.secondary">
+        Progress
+      </Typography>
+      <Typography variant="caption" color="text.secondary">
+        {Math.round((currentQuestion / questions.length) * 100)}%
+      </Typography>
+    </Box>
+    <LinearProgress
+      variant="determinate"
+      value={(currentQuestion / questions.length) * 100}
+      sx={{
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: "grey.200",
+        "& .MuiLinearProgress-bar": {
+          borderRadius: 3,
+          backgroundColor: "primary.main"
+        }
+      }}
+    />
+  </Box>
+
+  {/* Question Box */}
+  <Paper sx={{ backgroundColor: "grey.50", borderRadius: 2, p: 1, mb: 0 }}>
+    <Box display="flex" alignItems="flex-start" justifyContent="space-between" mb={1}>
+      <Typography variant="subtitle2" fontWeight="semibold">
+        Question {currentQuestion + 1}
+      </Typography>
+      <Chip
+        size="small"
+        label="5 marks"
+        sx={{ backgroundColor: "primary.light", color: "primary.dark", fontSize: "0.75rem" }}
+      />
+    </Box>
+    <Typography variant="body2" color="text.primary" mb={2}>
+      {currentQ.questionText}
+    </Typography>
+
+    {/* Options */}
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+      {currentQ.options.map((option) => (
+        <Button
+          key={option._id}
+          onClick={() => handleAnswerClick(currentQuestion, option.optionText)}
+          fullWidth
+          sx={{
+            justifyContent: "flex-start",
+            textAlign: "left",
+            p: 1.2,
+            fontSize: "0.85rem",
+            border: "2px solid",
+            borderColor:
+              userAnswers[currentQuestion] === option.optionText
+                ? "primary.main"
+                : "grey.300",
+            backgroundColor:
+              userAnswers[currentQuestion] === option.optionText
+                ? "primary.light"
+                : "background.paper",
+            "&:hover": {
+              borderColor:
+                userAnswers[currentQuestion] === option.optionText
+                  ? "primary.main"
+                  : "grey.400",
+              backgroundColor:
+                userAnswers[currentQuestion] === option.optionText
+                  ? "primary.light"
+                  : "grey.100"
+            },
+            transition: "all 0.3s"
+          }}
+        >
+          <Box display="flex" alignItems="center" gap={1}>
+            <Avatar
+              sx={{
+                width: 20,
+                height: 20,
+                border: "2px solid",
+                borderColor:
+                  userAnswers[currentQuestion] === option.optionText
+                    ? "primary.main"
+                    : "grey.400",
+                backgroundColor:
+                  userAnswers[currentQuestion] === option.optionText
+                    ? "primary.main"
+                    : "transparent"
+              }}
+            >
+              {userAnswers[currentQuestion] === option.optionText && (
+                <Box
+                  sx={{
+                    width: 6,
+                    height: 6,
+                    backgroundColor: "white",
+                    borderRadius: "50%"
+                  }}
+                />
+              )}
+            </Avatar>
+            <Typography variant="body2" color="text.primary" sx={{ textTransform: "none" }}>
+              {option.optionText}
+            </Typography>
+          </Box>
+        </Button>
+      ))}
+    </Box>
+  </Paper>
+
+  {/* Navigation */}
+  <Box display="flex" alignItems="center" justifyContent="space-between" sx={{mt: 1}} >
+    <Button
+      onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
+      disabled={currentQuestion === 0}
+      size="small"
+      variant="outlined"
+      sx={{
+        
+        color: "text.primary",
+        borderColor: "grey.300",
+        "&:hover": {
+          backgroundColor: "grey.50",
+          borderColor: "grey.400"
+        }
+      }}
+    >
+      Previous
+    </Button>
+
+    <Box display="flex" gap={0.5}>
+      {currentQuestion === questions.length - 1 ? (
+        <Button
+          size="small"
+          variant="contained"
+          color="success"
+          onClick={handleSubmit}
+          disabled={isLoading}
+          sx={{
+            "&:hover": {
+              backgroundColor: "success.dark"
+            }
+          }}
+        >
+          {isLoading ? "Submitting..." : "Submit Test"}
+        </Button>
+      ) : (
+        <Button
+          size="small"
+          onClick={() =>
+            setCurrentQuestion(Math.min(questions.length - 1, currentQuestion + 1))
+          }
+          variant="contained"
+          sx={{
+            "&:hover": {
+              backgroundColor: "primary.dark"
+            }
+          }}
+        >
+          Next
+        </Button>
+      )}
+    </Box>
+  </Box>
+</Paper>
     </Box>
   );
 };
