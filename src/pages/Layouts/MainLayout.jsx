@@ -39,13 +39,19 @@ export default function Layout({ children }) {
   }, []);
 
   return (
-    <Box sx={{
+  <Box
+    sx={{
       display: 'flex',
       flexDirection: 'column',
-      width: '100vw',
-      backgroundColor:'#FFFFFF',
-    }}>
-      <Box sx={{
+      minHeight: '100vh',
+      width: '100vw',              // ensure full viewport width
+      overflowX: 'hidden',         // avoid unwanted horizontal scroll
+      backgroundColor: '#FFFFFF',
+    }}
+  >
+    {/* Header */}
+    <Box
+      sx={{
         position: 'fixed',
         top: 0,
         left: 0,
@@ -54,55 +60,53 @@ export default function Layout({ children }) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-      }}>
-        <Header />
-        {isAuthenticated && <HorizontalNavBar />}
-      </Box>
-
-      <Box sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems:'center',
-        mt: '120px',
-        width:'100%',
-        mb: 2, 
-        // px:3,
-        
-      }}>
-        <Box
-          component="main"
-          sx={{
-            flex: 1,
-            p:1,
-            bgcolor: '#f5f5f5',
-            width: '100%',
-          }}
-        >
-          {children}
-        </Box>
-      </Box>
-      
-      {/* Footer Section */}
-      <Box
-        component="footer"
-        sx={{
-          backgroundColor: '#ffffff',
-          color: '#fff',
-          py: 2,
-          textAlign: 'center',
-          width: '100%',
-        }}
-      >
-        <Typography variant="subtitle1" color="#1976D2" sx={{ maxWidth: 700, mx: 'auto' }}>
-          © 2025 DigiVidya | Made with{' '}
-          <Box component="span" sx={{ color: 'red', fontSize: 20 }}>❤</Box> by Gopal, Anurag, and Adi
-        </Typography>
-
-        <Typography variant="body2" color="#1976D2">
-          www.ielektron.com
-        </Typography>
-      </Box>
+      }}
+    >
+      <Header />
+      {isAuthenticated && <HorizontalNavBar />}
     </Box>
-  );
+
+    {/* Main content area */}
+    <Box
+      component="main"
+      sx={{
+        flex: 1,
+        mt: '120px',
+        p: 1,
+        bgcolor: '#f5f5f5',
+        width: '100%',
+      }}
+    >
+      {children}
+    </Box>
+
+    {/* Footer */}
+    <Box
+      component="footer"
+      sx={{
+        backgroundColor: '#ffffff',
+        py: 2,
+        textAlign: 'center',
+        width: '100%',
+      }}
+    >
+      <Typography
+        variant="subtitle1"
+        color="#1976D2"
+        sx={{ maxWidth: 700, mx: 'auto' }}
+      >
+        © 2025 DigiVidya | Made with{' '}
+        <Box component="span" sx={{ color: 'red', fontSize: 20 }}>
+          ❤
+        </Box>{' '}
+        by Gopal, Anurag, and Adi
+      </Typography>
+
+      <Typography variant="body2" color="#1976D2">
+        www.ielektron.com
+      </Typography>
+    </Box>
+  </Box>
+);
+
 }

@@ -94,20 +94,21 @@ const filteredCoursesCompleted = myCourses
         p: 2,
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
         borderRadius: 10, 
-        width: '100%'
+        minWidth: '100%'
       }}
     >
-      <Box sx={{ p: 1 }}>
+      <Box sx={{ p: 0 }}>
         <Box sx={{
-          mb: 3,
-          mx: 5
+          mb: 2,
+          mx: 5,
+          display:"flex",
+          justifyContent:'space-between'
         }}>
           <Box>
             <Typography variant="h5" fontWeight="bold" sx={{ color: 'black' }}>
               {role === 'instructor' ? 'My Uploaded Courses' : 'Enrolled Courses'}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-
               {!myCourses || myCourses.length === 0
                 ? role === 'employee'
                   ? "Please enroll in available courses"
@@ -140,7 +141,8 @@ const filteredCoursesCompleted = myCourses
           <Paper
             elevation={6}
             sx={{
-              p: 5,
+              px: 5,
+              py:1,
               maxWidth: 520,
               mx: 'auto',
               textAlign: 'center',
@@ -192,7 +194,7 @@ const filteredCoursesCompleted = myCourses
           </Paper>
 
         ) : (
-          <Box sx={{ mt: 3, px: 5, width: '100%' }}>
+          <Box sx={{ mt: 1, px: 5, width: '100%' }}>
             {role === 'instructor' ? (
               <Grid container spacing={3}>
                 {myCourses?.map((course) => (
@@ -204,7 +206,7 @@ const filteredCoursesCompleted = myCourses
             ) : (
               <>
                 {/* Pending Courses */}
-                <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: 'gray' }}>
+                <Typography variant="h6" fontWeight="bold" sx={{ mb:1, color: 'gray' }}>
                   Ongoing Courses
                 </Typography>
                 <Box
@@ -212,11 +214,11 @@ const filteredCoursesCompleted = myCourses
                     height: '1px',
                     width: '95%',
                     backgroundColor: 'grey.300',
-                    mb: 4,
+                    mb: 2,
                   }}
                 />
                 {filteredCoursesPending && filteredCoursesPending.length > 0 ? (
-                  <Grid container spacing={3} sx={{ mb: 4 }}>
+                  <Grid container spacing={3} sx={{ mb: 2 }}>
                     {filteredCoursesPending.map((course) => (
                       <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
                        <CourseCard course={course} onViewCourse={handleViewCourse} />
@@ -261,7 +263,7 @@ const filteredCoursesCompleted = myCourses
                 />
                 {
                   filteredCoursesCompleted && filteredCoursesCompleted.length > 0 ? (
-                    <Grid container spacing={3} sx={{ mb: 4 }}>
+                    <Grid container spacing={3} sx={{ mb: 3 }}>
                       {filteredCoursesCompleted.map((course) => (
                         <Grid item key={course._id || course.id} xs={12} sm={6} md={4} lg={4} xl={3}>
                        <CourseCard course={course} onViewCourse={handleViewCourse} />
