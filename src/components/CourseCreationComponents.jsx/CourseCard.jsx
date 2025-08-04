@@ -235,7 +235,7 @@ const CourseCard = ({ course, onViewCourse }) => {
         {role !== 'instructor' ? <Box sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
             <Typography variant="body2" color="text.secondary" fontSize="13px" fontWeight='700'>
-              Progress: {overallPercentage || 0}%
+              Progress: { Math.round(overallPercentage)  || 0}%
             </Typography>
             <Box>
               <Chip

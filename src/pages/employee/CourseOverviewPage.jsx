@@ -70,7 +70,7 @@ useEffect(() => {
 
    if (isPageLoading) {
     return (
-      <Box display="flex" flexDirection="column" gap={4} width="100%">
+      <Box display="flex" flexDirection="column" gap={4} width="95%" sx={{px: 2, py: 3}}>
         {/* Header */}
         <Paper
           sx={{
@@ -81,7 +81,7 @@ useEffect(() => {
           }}
         >
           <Skeleton variant="text" width="60%" height={40} sx={{ bgcolor: "grey.200" }} />
-          <Skeleton variant="rectangular" height={80} sx={{ my: 2, bgcolor: "grey.200" }} />
+          <Skeleton variant="rectangular" height={60} sx={{ my: 2, bgcolor: "grey.200" }} />
           <Grid container spacing={3} mb={4} mt={2}>
             {[...Array(4)].map((_, i) => (
               <Grid item xs={6} sm={3} key={i} textAlign="center">
@@ -106,10 +106,10 @@ useEffect(() => {
               }}
             >
               <Box display="flex" alignItems="center" gap={2}>
-                <Skeleton variant="circular" width={48} height={48} sx={{ bgcolor: "grey.200" }} />
+                <Skeleton variant="circular" width={48} height={38} sx={{ bgcolor: "grey.200" }} />
                 <Box flex={1}>
-                  <Skeleton variant="text" width="50%" height={25} sx={{ bgcolor: "grey.200" }} />
-                  <Skeleton variant="text" width="30%" height={20} sx={{ bgcolor: "grey.200" }} />
+                  <Skeleton variant="text" width="50%" height={20} sx={{ bgcolor: "grey.200" }} />
+                  <Skeleton variant="text" width="30%" height={15} sx={{ bgcolor: "grey.200" }} />
                 </Box>
               </Box>
             </Paper>

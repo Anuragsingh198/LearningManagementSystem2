@@ -665,9 +665,9 @@ export const VideoContent = ({
                     </Button>
                 </Box>
                 <Paper sx={{
-                    backgroundColor: 'warning.light',
+                    backgroundColor: 'gray.200',
                     border: '1px solid',
-                    borderColor: 'warning.main',
+                    // borderColor: 'warning.main',
                     borderRadius: 2,
                     p: 2,
                     display: 'flex',
@@ -677,7 +677,7 @@ export const VideoContent = ({
                     <Avatar sx={{ width: 24, height: 24, bgcolor: 'warning.main', flexShrink: 0 }}>
                         <Typography variant="body2" fontWeight="bold" color="white">!</Typography>
                     </Avatar>
-                    <Typography color="warning.dark">
+                    <Typography color="black">
                         You must watch the entire video without moving or skipping it for it to count towards your course progress.
                     </Typography>
                 </Paper>

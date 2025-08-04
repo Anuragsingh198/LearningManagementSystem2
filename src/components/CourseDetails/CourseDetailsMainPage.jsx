@@ -119,10 +119,10 @@ const CourseDetails = ({ courseId, moduleId }) => {
       sx={{
         bgcolor: "background.default",
         height: "100vh",
-        width: "100%",
+        width: "98%",
         display: "flex",
-        justifyContent: "center",
-        gap: 6,
+        justifyContent: "space-between",
+        gap: 1,
         overflow: "hidden",
         "&::-webkit-scrollbar": {
           display: "none",
@@ -137,8 +137,8 @@ const CourseDetails = ({ courseId, moduleId }) => {
         startIcon={<ArrowBackIcon sx={{ color: '#1976D2', fontSize: 10 }} />}
         sx={{
           position: 'absolute',
-          top: 143,
-          left: 32,
+          top: 130,
+          left: 55,
           backgroundColor: 'transparent',
           color: '#1976D2',
           textTransform: 'none',
@@ -159,7 +159,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
       </Button>
 
       <Box sx={{
-        width: "30%", display: 'flex', flexDirection: 'column', px: 6,
+        width: "30%", display: 'flex', flexDirection: 'column', px: 6, mt: 2,
 
         maxHeight: '100vh',
         overflowY: 'auto',

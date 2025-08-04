@@ -245,13 +245,13 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   return (
     <Box
   sx={{
-    width: '100%', 
+    width: '98%', 
     boxSizing: 'border-box', 
     display: 'flex',
     flexDirection: 'column',
     gap: 3,
     py: 3, 
-    px: 4,
+    px: 2,
     '&::-webkit-scrollbar': {
       width: '6px',
     },
