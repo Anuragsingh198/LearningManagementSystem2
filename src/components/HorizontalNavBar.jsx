@@ -25,23 +25,19 @@ import { Assignment } from '@mui/icons-material';
 import { useAuth } from '../context/contextFiles/AuthContext';
 
 const HorizontalNavContainer = styled(Box)(({ theme }) => ({
-//   width: '100%',
-//   position: 'fixed',
-//   top: '64px',
-//   left: 0,
-//   right: 0,
   backgroundColor: 'white',
   borderBottom: '1px solid #e5e7eb',
 //   zIndex: 1100,
   padding: '4px 16px',
   overflowX: 'auto',
+  height:'50px',
   whiteSpace: 'nowrap'
 }));
 
 const Nav = styled(List)({
   display: 'flex',
   flexDirection: 'row',
-  padding: '4px 0 0 0',
+  padding: '2px 0 0 0',
   gap: '2px'
 });
 
@@ -49,7 +45,7 @@ const StyledLink = styled(Link)(({ active }) => ({
   textDecoration: 'none',
   '& .MuiListItemButton-root': {
     borderRadius: '6px',
-    padding: '2px 20px',
+    padding: '2px 15px',
     ...(active ? {
       backgroundColor: '#e0e7ff',
       '& .MuiTypography-root': {
@@ -114,11 +110,11 @@ const HorizontalNavBar = () => {
 const SidebarLink = ({ to, icon, label, active }) => (
   <StyledLink to={to} active={active ? 1 : 0}>
     <ListItem disablePadding>
-      <ListItemButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <ListItemButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height:'30px' }}>
         <ListItemIcon sx={{ minWidth: 'auto', color: active ? '#6366f1' : 'black' }}>
-          {React.cloneElement(icon, { fontSize: 'small' })}
+          {React.cloneElement(icon, { fontSize: '10px' })}
         </ListItemIcon>
-        <ListItemText primary={label} sx={{ '& .MuiTypography-root': { fontSize: '0.75rem', fontWeight: '600' },  color: active ? '#6366f1' : 'black'}} />
+        <ListItemText primary={label} sx={{ '& .MuiTypography-root': { fontSize: '0.7rem', fontWeight: '600' },  color: active ? '#6366f1' : 'black'}} />
       </ListItemButton>
     </ListItem>
   </StyledLink>

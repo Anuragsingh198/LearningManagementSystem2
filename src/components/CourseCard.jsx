@@ -99,12 +99,13 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
       sx={{
         borderRadius: 3,
         overflow: 'hidden',
-        width: 320,
-        height: role === 'instructor' ? 340 : 380,
+        width: 300,
+        height: role === 'instructor' ? 330 : 370,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        boxShadow: 3
+        boxShadow: 3,
+        pb:1,
       }}
     >
       <Box sx={{ position: 'relative' }}>

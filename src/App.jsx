@@ -80,7 +80,6 @@ function App() {
                   <Route path="/assessments/test-submitted" element={<TestExitPage />} />
                   <Route path="/assessments/create" element={<CreateAssessment  />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                  
                 </Routes>
               </Layout>
                   

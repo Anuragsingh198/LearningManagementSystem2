@@ -43,7 +43,8 @@ import axios from 'axios';
 const CourseDescription = ({ description }) => {
   return (
     <Box sx={{
-      maxHeight: 120,
+      minHeight: 60,
+      maxHeight:100,
       overflowY: 'auto',
       pr: 1,
       '&::-webkit-scrollbar': {
@@ -57,7 +58,7 @@ const CourseDescription = ({ description }) => {
         borderRadius: 2,
       },
     }}>
-      <Typography color="rgba(255, 255, 255, 0.8)" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+      <Typography color="rgba(255, 255, 255, 0.8)" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize:'15px' }}>
         {description}
       </Typography>
     </Box>
@@ -95,58 +96,58 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   const [totalTests, setTotalTests] = useState(0);
   const navigate = useNavigate();
 
-  const [clickedModuleProgress , setClickedModuleProgress] =  useState(null);
-  
+  const [clickedModuleProgress, setClickedModuleProgress] = useState(null);
+
   const { state: { user }, dispatch } = useAuth();
   // const {state:{ oneModuleProgress, allModuleProgress }, dispatch:courseDispatch} = useCourseContext();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [moduleToDelete, setModuleToDelete] = useState(null);
-  
+
   const role = user?.role;
   const token = user?.token;
   const name = user?.name;
   const empId = user?.employeeId;
   const serverurl = import.meta.env.VITE_SERVER_URL;
 
-  const { state: { oneCourseProgress , allCourseProgress,   oneModuleProgress, allModuleProgress }, dispatch: courseDispatch } = useCourseContext();
+  const { state: { oneCourseProgress, allCourseProgress, oneModuleProgress, allModuleProgress }, dispatch: courseDispatch } = useCourseContext();
 
   //just checking
   const moduleProgressMap = {};
 
   if (Array.isArray(allModuleProgress)) {
-  allModuleProgress.forEach((module) => {
-    moduleProgressMap[module.moduleId] = module.status;
-  });
-} else {
-  console.warn('Expected allModuleProgress to be an array:', allModuleProgress);
-}
+    allModuleProgress.forEach((module) => {
+      moduleProgressMap[module.moduleId] = module.status;
+    });
+  } else {
+    console.warn('Expected allModuleProgress to be an array:', allModuleProgress);
+  }
 
 
- useEffect(()=>{
-  console.log("this is the  course progress data from : ",oneCourseProgress,allModuleProgress, oneModuleProgress )
- })
+  useEffect(() => {
+    console.log("this is the  course progress data from : ", oneCourseProgress, allModuleProgress, oneModuleProgress)
+  })
 
- useEffect(()=> {
-  moduleProgressMap
- }, [moduleProgressMap])
+  useEffect(() => {
+    moduleProgressMap
+  }, [moduleProgressMap])
 
-useEffect(() => {
+  useEffect(() => {
     const fetchCourseProgress = async () => {
       console.log('we have entered use effect')
       if (!courseId || !user?._id) return;
       console.log('we have passed return statement')
       try {
-      console.log('we are in try block')
-  
+        console.log('we are in try block')
+
         dispatch({ type: 'COURSE_LOADING' });
         await getCoursesAction(courseId, user._id, dispatch);
       } catch (error) {
         console.error('Failed to fetch course progress:', error);
       }
     };
-  
+
     // Always fetch on mount or when courseId changes
-      if (!oneCourse || oneCourse?._id !== courseId) {
+    if (!oneCourse || oneCourse?._id !== courseId) {
       // Only fetch if no data, or data is for another course
       fetchCourseProgress();
     }
@@ -156,7 +157,7 @@ useEffect(() => {
   //     const moduleProgress = allModuleProgress.find(
   //       (x) => x.moduleId === moduleId && x.courseId === courseId
   //     );
-  
+
   //     if (moduleProgress) {
   //       dispatch({ type: "MODULE_PROGRESS", payload: moduleProgress });
   //     }
@@ -165,77 +166,77 @@ useEffect(() => {
   // console.log('progress percentage in overview content is: ', percentageCompleted)
   // console.log('progress percentage completed is: ', progressPercentage)
 
-    const handleDelete = (courseId) => {
+  const handleDelete = (courseId) => {
     setModuleToDelete(courseId);
     setDeleteDialogOpen(true);
   };
 
-const handleSubmit = async (chapterId, chapter) => {
-  setClickedModuleProgress(null);
+  const handleSubmit = async (chapterId, chapter) => {
+    setClickedModuleProgress(null);
 
-  const clickedModuleExistingProgress = allModuleProgress.find(
-    (x) => x._id === chapterId
-  );
-  setClickedModuleProgress(clickedModuleExistingProgress);
-  setSelectedChapter(chapterId);
-
-  try {
-    await moduleProgress(courseId, chapterId, clickedModuleExistingProgress, courseDispatch);
-    navigate(`/course/module/${courseId}/${chapterId}`);
-  } catch (error) {
-    console.error("Error updating module progress:", error);
-  }
-};
-
-
-const handleGenerateCertificate = async () => {
-  const newTab = window.open('', '_blank'); 
-  if (!newTab) {
-    alert('Please allow popups for this site.');
-    return;
-  }
-
-
-  try {
-    const response = await axios.post(
-      `${serverurl}/api/courses/generate-certificate`,
-      { name, courseId, courseTitle, empId, certificateType },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+    const clickedModuleExistingProgress = allModuleProgress.find(
+      (x) => x._id === chapterId
     );
+    setClickedModuleProgress(clickedModuleExistingProgress);
+    setSelectedChapter(chapterId);
 
-    if (response.data.success) {
-      const certHtml = response.data.certificate?.certificateHtml;
-      // console.log('cert html is: ', certHtml)
-      // console.log('response html is: ', response.data.certificate)
+    try {
+      await moduleProgress(courseId, chapterId, clickedModuleExistingProgress, courseDispatch);
+      navigate(`/course/module/${courseId}/${chapterId}`);
+    } catch (error) {
+      console.error("Error updating module progress:", error);
+    }
+  };
 
-      if (certHtml) {
-        newTab.document.open();
-        newTab.document.write(certHtml);
-        newTab.document.close();
+
+  const handleGenerateCertificate = async () => {
+    const newTab = window.open('', '_blank');
+    if (!newTab) {
+      alert('Please allow popups for this site.');
+      return;
+    }
+
+
+    try {
+      const response = await axios.post(
+        `${serverurl}/api/courses/generate-certificate`,
+        { name, courseId, courseTitle, empId, certificateType },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        const certHtml = response.data.certificate?.certificateHtml;
+        // console.log('cert html is: ', certHtml)
+        // console.log('response html is: ', response.data.certificate)
+
+        if (certHtml) {
+          newTab.document.open();
+          newTab.document.write(certHtml);
+          newTab.document.close();
+        } else {
+          newTab.close();
+          alert('Certificate content not found');
+        }
       } else {
         newTab.close();
-        alert('Certificate content not found');
+        alert(response.data.message || 'Certificate generation failed');
       }
-    } else {
+    } catch (error) {
       newTab.close();
-      alert(response.data.message || 'Certificate generation failed');
+      console.error('Certificate generation failed:', error?.response?.data || error.message);
+      alert('Failed to generate certificate');
     }
-  } catch (error) {
-    newTab.close();
-    console.error('Certificate generation failed:', error?.response?.data || error.message);
-    alert('Failed to generate certificate');
-  }
-};
+  };
 
 
-useEffect(()=>{
-  console.log("allModuleProgress  is : ", allModuleProgress )
-  console.log("oneModuleProgress is: ", oneModuleProgress)
-}, [allModuleProgress , oneModuleProgress])
+  useEffect(() => {
+    console.log("allModuleProgress  is : ", allModuleProgress)
+    console.log("oneModuleProgress is: ", oneModuleProgress)
+  }, [allModuleProgress, oneModuleProgress])
 
 
   useEffect(() => {
@@ -247,61 +248,67 @@ useEffect(()=>{
     setTotalTests(totalTest);
   }, [chapters]);
 
-  const handleDeleteChapter = async (chapterId) => {    
+  const handleDeleteChapter = async (chapterId) => {
     setModuleToDelete(courseId);
-    setDeleteDialogOpen(true);    
+    setDeleteDialogOpen(true);
   };
 
 
-  
 
-   const cancelDelete = () => {
+
+  const cancelDelete = () => {
     setDeleteDialogOpen(false);
     setModuleToDelete(null);
-};
+  };
 
   const confirmDelete = async () => {
-    
+
 
   };
-  
+
 
   return (
-    <Box sx={{
-      display: 'flex', flexDirection: 'column', gap: 4, width: '100%',
-
-      overflowY: 'auto', // Ensure scrolling is possible
-      // maxHeight: '400px', // or any max height you need
-      '&::-webkit-scrollbar': {
-        width: '6px', // small width
-      },
-      '&::-webkit-scrollbar-track': {
-        background: 'transparent',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: 'lightGray',
-        borderRadius: '8px',
-      },
-      '&::-webkit-scrollbar-thumb:hover': {
-        backgroundColor: '#e0e0e0',
-      },
-
-    }}>
+    <Box
+  sx={{
+    width: '100%', 
+    boxSizing: 'border-box', 
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 3,
+    py: 3, 
+    px: 4,
+    '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'lightGray',
+      borderRadius: '8px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+  }}
+>
       <Paper sx={{
         background: 'linear-gradient(to right, #2563eb, #9333ea)',
         borderRadius: 3,
-        p: 4,
-        color: 'white'
+        p: 3,
+        color: 'white',
+        // height:"27vh"
       }}>
-        <Typography variant="h4" fontWeight="bold" mb={1}>
+        <Typography variant="h4" fontWeight="bold" mb={1} fontSize={25}>
           {oneCourse?.title}
         </Typography>
+
         <CourseDescription description={oneCourse?.description} />
 
         <Grid container spacing={3} mb={4} mt={2}>
-       
+
           <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
               {totalChapters}
             </Typography>
             <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
@@ -309,7 +316,7 @@ useEffect(()=>{
             </Typography>
           </Grid>
           <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
               {totalVideos}
             </Typography>
             <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
@@ -317,15 +324,15 @@ useEffect(()=>{
             </Typography>
           </Grid>
           <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
               {totalTests}
             </Typography>
             <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
               Tests
             </Typography>
           </Grid>
-           { role !== 'instructor' &&  <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold">
+          {role !== 'instructor' && <Grid item xs={6} sm={3} textAlign="center" fontSize='25px'>
+            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
               {completedChapters}
             </Typography>
             <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
@@ -334,9 +341,9 @@ useEffect(()=>{
           </Grid>}
         </Grid>
 
-        {role !== 'instructor' && <Box sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 2, p: 2 }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-            <Typography variant="body2" fontWeight="medium">
+        {role !== 'instructor' && <Box sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 2, py:1 , px:2,  position:'relative'}}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" >
+            <Typography variant="body2" fontWeight="medium" mb='4px'>
               Course Progress
             </Typography>
             <Typography variant="body2">
@@ -347,7 +354,8 @@ useEffect(()=>{
             variant="determinate"
             value={progressPercentage}
             sx={{
-              height: 8,
+              height: 6,
+              mb:'4px',
               borderRadius: 4,
               backgroundColor: 'rgba(255, 255, 255, 0.2)',
               '& .MuiLinearProgress-bar': {
@@ -371,7 +379,7 @@ useEffect(()=>{
               Course Chapters
             </Typography>
             <Box display="flex" gap={1}>
-              { role !== 'instructor' && <Button
+              {role !== 'instructor' && <Button
                 variant="contained"
                 color="primary"
                 onClick={handleGenerateCertificate}
@@ -385,7 +393,7 @@ useEffect(()=>{
             </Box>
           </Box>
 
-          <Box display="flex" flexDirection="column" gap={2}>
+          <Box display="flex" flexDirection="column" gap={1}>
             {chapters?.map((chapter) => (
               <Paper
                 key={chapter._id}
@@ -394,7 +402,9 @@ useEffect(()=>{
                   border: '1px solid',
                   borderColor: 'divider',
                   borderRadius: 3,
-                  p: 3,
+                  height:'60px',
+                  py:1,
+                  px:2,
                   '&:hover': {
                     boxShadow: 3
                   },
@@ -423,7 +433,7 @@ useEffect(()=>{
                     <Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-arounds', alignItems: 'center' }}>
 
-                        <Typography variant="h6" fontWeight={600} color="text.primary">
+                        <Typography variant="h6" fontWeight={600} color="text.primary" fontSize='16px'>
                           {chapter.title}
                         </Typography>
                         {role !== 'instructor' && <Typography variant="body2" fontWeight={400} sx={{ ml: 1 }} color="text.secondary">
@@ -468,6 +478,7 @@ useEffect(()=>{
                         textTransform: 'none',
                         backgroundColor: 'primary.light',
                         color: 'white',
+                        height:'35px',
                         '&:hover': {
                           backgroundColor: 'primary.main'
                         }
@@ -492,42 +503,42 @@ useEffect(()=>{
             ))}
           </Box>
           <Dialog
-                    open={deleteDialogOpen}
-                    onClose={cancelDelete}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    slotProps={{
-                      paper: {
-                        sx: {
-                          width: 600,
-                          maxHeight: 600,
-                          borderRadius: 3,
-                          boxShadow: 10,
-                        }
-                      }
-                    }}
-                  >
-                    <DialogTitle id="alert-dialog-title">{"Confirm Module Deletion"}</DialogTitle>
-                    <DialogContent>
-                      <Box id="alert-dialog-description">
-                        <Typography variant="body1" color="textSecondary" gutterBottom>
-                          We will be adding this feature shortly...
-                          Deleting this Module will permanently remove:
-                        </Typography>
-                        <ul style={{ paddingLeft: '1.5rem', marginTop: 0, marginBottom: 0 }}>
-                          <li>All the uploaded videos in this module</li>
-                          <li>All uploaded Assessments and test</li>
-                        </ul>
-                        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
-                          This action cannot be undone. Are you sure you want to continue?
-                        </Typography>
-                      </Box>
-                    </DialogContent>
-                    <DialogActions sx={{ mb: 1, mr: 1 }}>
-                      <Button onClick={cancelDelete} color="primary">
-                        Cancel
-                      </Button>
-                      {/* <Button
+            open={deleteDialogOpen}
+            onClose={cancelDelete}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            slotProps={{
+              paper: {
+                sx: {
+                  width: 600,
+                  maxHeight: 600,
+                  borderRadius: 3,
+                  boxShadow: 10,
+                }
+              }
+            }}
+          >
+            <DialogTitle id="alert-dialog-title">{"Confirm Module Deletion"}</DialogTitle>
+            <DialogContent>
+              <Box id="alert-dialog-description">
+                <Typography variant="body1" color="textSecondary" gutterBottom>
+                  We will be adding this feature shortly...
+                  Deleting this Module will permanently remove:
+                </Typography>
+                <ul style={{ paddingLeft: '1.5rem', marginTop: 0, marginBottom: 0 }}>
+                  <li>All the uploaded videos in this module</li>
+                  <li>All uploaded Assessments and test</li>
+                </ul>
+                <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+                  This action cannot be undone. Are you sure you want to continue?
+                </Typography>
+              </Box>
+            </DialogContent>
+            <DialogActions sx={{ mb: 1, mr: 1 }}>
+              <Button onClick={cancelDelete} color="primary">
+                Cancel
+              </Button>
+              {/* <Button
                         onClick={confirmDelete}
                         color={isLoading ? 'inherit' : 'error'}
                         autoFocus
@@ -538,9 +549,9 @@ useEffect(()=>{
                       >
                         {isLoading ? 'Deleting...' : 'Delete Module'}
                       </Button> */}
-          
-                    </DialogActions>
-                  </Dialog>
+
+            </DialogActions>
+          </Dialog>
         </>
       )}
     </Box>

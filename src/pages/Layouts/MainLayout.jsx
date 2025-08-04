@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Typography, useTheme, IconButton, Stack, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
@@ -28,7 +28,6 @@ export default function Layout({ children }) {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        // console.log('in use effect of mainlayout.jsx')
         await getCoursesAction(dispatch);
         await getMyCoursesAction(dispatch);
       } catch (error) {
@@ -43,44 +42,56 @@ export default function Layout({ children }) {
     <Box sx={{
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100vh',
-      width: '100vw', // Use viewport width instead of 100%
-      overflowX: 'hidden' // Prevent horizontal scrolling
+      width: '100vw',
+      backgroundColor:'#FFFFFF',
     }}>
       <Box sx={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 999,
         display: 'flex',
         flexDirection: 'column',
-        width: '100%'
+        width: '100%',
       }}>
         <Header />
-        {isAuthenticated ? <HorizontalNavBar /> : ''}
+        {isAuthenticated && <HorizontalNavBar />}
       </Box>
 
       <Box sx={{
+        flex: 1,
         display: 'flex',
-        flex: 1, // Take up remaining space
-        width: '100%'
+        flexDirection: 'column',
+        alignItems:'center',
+        mt: '120px',
+        width:'100%',
+        mb: 2, 
+        // px:3,
+        
       }}>
         <Box
           component="main"
           sx={{
             flex: 1,
-            p: 4,
+            p:1,
             bgcolor: '#f5f5f5',
             width: '100%',
-            minWidth: 0 // Prevent flex items from overflowing
           }}
         >
           {children}
         </Box>
       </Box>
+      
+      {/* Footer Section */}
       <Box
         component="footer"
         sx={{
           backgroundColor: '#ffffff',
           color: '#fff',
-          py: 3,
+          py: 2,
           textAlign: 'center',
+          width: '100%',
         }}
       >
         <Typography variant="subtitle1" color="#1976D2" sx={{ maxWidth: 700, mx: 'auto' }}>
@@ -88,11 +99,10 @@ export default function Layout({ children }) {
           <Box component="span" sx={{ color: 'red', fontSize: 20 }}>❤</Box> by Gopal, Anurag, and Adi
         </Typography>
 
-        <Typography variant="body2" color="#1976D2"  >
+        <Typography variant="body2" color="#1976D2">
           www.ielektron.com
         </Typography>
       </Box>
     </Box>
   );
-
 }

@@ -16,21 +16,30 @@ const TeacherDashboard = () => {
   console.log("this is  the  my project data : ", myCourses);
 
   return (
-    <Box sx={{ padding: '0px', width: '100%' }} className="dashboard-scroll">
-      <Typography variant="h4" gutterBottom sx={{ mb: 0, color: 'black', fontSize: '40px', fontWeight: 'bold' }}>
+    <Box sx={{ display:'flex',
+      backgroundColor:'#FFFFFF',
+      flexDirection:'column',
+          justifyContent:'center',
+          py:2,
+          px:4,
+        }} >
+      <Typography variant="h4" gutterBottom sx={{ mb: 0, color: 'black', fontSize: '30px', fontWeight: 'bold' }}>
         Welcome to DigiVidya
       </Typography>
-
       <Box
         sx={{
           position: 'relative',
-          width: '99%', // instead of %
-          height: '58vh', // instead of px
-          borderRadius: 2,
-          overflow: 'hidden',
+          display:'flex',
+          justifyContent:'center',
+          alignItems:'center',
+          width: '99%', 
+          height: '40vh', 
+          borderRadius: 3,
+          // overflow: 'hidden',
           marginTop: '8px',
           boxShadow: 3,
-          mr: 2,
+          
+          // mr: 2,
           mb: 4
         }}
       >
@@ -49,19 +58,21 @@ const TeacherDashboard = () => {
           bgcolor: 'rgba(0,0,0,0.5)',
           color: 'white',
           p: 2,
-          backdropFilter: 'blur(4px)'
+          backdropFilter: 'blur(4px)',
+           borderBottomLeftRadius: 3,
+           borderBottomRightRadius: 3,
+           height:'45px'
         }}>
           <Typography variant="h5" sx={{ fontWeight: 'bold', fontFamily: 'Michroma, sans-serif' }}>
             DigiVidya
           </Typography>
-          <Typography variant="body1" sx={{ fontFamily: 'Michroma, sans-serif' }}>
+          <Typography variant="body1" sx={{ fontSize:'15px',  fontFamily: 'Michroma, sans-serif' }}>
             Explore all the courses
           </Typography>
         </Box>
       </Box>
 
       <Box sx={{ px: 2 }}>
-        {/* Compulsory Courses */}
         <Box sx={{ mb: 4 }}>
           <Typography
             sx={{

@@ -52,7 +52,6 @@ const EnrolledEmployees = () => {
       return false;
     }
     
-    // Filter by search term
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       return (

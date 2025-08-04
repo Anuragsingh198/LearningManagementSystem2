@@ -90,22 +90,15 @@ const filteredCoursesCompleted = myCourses
 
   return (
     <Container
-      maxWidth="100%"
       sx={{
-
         p: 2,
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)', // Custom subtle shadow
-
-
         borderRadius: 10, // Smaller radius (4px)
         width: '100%'
       }}
     >
       <Box sx={{ p: 1 }}>
         <Box sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
           mb: 3,
           mx: 5
         }}>
