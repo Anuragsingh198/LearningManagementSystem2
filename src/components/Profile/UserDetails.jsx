@@ -1,255 +1,229 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Typography,
   Avatar,
   Button,
-  Divider,
   Grid,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-} from '@mui/material';
-import { Email, Phone, LocationOn, Person } from '@mui/icons-material';
-import GroupsIcon from '@mui/icons-material/Groups';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import { useAuth } from '../../context/contextFiles/AuthContext';
+} from "@mui/material";
+import {
+  BookOpen,
+  Award,
+  ClipboardList,
+  Edit,
+} from "lucide-react";
 
 const UserDetails = () => {
-  const [user, setUser] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    employeesRegistered: 25,
-    coursesCreated: 6,
-    phone: '+1 (555) 123-4567',
-    location: 'New York, USA',
-    bio: 'Software developer and online course enthusiast. Passionate about learning new technologies and sharing knowledge.',
-    avatar: 'https://static.vecteezy.com/system/resources/previews/051/270/245/non_2x/cartoon-people-avatar-minimalist-human-avatar-versatile-icon-for-online-projects-an-avatar-for-the-profile-picture-of-someone-vector.jpg',
-    joinDate: 'January 2022',
-    coursesTaken: 15,
-    lastActive: '2 hours ago',
-  });
+  const [activeTab, setActiveTab] = useState("courses");
 
-  const { state: { user: currentUser, loading }, dispatch } = useAuth();
-
-  const { name, email, role } = user;
-
-  const [open, setOpen] = useState(false);
-  const [editData, setEditData] = useState(user);
-
-  const handleOpen = () => {
-    setEditData(user); // preload current data
-    setOpen(true);
+  const user = {
+    name: "John Doe",
+    avatar:
+      "https://static.vecteezy.com/system/resources/previews/051/270/245/non_2x/cartoon-people-avatar-minimalist-human-avatar-versatile-icon-for-online-projects-an-avatar-for-the-profile-picture-of-someone-vector.jpg",
+    cover:
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop", // Blue ocean theme
+    stats: {
+      courses: 5,
+      certificates: 3,
+      tests: 8,
+    },
   };
 
-  const handleClose = () => setOpen(false);
+  const courses = [
+    { title: "React Basics", provider: "Digividya", date: "Jan 2024" },
+    { title: "Advanced JavaScript", provider: "Digividya", date: "Feb 2024" },
+  ];
 
-  const handleChange = (e) => {
-    setEditData({ ...editData, [e.target.name]: e.target.value });
-  };
+  const certificates = [
+    { title: "Full Stack Developer", provider: "Digividya", date: "Mar 2024" },
+    { title: "Cloud Fundamentals", provider: "Digividya", date: "Apr 2024" },
+  ];
 
-  const handleSave = () => {
-    setUser(editData);
-    setOpen(false);
+  const tests = [
+    { title: "JavaScript Test", score: "85%", date: "May 2024" },
+    { title: "React Test", score: "90%", date: "Jun 2024" },
+  ];
+
+  const menu = [
+    { key: "courses", label: "Registered Courses", icon: <BookOpen size={18} /> },
+    { key: "certificates", label: "Certificates", icon: <Award size={18} /> },
+    { key: "tests", label: "Tests Taken", icon: <ClipboardList size={18} /> },
+  ];
+
+  const renderContent = () => {
+    const data =
+      activeTab === "courses"
+        ? courses
+        : activeTab === "certificates"
+        ? certificates
+        : tests;
+
+    return (
+      <Box display="flex" flexDirection="column" gap={2}>
+        {data.map((item, index) => (
+          <Box
+            key={index}
+            sx={{
+              p: 1,
+              borderBottom: "1px solid #f0f0f0",
+              transition: "background-color 0.2s ease",
+              "&:hover": { backgroundColor: "#f5faff" },
+            }}
+          >
+            <Typography variant="subtitle1" fontWeight={600}>
+              {item.title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item.provider || `Score: ${item.score}`} • {item.date}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    );
   };
 
   return (
-    <Box sx={{ p: 4, bgcolor: '#f8f9fd' }}>
-      <Grid container spacing={3} justifyContent="center">
-        {/* Profile Info Card */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '70%' }} >
-          <Paper elevation={3} sx={{ p: 3, borderRadius: 4, display: 'flex', width: '60%', justifyContent: 'space-between' }}>
-            <Box>
-
-              <Box display="flex" flexDirection="row" alignItems="center">
-                <Avatar src={user.avatar} sx={{ width: 100, height: 100 }} />
-                <Typography variant="h6">{currentUser?.name}</Typography>
-                {/* <Typography color="textSecondary" fontSize={12}>
-                Last active: {user.lastActive}
-              </Typography>
-              <Typography color="textSecondary" fontSize={12}>
-                Joined: {user.joinDate}
-              </Typography> */}
-              </Box>
-              <Button
-                onClick={handleOpen}
-                fullWidth
-                sx={{
-                  background: 'linear-gradient(135deg, #ff416c, #ff4b2b)',
-                  color: 'white',
-                  borderRadius: '20px',
-                  mt: 1,
-                }}
-              >
-
-                Edit
-              </Button>
-            </Box>
-
-            <Box px={1} sx={{ mt: 2 }}>
-              <Box display="flex" alignItems="center" mb={1}>
-                <Phone fontSize="small" sx={{ mr: 1 }} />
-                <Typography>
-                  {currentUser.phone ? currentUser.phone : 'To be added'}
-                </Typography>
-              </Box>
-
-              <Box display="flex" alignItems="center" mb={1}>
-                <Email fontSize="small" sx={{ mr: 1 }} />
-                <Typography>{currentUser?.email}</Typography>
-              </Box>
-
-              <Box display="flex" alignItems="center" mb={1}>
-                <LocationOn fontSize="small" sx={{ mr: 1 }} />
-                <Typography>
-                  {currentUser.location ? currentUser.location : 'To be added'}
-                </Typography>
-              </Box>
-
-              <Box display="flex" alignItems="center">
-                <Person fontSize="small" sx={{ mr: 1 }} />
-                <Typography>
-                  {currentUser?.role
-                    ? currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1)
-                    : 'Role not available'}
-                </Typography>
-              </Box>
-            </Box>
-
-
-          </Paper>
-          <Paper elevation={3} sx={{ mt: 2, p: 3, borderRadius: 4, display: 'flex', flexDirection: 'column', width: '60%', justifyContent: 'space-around', color: 'black' }}>
-            <Box>
-              About
-            </Box>
-            <Divider sx={{ my: 2 }} />
-
-            {currentUser.about ? currentUser.about : 'To be added'}
-
-          </Paper>
-
+    <Box
+      sx={{
+        fontFamily: "Okra, Helvetica, sans-serif",
+        bgcolor: "#fff",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Cover + Profile */}
+      <Box sx={{ position: "relative", mb: { xs: 10, sm: 8 } }}>
+        <Box
+          sx={{
+            height: { xs: 180, sm: 220 },
+            backgroundImage: `url(${user.cover})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            position: "relative",
+          }}
+        >
+          {/* Overlay */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              bgcolor: "rgba(25, 118, 210, 0.4)", // Blue overlay
+            }}
+          />
         </Box>
 
-        {/* Stats + About Section */}
-        {/* <Grid item xs={12} md={4}>
-          <Paper elevation={3} sx={{ p: 3, borderRadius: 4 }}>
-            <Typography variant="h6" mb={2}>Account Stats</Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-evenly', gap: 2, flexWrap: 'wrap', mt: 2 }}>
-              <Paper
-                elevation={4}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  p: 2,
-                  borderRadius: 3,
-                  minWidth: 220,
-                  background: 'linear-gradient(135deg, #3f51b5, #5c6bc0)',
-                  color: '#fff',
-                }}
-              >
-                <GroupsIcon sx={{ fontSize: 40 }} />
-                <Box>
-                  <Typography variant="body2">Employees Registered</Typography>
-                  <Typography variant="h6" fontWeight="bold">
-                    {user.employeesRegistered}
-                  </Typography>
-                </Box>
-              </Paper>
-
-              <Paper
-                elevation={4}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  p: 2,
-                  borderRadius: 3,
-                  minWidth: 220,
-                  background: 'linear-gradient(135deg, #009688, #26a69a)',
-                  color: '#fff',
-                }}
-              >
-                <MenuBookIcon sx={{ fontSize: 40 }} />
-                <Box>
-                  <Typography variant="body2">Courses Created</Typography>
-                  <Typography variant="h6" fontWeight="bold">
-                    {user.coursesCreated}
-                  </Typography>
-                </Box>
-              </Paper>
-            </Box>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="subtitle1" fontWeight={600} mb={1}>About</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {user.bio}
+        {/* Profile Info */}
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: -50,
+            left: { xs: "50%", sm: 40 },
+            transform: { xs: "translateX(-50%)", sm: "none" },
+            display: "flex",
+            alignItems: "center",
+            gap: 3,
+            flexDirection: { xs: "column", sm: "row" },
+            textAlign: { xs: "center", sm: "left" },
+          }}
+        >
+          <Avatar
+            src={user.avatar}
+            sx={{
+              width: 100,
+              height: 100,
+              border: "4px solid white",
+            }}
+          />
+          <Box>
+            <Typography variant="h6" fontWeight={600} color="#fff">
+              {user.name}
             </Typography>
-          </Paper>
-        </Grid> */}
-      </Grid>
+            <Box
+              display="flex"
+              gap={3}
+              mt={0.5}
+              justifyContent={{ xs: "center", sm: "flex-start" }}
+              sx={{ color: "#fff" }}
+            >
+              <Typography variant="body2">
+                {user.stats.courses} Courses
+              </Typography>
+              <Typography variant="body2">
+                {user.stats.certificates} Certificates
+              </Typography>
+              <Typography variant="body2">
+                {user.stats.tests} Tests
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
 
-      {/* Edit Modal */}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm"  slotProps={{
-    paper: {
-      sx: {
-        borderRadius: 4,
-      },
-    },
-  }}>
-        <DialogTitle>Edit Profile</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Hey there!
-          </Typography>
-          <Typography>
-            This section is under development
-          </Typography>
-          <Typography>
-            You will soon be able to edit your profile as well
-          </Typography>
-          {/* <TextField
-            fullWidth
-            margin="normal"
-            label="Avatar URL"
-            name="avatar"
-            value={editData.avatar}
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Phone Number"
-            name="phone"
-            value={editData.phone}
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Location"
-            name="location"
-            value={editData.location}
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Bio"
-            name="bio"
-            multiline
-            rows={4}
-            value={editData.bio}
-            onChange={handleChange}
-          /> */}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="inherit">Cancel</Button>
-          {/* <Button onClick={handleSave} variant="contained" color="primary">Save</Button> */}
-        </DialogActions>
-      </Dialog>
+        {/* Edit Profile Button */}
+        <Button
+          variant="contained"
+          startIcon={<Edit size={16} />}
+          sx={{
+            position: "absolute",
+            top: 20,
+            right: 20,
+            bgcolor: "#1976d2",
+            "&:hover": { bgcolor: "#145ea8" },
+            textTransform: "none",
+            borderRadius: "20px",
+            px: 2.5,
+            py: 0.5,
+            fontWeight: 500,
+            fontSize: "0.875rem",
+          }}
+        >
+          Edit Profile
+        </Button>
+      </Box>
+
+      {/* Main Layout */}
+      <Grid container spacing={3} sx={{ px: { xs: 2, sm: 4 } }}>
+        {/* Sidebar */}
+        <Grid item xs={12} md={3}>
+          <Box>
+            {menu.map((m) => (
+              <Box
+                key={m.key}
+                onClick={() => setActiveTab(m.key)}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.5,
+                  py: 1,
+                  px: 1,
+                  cursor: "pointer",
+                  bgcolor:
+                    activeTab === m.key ? "rgba(25,118,210,0.08)" : "transparent",
+                  "&:hover": {
+                    bgcolor: "rgba(25,118,210,0.08)",
+                  },
+                  borderRadius: 1,
+                  transition: "background-color 0.2s ease",
+                }}
+              >
+                <Box sx={{ color: "#1976d2" }}>{m.icon}</Box>
+                <Typography
+                  fontWeight={activeTab === m.key ? 600 : 400}
+                  sx={{ color: activeTab === m.key ? "#1976d2" : "inherit" }}
+                >
+                  {m.label}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Grid>
+
+        {/* Content */}
+        <Grid item xs={12} md={9}>
+          {renderContent()}
+        </Grid>
+      </Grid>
     </Box>
   );
 };

@@ -36,35 +36,14 @@ const ProfilePage = () => {
   };
 
   return (
-    <Container maxWidth="xl" sx={{ p: 4 , backgroundColor: 'background.paper', borderRadius: 10}}>
-      <Box
-        sx={{
-          mb: 4,
-          display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', md: 'center' },
-        }}
-      >
-        <Box>
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{ fontWeight: 'bold', color: 'text.primary' }}
-          >
-            {user?.name}'s Profile
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', mt: 1 }}>
-            View and edit your details
-          </Typography>
-        </Box>
-      </Box>
+    <Container  sx={{ p: 4 }}>
+    
 
-     <Paper elevation={0} sx={{ border: '2px solid #ddd', p: 2, borderRadius: 5 }}>
-  
-  {renderTabContent()}
-  
-</Paper>
+      <Paper  sx={{ }}>
+
+        {renderTabContent()}
+
+      </Paper>
 
     </Container>
   );

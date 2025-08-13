@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { QuizContent } from "./QuizContent";
 import { VideoContent } from "./VideoContent";
+import { ArticlesContent } from "./ArticlesContent";
 import { Sidebar } from "./SideBar";
 import { getCourseWithProgress, getModulebyModuleId } from "../../context/Actions/courseActions";
 import { useCourseContext } from "../../context/contextFiles/CourseContext";
@@ -24,11 +25,13 @@ const CourseDetails = ({ courseId, moduleId }) => {
   const [module, setModule] = useState(null);
   const [videos, setVideos] = useState([]);
   const [tests, setTests] = useState([]);
+  const [articles, setArticles] = useState([]);
   const { state: { courses, oneCourse, oneCourseProgress, allModuleProgress, oneModuleProgress, allVideoProgess, allTestProgress, currentVideoProgress }, dispatch } = useCourseContext();
   const [currentView, setCurrentView] = useState("video");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentVideo, setCurrentVideo] = useState(0);
   const [currentQuiz, setCurrentQuiz] = useState(0);
+  const [currentArticle, setCurrentArticle] = useState(0);
   const [isVideoZoomed, setIsVideoZoomed] = useState(false);
   const [isVideoFullscreen, setIsVideoFullscreen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -36,6 +39,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [lastTimeTracker, setLastTimeTracker] = useState(0);
   const [currVidData, setCurrVidData] = useState(null);
+  const [completedArticles, setCompletedArticles] = useState([]);
 
 
   const navigate = useNavigate();
@@ -66,6 +70,8 @@ const CourseDetails = ({ courseId, moduleId }) => {
         setModule(allModule || []);
         setVideos(allModule.videos || []);
         setTests(allModule.tests || []);
+        const arts = allModule.articles || allModule.resources || allModule.documents || [];
+        setArticles(Array.isArray(arts) ? arts : []);
         // console.log('loading in try block: ', isLoading)
       } catch (error) {
         console.error("Error fetching module data:", error);
@@ -191,10 +197,14 @@ const CourseDetails = ({ courseId, moduleId }) => {
           setCurrentTest={setCurrentQuiz}
           currentQuestion={currentQuestion}
           setCurrentQuestion={setCurrentQuestion}
+          articles={articles}
+          currentArticle={currentArticle}
+          setCurrentArticle={setCurrentArticle}
           moduleId={moduleId}
           courseId={courseId}
           currVidData={currVidData}
           lastTimeTracker={lastTimeTracker}
+          completedArticles={completedArticles}
         />
         {/*tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
           <QuizHistory questions={tests[currentQuiz]?.questions || []} moduleId={moduleId}
@@ -259,6 +269,23 @@ const CourseDetails = ({ courseId, moduleId }) => {
                 description="No videos available for this module"
               />
             )
+          )
+        )}
+
+        {currentView === "articles" && (
+          isLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4, mt: 10 }}>
+              <CircularProgress size={80} />
+            </Box>
+          ) : (
+            <ArticlesContent
+              articles={articles}
+              currentArticle={currentArticle}
+              setCurrentArticle={setCurrentArticle}
+              onArticleComplete={(id) => {
+                setCompletedArticles((prev) => prev.includes(id) ? prev : [...prev, id]);
+              }}
+            />
           )
         )}
 

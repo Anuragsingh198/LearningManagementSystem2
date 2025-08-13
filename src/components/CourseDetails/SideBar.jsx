@@ -47,6 +47,10 @@ export const Sidebar = ({
     setCurrentTest,
     currentQuestion,
     setCurrentQuestion,
+    articles = [],
+    currentArticle = 0,
+    setCurrentArticle,
+    completedArticles = [],
     sendWatchTime
 }) => {
     const { state: { courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
@@ -54,7 +58,7 @@ export const Sidebar = ({
     const videoStatusMap = {};
     const totalVideos = moduleProgress?.totalVideos || 0;
     const completedVideos = moduleProgress?.completedVideos || 0;
-    
+
     allVideoProgress.forEach((vp) => {
         videoStatusMap[vp.videoId] = vp.status;
     });
@@ -69,7 +73,7 @@ export const Sidebar = ({
         // if()
         // setCurrentView('quiz');
         // sendWatchTime();
-        
+
         if(completedVideos >= totalVideos){
             setCurrentView('quiz');
         } else {
@@ -149,7 +153,46 @@ export const Sidebar = ({
                             }
                         />
                     </ListItemButton>
+                </ListItem>
 
+                {/* Articles button after Videos */}
+                <ListItem disablePadding>
+                    <ListItemButton
+                        selected={currentView === 'articles'}
+                        onClick={() => setCurrentView('articles')}
+                        sx={{
+                            border: '1px solid #ccc',
+                            mb: '4px',
+                            borderRadius: '8px',
+                            '&.Mui-selected': {
+                                bgcolor: 'primary.main',
+                                color: 'primary.contrastText',
+                                '&:hover': { bgcolor: 'primary.dark' },
+                            },
+                        }}
+                    >
+                        <ListItemIcon
+                            sx={{
+                                color: currentView === 'articles' ? 'primary.contrastText' : 'black',
+                            }}
+                        >
+                            <BookIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={
+                                <Typography
+                                    sx={{
+                                        color: currentView === 'articles' ? 'primary.contrastText' : 'black',
+                                    }}
+                                >
+                                    {`Articles (${articles?.length || 0})`}
+                                </Typography>
+                            }
+                            secondary={
+                                completedArticles?.length > 0 ? `${completedArticles.length} completed` : undefined
+                            }
+                        />
+                    </ListItemButton>
                 </ListItem>
 
                 <ListItem disablePadding>
@@ -257,7 +300,7 @@ export const Sidebar = ({
                                                     {video.title}
                                                 </Typography>
                                                 {/* <Typography
-                                                
+
                                                     variant="caption"
                                                     sx={{
                                                         color: currentVideo === index ? 'primary.contrastText' : 'text.secondary',
@@ -278,6 +321,83 @@ export const Sidebar = ({
                     <NoContentPage title={"Videos"} description='No Videos Found' />
                 )
             ) : null}
+
+                {currentView === 'articles' ? (
+                    (articles && articles.length > 0) ? (
+                        <Box sx={{ mt: 2 }}>
+                            <Typography variant="overline" color="text.secondary">
+                                Articles
+                            </Typography>
+                            <Box
+                                sx={{
+                                    height: '1px',
+                                    width: '9%',
+                                    mb: 2,
+                                    background: 'gray',
+                                    borderRadius: 1,
+                                    opacity: 0.6,
+                                }}
+                            />
+                            <List>
+                                {(articles || []).map((a, index) => {
+                                    const id = a._id || a.id || `${index}`;
+                                    const completed = completedArticles?.includes(id);
+                                    return (
+                                        <ListItem key={id} disablePadding>
+                                            <ListItemButton
+                                                selected={currentArticle === index}
+                                                onClick={() => setCurrentArticle && setCurrentArticle(index)}
+                                                sx={{
+                                                    borderLeft: completed ? '4px solid' : 'none',
+                                                    borderColor: 'success.main',
+                                                    border: '1px solid #ccc',
+                                                    mb: '4px',
+                                                    borderRadius: '8px',
+                                                    '&.Mui-selected': {
+                                                        bgcolor: '#003c8f',
+                                                        color: 'primary.contrastText',
+                                                    },
+                                                    '&.Mui-selected:hover': {
+                                                        bgcolor: 'primary.main',
+                                                        color: 'white',
+                                                    },
+                                                    '&:hover': {
+                                                        bgcolor: 'grey.100',
+                                                    },
+                                                }}
+                                            >
+                                                <ListItemIcon
+                                                    sx={{
+                                                        color: currentArticle === index ? 'primary.contrastText' : 'black',
+                                                    }}
+                                                >
+                                                    {completed ? (
+                                                        <CheckCircleIcon color="success" />
+                                                    ) : (
+                                                        <BookIcon color="action" />
+                                                    )}
+                                                </ListItemIcon>
+                                                <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                    <Typography
+                                                        noWrap
+                                                        sx={{
+                                                            color: currentArticle === index ? 'primary.contrastText' : 'black',
+                                                        }}
+                                                    >
+                                                        {a.title || a.name || 'Document'}
+                                                    </Typography>
+                                                </Box>
+                                            </ListItemButton>
+                                        </ListItem>
+                                    );
+                                })}
+                            </List>
+                        </Box>
+                    ) : (
+                        <NoContentPage title={'Articles'} description={'No Articles Found'} />
+                    )
+                ) : null}
+
 
             {currentView === 'quiz' ? (
                 tests.length !== 0 ? (

@@ -3,7 +3,13 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  assetsInclude: ['**/*.pdf'],
   build: {
-    outDir: 'dist', // make sure this is set
+    outDir: 'dist',
+  },
+  server: {
+    hmr: {
+      overlay: true,
+    }
   }
 })

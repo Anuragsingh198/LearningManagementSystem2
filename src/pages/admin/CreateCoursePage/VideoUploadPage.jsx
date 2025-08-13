@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import VideoUploadForm from '../../../components/CourseCreationComponents.jsx/VideoUploadForm';
+import ArticleUploadForm from '../../../components/CourseCreationComponents.jsx/ArticleUploadForm';
+
 import QuizCreationForm from './QuizCreationForm';
 import { useCourseContext } from '../../../context/contextFiles/CourseContext';
 import { Box, Button, Typography } from '@mui/material';
@@ -13,7 +15,7 @@ const VideoUploadPage = () => {
   const [existingModules, setExistingModules] = useState([]);
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState('video'); // 'video' or 'quiz' or 'assessment'
+  const [activeTab, setActiveTab] = useState('video'); // 'video' | 'quiz' | 'article' | 'assessment'
 
   useEffect(()=> {
         getModulesByCourseId(courseId, dispatch)
@@ -43,11 +45,17 @@ const VideoUploadPage = () => {
         >
           Add Assessment
         </Button>
+        <Button
+          variant={activeTab === 'article' ? 'contained' : 'outlined'}
+          onClick={() => setActiveTab('article')}
+        >
+          Add Article
+        </Button>
         {/* <Button
           variant={activeTab === 'assessment' ? 'contained' : 'outlined'}
           onClick={() => setActiveTab('assessment')}
         >
-          Add Overall Assessment 
+          Add Overall Assessment
         </Button> */}
 
         {/* Conditional Note */}
@@ -78,8 +86,10 @@ const VideoUploadPage = () => {
       <Box>
         {activeTab === 'video' && <VideoUploadForm courseId={courseId} />}
         {activeTab === 'quiz' && <QuizCreationForm courseId={courseId} />}
+        {activeTab === 'article' && <ArticleUploadForm courseId={courseId} />}
         {/* {activeTab === 'assessment' && <AddAssessment courseId={courseId} />} */}
       </Box>
+
     </Box>
   );
 };

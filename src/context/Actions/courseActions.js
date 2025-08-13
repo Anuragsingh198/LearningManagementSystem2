@@ -36,7 +36,7 @@ export const createCourseAction = async (course, dispatch) => {
     // formData.append('category', course.category);
     // formData.append('price', course.price);
     // formData.append('instructor', course.instructor);
-    // formData.append('thumbnail', course.thumbnail); 
+    // formData.append('thumbnail', course.thumbnail);
 
     const response = await axios.post(
       `${serverurl}/api/courses/create-course`,
@@ -142,6 +142,40 @@ export const createVideoAction = async (formData, dispatch) => {
     throw error;
   }
 };
+
+export const createArticleAction = async (formData, dispatch, onProgress) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user || !user.token) throw new Error('User not authenticated');
+  const token = user.token;
+  try {
+    dispatch({ type: 'COURSE_LOADING' });
+    const response = await axios.post(
+      `${serverurl}/api/courses/create-article`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          const progress = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
+          if (typeof onProgress === 'function') onProgress(progress);
+        },
+      }
+    );
+    const data = response.data;
+    if (data.success) {
+      // Optionally dispatch something like ADD_ARTICLE here in the future
+      return data.article;
+    } else {
+      throw new Error(data.message || 'Failed to upload article');
+    }
+  } catch (error) {
+    dispatch({ type: 'COURSE_ERROR', payload: error.message });
+    throw error;
+  }
+};
+
 
 
 export const getCoursesAction = async (dispatch) => {
@@ -789,7 +823,7 @@ export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
         currentVideoProgress: data.videoProgress || [],
         oneModuleProgress: data.moduleProgress || [],
         allVideoProgress: data.videoProgressList || []
-        
+
       }
     })
 
@@ -801,7 +835,7 @@ export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
         currentVideoProgress: data.videoProgress || [],
         oneModuleProgress: data.moduleProgress || [],
         allVideoProgress: data.videoProgressList || []
-        
+
       }
     })
     }
