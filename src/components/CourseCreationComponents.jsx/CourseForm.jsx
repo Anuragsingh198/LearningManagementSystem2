@@ -72,9 +72,10 @@ const CourseForm = () => {
       }
 
       for (let pair of formDataToSend.entries()) {
+        console.log('we are reaching here')
         console.log(pair[0], pair[1]);
       }
-      const newCourse = await createCourseAction(formDataToSend,myCourses,  dispatch);
+      const newCourse = await createCourseAction(formDataToSend, myCourses, dispatch);
       if (newCourse) navigate(`/teacher/upload-video/${newCourse._id}`);
     } catch (error) {
       console.error('Failed to create course:', error);

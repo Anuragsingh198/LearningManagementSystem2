@@ -13,7 +13,7 @@ const getAuthToken = () => {
 };
 
 
-export const createCourseAction = async (course, dispatch) => {
+export const createCourseAction = async (formDataToSend, myCourses, dispatch) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   if (!user || !user._id) {
@@ -40,11 +40,11 @@ export const createCourseAction = async (course, dispatch) => {
 
     const response = await axios.post(
       `${serverurl}/api/courses/create-course`,
-      course,  // this is a FormData instance now
+      formDataToSend,  // this is a FormData instance now
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          // 'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
         },
       }
     )
