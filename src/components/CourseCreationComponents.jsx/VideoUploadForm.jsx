@@ -81,9 +81,6 @@ useEffect(() => {
   const foundCourse = courses.find(c => c._id === courseId);
   setCourse(foundCourse);
 }, [courses, courseId]);
-
-
-
   
   const [selectedModule, setSelectedModule] = useState('');
   const [showModuleForm, setShowModuleForm] = useState(false);
@@ -104,7 +101,6 @@ useEffect(() => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploaded, setIsUploaded] = useState(false);
-  
 
 
   useEffect(() => {
