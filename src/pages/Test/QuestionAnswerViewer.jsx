@@ -102,13 +102,13 @@ const QuestionAnswerViewer = ({ question, index, role }) => {
         {!isMCQ && (
           <>
             <Typography variant="subtitle2">Your Answer:</Typography>
-            <Box
+              <Box
               sx={{
                 whiteSpace: 'pre-wrap',
                 backgroundColor: '#f4f4f4',
                 p: 2,
                 borderRadius: 2,
-                fontFamily: 'monospace',
+                  fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                 border: '2px solid #ccc',
               }}
             >

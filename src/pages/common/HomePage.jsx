@@ -65,10 +65,10 @@ function HomePage() {
           p: 3,
           backdropFilter: 'blur(4px)'
         }}>
-          <Typography variant="h5" sx={{ fontWeight: 'bold', fontFamily: 'Michroma, sans-serif' }}>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
             DigiVidya
           </Typography>
-          <Typography variant="body1" sx={{fontFamily: 'Michroma, sans-serif'}}>
+          <Typography variant="body1">
             Explore all the courses
           </Typography>
         </Box>

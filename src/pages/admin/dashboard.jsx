@@ -63,10 +63,10 @@ const TeacherDashboard = () => {
            borderBottomRightRadius: 3,
            height:'45px'
         }}>
-          <Typography variant="h5" sx={{ fontWeight: 'bold', fontFamily: 'Michroma, sans-serif' }}>
+          <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
             DigiVidya
           </Typography>
-          <Typography variant="body1" sx={{ fontSize:'15px',  fontFamily: 'Michroma, sans-serif' }}>
+          <Typography variant="body1" sx={{ fontSize:'15px' }}>
             Explore all the courses
           </Typography>
         </Box>

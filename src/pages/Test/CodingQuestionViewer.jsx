@@ -31,7 +31,7 @@ const StyledCodeBlock = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.grey[100],
   padding: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
-  fontFamily: 'monospace',
+  fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
   fontSize: '0.875rem'
 }));
 

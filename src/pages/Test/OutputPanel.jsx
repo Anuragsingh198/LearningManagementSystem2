@@ -125,7 +125,7 @@ const OutputPanel = ({
                   color: 'error.dark',
                   fontSize: '0.75rem',
                   whiteSpace: 'pre-wrap',
-                  fontFamily: 'monospace',
+                  fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                   m: 0
                 }}
               >
@@ -191,7 +191,7 @@ const OutputPanel = ({
                         sx={{
                           p: 1,
                           bgcolor: 'background.paper',
-                          fontFamily: 'monospace',
+                          fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                           fontSize: '0.75rem'
                         }}
                       >
@@ -209,7 +209,7 @@ const OutputPanel = ({
                           sx={{
                             p: 1,
                             bgcolor: 'background.paper',
-                            fontFamily: 'monospace',
+                           fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                             fontSize: '0.75rem'
                           }}
                         >
@@ -225,7 +225,7 @@ const OutputPanel = ({
                           variant="outlined"
                           sx={{
                             p: 1,
-                            fontFamily: 'monospace',
+                            fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                             fontSize: '0.75rem',
                             bgcolor: result.passed ? 'background.paper' : 'error.50',
                             borderColor: result.passed ? undefined : 'error.light'
@@ -255,7 +255,7 @@ const OutputPanel = ({
                 borderRadius: 1,
                 bgcolor: 'grey.900',
                 color: 'success.light',
-                fontFamily: 'monospace',
+                fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                 fontSize: '0.75rem'
               }}
             >

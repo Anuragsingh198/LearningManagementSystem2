@@ -9,30 +9,46 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Chip,
   Paper,
   TableContainer,
   TextField,
   InputAdornment,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Search, Users, CheckCircle, Clock } from 'lucide-react';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { enrolledStudentsAction } from '../../context/Actions/AuthActions';
 import BlurLoading from '../common/BlurLoading';
+
+// Custom alert styles
+const statusStyles = {
+  completed: {
+    backgroundColor: '#EFE',
+    border: '1px solid #DED',
+    color: '#9A9',
+  },
+  pending: {
+    backgroundColor: '#FDF7DF',
+    border: '1px solid #FEEC6F',
+    color: '#C9971C',
+  },
+  info: {
+    backgroundColor: '#EFF',
+    border: '1px solid #DEE',
+    color: '#9AA',
+  },
+};
 
 const EnrolledEmployees = () => {
   const [enrolledEmployees, setEnrolledEmployees] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
-  const { courseId } = useParams();
-  const {
-    dispatch,
-  } = useAuth();
-
   const [activeTab, setActiveTab] = useState('all');
 
+  const { courseId } = useParams();
+  const { dispatch } = useAuth();
+
   useEffect(() => {
+    document.body.style.fontFamily = "'Inter', sans-serif"; // Apply Inter font
     setIsLoading(true);
     const fetchEnrolledEmployees = async () => {
       const data = await enrolledStudentsAction(courseId, dispatch);
@@ -41,19 +57,12 @@ const EnrolledEmployees = () => {
         setIsLoading(false);
       }
     };
-    if (courseId) {
-      fetchEnrolledEmployees();
-    }
+    if (courseId) fetchEnrolledEmployees();
   }, [courseId, dispatch]);
 
-  console.log('enrolled employees are: ', enrolledEmployees)
-
   const filteredEmployees = enrolledEmployees?.students?.filter((emp) => {
-    // Filter by status tab
-    if (activeTab !== 'all' && emp.status.toLowerCase() !== activeTab) {
-      return false;
-    }
-    
+    if (activeTab !== 'all' && emp.status.toLowerCase() !== activeTab) return false;
+
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       return (
@@ -61,103 +70,131 @@ const EnrolledEmployees = () => {
         emp.empId.toLowerCase().includes(searchLower)
       );
     }
-    
     return true;
   });
 
+  const statusIcons = {
+    all: <Users size={16} style={{ marginRight: 6 }} />,
+    completed: <CheckCircle size={16} style={{ marginRight: 6 }} />,
+    pending: <Clock size={16} style={{ marginRight: 6 }} />,
+  };
+
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h5" sx={{ color: 'black' }} gutterBottom>
-        Enrolled Employees for Course: {enrolledEmployees?.title || 'N/A'}
+    <Box sx={{ p: 3, backgroundColor: '#fff', minHeight: '100vh' }}>
+      <Typography
+        variant="h5"
+        sx={{ color: 'rgba(0, 0, 0, 0.87)', fontWeight: 600 }}
+        gutterBottom
+      >
+        {statusIcons.all} Enrolled Employees for Course: {enrolledEmployees?.title || 'N/A'}
       </Typography>
 
-      <Typography variant="h6" sx={{ color: 'black' }} mb={2}>
-        Total Employees Enrolled: {enrolledEmployees?.studentCount || 0}
+      <Typography variant="subtitle1" sx={{ color: 'rgba(0, 0, 0, 0.87)', mb: 3 }}>
+        Total Employees Enrolled: <strong>{enrolledEmployees?.studentCount || 0}</strong>
       </Typography>
 
-      <Box sx={{ display: 'flex', justifyContent: 'start', mb: 3 }}>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          {['all', 'completed', 'pending'].map((status) => (
-            <Button
-              key={status}
-              variant={activeTab === status ? 'contained' : 'outlined'}
-              onClick={() => setActiveTab(status)}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </Button>
-          ))}
-        </Box>
-        
-<TextField
-  placeholder="Search by name or ID"
-  variant="outlined"
-  size="small"
-  value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <SearchIcon sx={{ color: '#1976d2' }} /> {/* MUI default primary blue */}
-      </InputAdornment>
-    ),
-  }}
-  sx={{
-    width: 300,
-    ml: 2,
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '8px',
-      '& fieldset': {
-        borderColor: '#1976d2',
-      },
-      '&:hover fieldset': {
-        borderColor: '#1565c0',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#1565c0',
-        borderWidth: '2px',
-      },
-    },
-    '& .MuiInputBase-input': {
-      color: '#0d47a1', // deeper blue for text
-    },
-  }}
-/>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2, mb: 3 }}>
+        {['all', 'completed', 'pending'].map((status) => (
+          <Button
+            key={status}
+            variant={activeTab === status ? 'contained' : 'outlined'}
+            onClick={() => setActiveTab(status)}
+            startIcon={statusIcons[status]}
+            sx={{
+              borderRadius: '4px',
+              textTransform: 'capitalize',
+              fontWeight: 500,
+              color: activeTab === status ? '#fff' : '#1976d2',
+              backgroundColor: activeTab === status ? '#1976d2' : '#fff',
+              borderColor: '#1976d2',
+              '&:hover': {
+                backgroundColor: activeTab === status ? '#1565c0' : '#e3f2fd',
+                borderColor: '#1565c0',
+              },
+            }}
+          >
+            {status}
+          </Button>
+        ))}
 
+        <TextField
+          placeholder="Search by name or ID"
+          variant="outlined"
+          size="small"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search size={18} color="#1976d2" />
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            width: 300,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '4px',
+              '& fieldset': {
+                borderColor: '#1976d2',
+              },
+              '&:hover fieldset': {
+                borderColor: '#1565c0',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#1565c0',
+                borderWidth: '2px',
+              },
+            },
+            '& .MuiInputBase-input': {
+              color: '#1976d2',
+            },
+          }}
+        />
       </Box>
 
       {isLoading ? (
         <BlurLoading />
       ) : filteredEmployees?.length > 0 ? (
-        <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 3 }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            borderRadius: '4px',
+            backgroundColor: '#fff',
+          }}
+        >
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell><strong>Name</strong></TableCell>
-                <TableCell><strong>Employee ID</strong></TableCell>
-                <TableCell><strong>Status</strong></TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Employee ID</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredEmployees.map((emp, index) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  sx={{
+                    '&:hover': { backgroundColor: '#f9f9f9' },
+                    transition: 'background-color 0.2s ease',
+                  }}
+                >
                   <TableCell>{emp.name}</TableCell>
                   <TableCell>{emp.empId}</TableCell>
                   <TableCell>
-                    <Chip
-                      label={emp.status}
-                      color={
-                        emp.status === 'completed'
-                          ? 'success'
-                          : emp.status === 'pending'
-                            ? 'warning'
-                            : 'info'
-                      }
-                      sx={{
-                        width: 100,
-                        display: 'flex',
-                        justifyContent: 'center',
+                    <div
+                      style={{
+                        ...statusStyles[emp.status] || statusStyles.info,
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        display: 'inline-block',
+                        fontSize: '14px',
+                        fontWeight: 500,
+                        textTransform: 'capitalize',
                       }}
-                    />
+                    >
+                      {emp.status}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -165,7 +202,7 @@ const EnrolledEmployees = () => {
           </Table>
         </TableContainer>
       ) : (
-        <Typography mt={2} color="gray">
+        <Typography mt={2} color="gray" sx={{ fontStyle: 'italic' }}>
           No employees found!
         </Typography>
       )}
