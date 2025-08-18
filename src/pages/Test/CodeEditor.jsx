@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import Editor from '@monaco-editor/react';
 import { Play, Loader2, ChevronDown } from 'lucide-react';
 import {
@@ -7,10 +7,13 @@ import {
   Select,
   MenuItem,
   Button,
-  IconButton,
   useTheme,
   styled
 } from '@mui/material';
+import { getAllLanguageAction } from '../../context/Actions/AssignmentActions';
+import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
+// const judge0ServerUrl = 'http://172.19.13.158:2358';
+
 
 const EditorHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -61,20 +64,39 @@ const CodeEditor = ({
 }) => {
   const editorRef = useRef(null);
   const theme = useTheme();
+  const { state: { codingLanguages }, dispatch } = useAssignmentContext();
+  // const [languages, setLanguages] = useState(codingLanguages.languages);
+  const [languages, setLanguages] = useState(codingLanguages.languages);
 
-  const languageOptions = [
-    { value: 'python', label: 'Python' },
-    { value: 'cpp', label: 'C++' }
-  ];
+// useEffect(() => {
+//   if (Array.isArray(codingLanguages.languages)) {
+//     setLanguages(codingLanguages.languages);
+//   }
+// }, [codingLanguages.languages]);
 
-  const getInitialCode = (lang) => {
-    switch (lang) {
-      case 'python':
-        return '# Write your code here\n\n';
-      case 'cpp':
-        return '// Write your code here\n#include <iostream>\nusing namespace std;\n\n';
-      default:
-        return '# Write your code here\n\n';
+
+// console.log('this is the  langiages  afwyehqgesahbster  extraction: ' ,languages )
+
+
+  const mapJudge0ToMonaco = (langName = '') => {
+    langName = langName.toLowerCase();
+    if (langName.includes('python')) return 'python';
+    if (langName.includes('c++')) return 'cpp';
+    if (langName.includes('c#')) return 'csharp';
+    if (langName.includes('java ')) return 'java';
+    if (langName.startsWith('c ')) return 'c';
+    if (langName.includes('javascript')) return 'javascript';
+    return 'plaintext';
+  };
+
+  const getInitialCode = (monacoLang) => {
+    switch (monacoLang) {
+      case 'python': return '# Write your code here\n\n';
+      case 'cpp': return '// Write your code here\n#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}\n';
+      case 'c': return '/* Write your code here */\n#include <stdio.h>\n\nint main() {\n    return 0;\n}\n';
+      case 'java': return '// Write your code here\npublic class Main {\n    public static void main(String[] args) {\n    }\n}\n';
+      case 'javascript': return '// Write your code here\n\n';
+      default: return '// Write your code here\n\n';
     }
   };
 
@@ -82,42 +104,53 @@ const CodeEditor = ({
     editorRef.current = editor;
   };
 
-  useEffect(() => {
-    if (!value || value.trim() === '') {
-      onChange(getInitialCode(language));
+  // useEffect(() => {
+  //   console.log("this is the coding languages  from the  codeEditor : ", codingLanguages)
+  // }, [codingLanguages])
+
+  const monacoLang = useMemo(() => {
+    if (!languages || languages.length === 0) {
+      return 'plaintext';
     }
-  }, [language]);
+    const langName = languages.find(l => l.id === language)?.name || '';
+    return mapJudge0ToMonaco(langName);
+  }, [language, languages]);
+
+  useEffect(() => {
+    if (!value?.trim()) {
+      onChange(getInitialCode(monacoLang));
+    }
+  }, [monacoLang]);
 
   return (
-    <Box sx={{ 
-      height: '100%', 
-      display: 'flex', 
-      flexDirection: 'column', 
-      backgroundColor: theme.palette.grey[900] 
+    <Box sx={{
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundColor: theme.palette.grey[900]
     }}>
-      {/* Editor Header */}
+
       <EditorHeader>
+        <Typography variant="body1" sx={{ color: 'common.white', fontWeight: 'medium' }}>
+          Code Editor
+        </Typography>
+
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography variant="body1" sx={{ color: 'common.white', fontWeight: 'medium' }}>
-            Code Editor
-          </Typography>
-        </Box>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {/* Language Selector */}
+
           <LanguageSelect
-            value={language}
+            value={languages.length > 0 ? language : ""}
             onChange={(e) => onLanguageChange(e.target.value)}
+            disabled={languages.length === 0}
             IconComponent={() => (
-              <ChevronDown 
-                style={{ 
-                  width: 16, 
-                  height: 16, 
+              <ChevronDown
+                style={{
+                  width: 16,
+                  height: 16,
                   color: theme.palette.grey[400],
                   position: 'absolute',
                   right: 8,
                   pointerEvents: 'none'
-                }} 
+                }}
               />
             )}
             MenuProps={{
@@ -129,23 +162,20 @@ const CodeEditor = ({
               }
             }}
           >
-            {languageOptions.map(option => (
-              <MenuItem 
-                key={option.value} 
-                value={option.value}
+            {languages.map(option => (
+              <MenuItem
+                key={option.id}
+                value={option.id}
                 sx={{
                   backgroundColor: theme.palette.grey[800],
-                  '&:hover': {
-                    backgroundColor: theme.palette.grey[700]
-                  }
+                  '&:hover': { backgroundColor: theme.palette.grey[700] }
                 }}
               >
-                {option.label}
+                {option.name}
               </MenuItem>
             ))}
           </LanguageSelect>
-          
-          {/* Compile & Run Button */}
+
           <RunButton
             onClick={onCompileAndRun}
             disabled={isCompiling}
@@ -173,7 +203,7 @@ const CodeEditor = ({
       <Box sx={{ flex: 1 }}>
         <Editor
           height="100%"
-          language={language === 'cpp' ? 'cpp' : 'python'}
+          language={monacoLang}
           value={value}
           onChange={(val) => onChange(val || '')}
           onMount={handleEditorDidMount}
@@ -195,7 +225,7 @@ const CodeEditor = ({
             roundedSelection: false,
             readOnly: false,
             cursorStyle: 'line',
-            automaticLayout: true,
+            automaticLayout: true
           }}
         />
       </Box>

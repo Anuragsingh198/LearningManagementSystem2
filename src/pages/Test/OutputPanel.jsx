@@ -1,15 +1,14 @@
-import React from 'react';
-import { X, CheckCircle, XCircle, AlertCircle, Terminal } from 'lucide-react';
+import React from "react";
 import {
   Box,
+  Stack,
   Typography,
   IconButton,
-  Divider,
   Paper,
   Chip,
-  Stack,
   Grid
-} from '@mui/material';
+} from "@mui/material";
+import { Terminal, X, CheckCircle, XCircle } from "lucide-react";
 
 const OutputPanel = ({
   isOpen,
@@ -21,30 +20,42 @@ const OutputPanel = ({
 }) => {
   if (!isOpen) return null;
 
-  const passedTests = testResults.filter(result => result.passed).length;
-  const totalTests = testResults.length;
+  // Map backend results to UI format
 
+  console.log( " complietionSuccess , compiloerError , testresults, executionOutput, ",testResults )
+  const normalizedResults = (testResults || []).map(r => ({
+    input: r.input || "",
+    expectedOutput: r.expectedOutput || "",
+    actualOutput: r.actualOutput || "",
+    passed: r.passed
+  }));
+   
+  const passedTests = normalizedResults.filter(result => result.passed).length;
+  const totalTests = normalizedResults.length;
+  console.log("compiled  result is : ", normalizedResults);
+  console.log("passedTests  result is : ", passedTests);
+  console.log("totalTests  result is : ", totalTests);
   return (
     <Box
       sx={{
-        height: '100%',
-        bgcolor: 'background.paper',
+        height: "100%",
+        bgcolor: "background.paper",
         borderRight: 1,
-        borderColor: 'divider',
-        display: 'flex',
-        flexDirection: 'column'
+        borderColor: "divider",
+        display: "flex",
+        flexDirection: "column"
       }}
     >
       {/* Header */}
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
           p: 2,
           borderBottom: 1,
-          borderColor: 'divider',
-          bgcolor: 'grey.50'
+          borderColor: "divider",
+          bgcolor: "grey.50"
         }}
       >
         <Stack direction="row" alignItems="center" spacing={1}>
@@ -56,7 +67,7 @@ const OutputPanel = ({
         <IconButton
           onClick={onClose}
           size="small"
-          sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary' } }}
+          sx={{ color: "text.secondary", "&:hover": { color: "text.primary" } }}
         >
           <X size={20} />
         </IconButton>
@@ -65,9 +76,9 @@ const OutputPanel = ({
       <Box
         sx={{
           flex: 1,
-          overflowY: 'auto',
+          overflowY: "auto",
           p: 2,
-          '& > * + *': {
+          "& > * + *": {
             mt: 3
           }
         }}
@@ -80,14 +91,14 @@ const OutputPanel = ({
           <Paper
             elevation={0}
             sx={{
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
               gap: 1,
               p: 2,
               borderRadius: 1,
               border: 1,
-              borderColor: compilationSuccess ? 'success.light' : 'error.light',
-              bgcolor: compilationSuccess ? 'success.50' : 'error.50'
+              borderColor: compilationSuccess ? "success.light" : "error.light",
+              bgcolor: compilationSuccess ? "success.50" : "error.50"
             }}
           >
             {compilationSuccess ? (
@@ -106,7 +117,7 @@ const OutputPanel = ({
               </>
             )}
           </Paper>
-          
+
           {compilationError && (
             <Paper
               elevation={0}
@@ -115,17 +126,17 @@ const OutputPanel = ({
                 p: 2,
                 borderRadius: 1,
                 border: 1,
-                borderColor: 'error.light',
-                bgcolor: 'error.50'
+                borderColor: "error.light",
+                bgcolor: "error.50"
               }}
             >
               <Box
                 component="pre"
                 sx={{
-                  color: 'error.dark',
-                  fontSize: '0.75rem',
-                  whiteSpace: 'pre-wrap',
-                  fontFamily: 'monospace',
+                  color: "error.dark",
+                  fontSize: "0.75rem",
+                  whiteSpace: "pre-wrap",
+                  fontFamily: "monospace",
                   m: 0
                 }}
               >
@@ -138,7 +149,12 @@ const OutputPanel = ({
         {/* Test Results */}
         {compilationSuccess && (
           <Box>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              mb={2}
+            >
               <Typography variant="subtitle1" fontWeight="medium">
                 Test Results
               </Typography>
@@ -146,15 +162,17 @@ const OutputPanel = ({
                 label={`${passedTests}/${totalTests} passed`}
                 size="small"
                 sx={{
-                  bgcolor: passedTests === totalTests ? 'success.100' : 'error.100',
-                  color: passedTests === totalTests ? 'success.800' : 'error.800',
-                  fontWeight: 'medium'
+                  bgcolor:
+                    passedTests === totalTests ? "success.100" : "error.100",
+                  color:
+                    passedTests === totalTests ? "success.800" : "error.800",
+                  fontWeight: "medium"
                 }}
               />
             </Stack>
 
             <Stack spacing={2}>
-              {testResults.map((result, index) => (
+              {normalizedResults.map((result, index) => (
                 <Paper
                   key={index}
                   elevation={0}
@@ -162,8 +180,8 @@ const OutputPanel = ({
                     p: 2,
                     borderRadius: 1,
                     border: 1,
-                    borderColor: result.passed ? 'success.light' : 'error.light',
-                    bgcolor: result.passed ? 'success.50' : 'error.50'
+                    borderColor: result.passed ? "success.light" : "error.light",
+                    bgcolor: result.passed ? "success.50" : "error.50"
                   }}
                 >
                   <Stack direction="row" alignItems="center" spacing={1} mb={2}>
@@ -175,60 +193,79 @@ const OutputPanel = ({
                     <Typography
                       variant="body2"
                       fontWeight="medium"
-                      color={result.passed ? 'success.dark' : 'error.dark'}
+                      color={result.passed ? "success.dark" : "error.dark"}
                     >
                       Test Case {index + 1}
                     </Typography>
                   </Stack>
-                  
+
                   <Stack spacing={2}>
                     <Box>
-                      <Typography variant="body2" fontWeight="medium" color="text.secondary" gutterBottom>
+                      <Typography
+                        variant="body2"
+                        fontWeight="medium"
+                        color="text.secondary"
+                        gutterBottom
+                      >
                         Input:
                       </Typography>
                       <Paper
                         variant="outlined"
                         sx={{
                           p: 1,
-                          bgcolor: 'background.paper',
-                          fontFamily: 'monospace',
-                          fontSize: '0.75rem'
+                          bgcolor: "background.paper",
+                          fontFamily: "monospace",
+                          fontSize: "0.75rem"
                         }}
                       >
                         {result.input}
                       </Paper>
                     </Box>
-                    
+
                     <Grid container spacing={1}>
                       <Grid item xs={6}>
-                        <Typography variant="body2" fontWeight="medium" color="text.secondary" gutterBottom>
+                        <Typography
+                          variant="body2"
+                          fontWeight="medium"
+                          color="text.secondary"
+                          gutterBottom
+                        >
                           Expected:
                         </Typography>
                         <Paper
                           variant="outlined"
                           sx={{
                             p: 1,
-                            bgcolor: 'background.paper',
-                            fontFamily: 'monospace',
-                            fontSize: '0.75rem'
+                            bgcolor: "background.paper",
+                            fontFamily: "monospace",
+                            fontSize: "0.75rem"
                           }}
                         >
                           {result.expectedOutput}
                         </Paper>
                       </Grid>
-                      
+
                       <Grid item xs={6}>
-                        <Typography variant="body2" fontWeight="medium" color="text.secondary" gutterBottom>
+                        <Typography
+                          variant="body2"
+                          fontWeight="medium"
+                          color="text.secondary"
+                          gutterBottom
+                        >
                           Your Output:
                         </Typography>
                         <Paper
                           variant="outlined"
                           sx={{
                             p: 1,
-                            fontFamily: 'monospace',
-                            fontSize: '0.75rem',
-                            bgcolor: result.passed ? 'background.paper' : 'error.50',
-                            borderColor: result.passed ? undefined : 'error.light'
+                            fontFamily: "monospace",
+                            fontSize: "0.75rem",
+                            bgcolor: result.passed
+                              ? "background.paper"
+                              : "error.50",
+                            borderColor: result.passed
+                              ? undefined
+                              : "error.light"
                           }}
                         >
                           {result.actualOutput}
@@ -253,13 +290,13 @@ const OutputPanel = ({
               sx={{
                 p: 2,
                 borderRadius: 1,
-                bgcolor: 'grey.900',
-                color: 'success.light',
-                fontFamily: 'monospace',
-                fontSize: '0.75rem'
+                bgcolor: "grey.900",
+                color: "success.light",
+                fontFamily: "monospace",
+                fontSize: "0.75rem"
               }}
             >
-              <Box component="pre" sx={{ m: 0, whiteSpace: 'pre-wrap' }}>
+              <Box component="pre" sx={{ m: 0, whiteSpace: "pre-wrap" }}>
                 {executionOutput}
               </Box>
             </Paper>

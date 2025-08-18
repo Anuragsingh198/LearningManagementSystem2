@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   Box,
   Typography,
@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import { HelpOutline, ArrowForward } from '@mui/icons-material';
 import CodingIDE from './CodingIDE';
+import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
+import { getAllLanguageAction } from '../../context/Actions/AssignmentActions';
 
 const QuestionDisplay = ({ 
   question, 
@@ -22,10 +24,10 @@ const QuestionDisplay = ({
   codingAnswer, 
   onCodingAnswerChange, 
   onSaveAndNext,
-  onCodingSubmit
+  onCodingSubmit,
 }) => {
   const theme = useTheme();
-
+  // console.log('this is the  langiages  afwyehqgesahbster  extraction: ' ,codingLanguages.languages )
   if (question.type === 'coding') {
     return (
       <Box sx={{ flex: 1, bgcolor: 'background.paper' }}>
