@@ -60,10 +60,7 @@ export const ArticlesContent = ({ articles = [], currentArticle = 0, setCurrentA
               </Button>
             )}
           </Box>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }} noWrap>
-            {article?.description || ""}
-          </Typography>
-
+        
           {/* PDF preview only */}
           <Box id="article-pdf-container" sx={{ height: 480, border: "1px solid #e0e0e0", borderRadius: 1, overflow: "hidden" }}>
             <iframe
@@ -77,6 +74,16 @@ export const ArticlesContent = ({ articles = [], currentArticle = 0, setCurrentA
               }}
             />
           </Box>
+          <Box sx={{mt: 2, ml: 1}}>
+              <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }} noWrap>
+            Description
+          </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }} noWrap>
+            {article?.description || ""}
+          </Typography>
+          </Box>
+
+
         </Paper>
       ) : (
         <NoContentPage title={'Articles'} description={'No Articles Found'} />
@@ -120,7 +127,7 @@ export const ArticlesContent = ({ articles = [], currentArticle = 0, setCurrentA
         </Box>
       )}
 
-      {articles && articles.length > 0 && (
+      {/* {articles && articles.length > 0 && (
         <Grid container spacing={1} sx={{ mt: 1 }}>
           {articles.map((a, idx) => (
             <Grid item key={idx}>
@@ -134,7 +141,7 @@ export const ArticlesContent = ({ articles = [], currentArticle = 0, setCurrentA
             </Grid>
           ))}
         </Grid>
-      )}
+      )} */}
     </Box>
   );
 };

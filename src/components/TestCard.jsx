@@ -21,7 +21,7 @@ function TestCard({ test, role }) {
         if (test.completed) {
             navigate(`/assessments/review/${test._id}`)
         } else {
-            navigate(`/assessments/start-test/${test._id}`)
+            navigate(`/assessments/start-test/${test._id}`) // it will go to <TestStartPage/>
         }
     }
 

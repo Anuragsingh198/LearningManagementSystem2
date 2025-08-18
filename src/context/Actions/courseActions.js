@@ -147,6 +147,7 @@ export const createArticleAction = async (formData, dispatch, onProgress) => {
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user || !user.token) throw new Error('User not authenticated');
   const token = user.token;
+  // console.log('article details are:', formData)
   try {
     dispatch({ type: 'COURSE_LOADING' });
     const response = await axios.post(

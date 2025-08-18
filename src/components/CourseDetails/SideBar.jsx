@@ -47,7 +47,7 @@ export const Sidebar = ({
     setCurrentTest,
     currentQuestion,
     setCurrentQuestion,
-    articles = [],
+    articles,
     currentArticle = 0,
     setCurrentArticle,
     completedArticles = [],
@@ -81,6 +81,8 @@ export const Sidebar = ({
         }
 
     }
+
+    console.log('the articles in sidebar are ', articles)
 
     useEffect(()=> {
         // console.log('the tests are: ', tests)
@@ -188,9 +190,9 @@ export const Sidebar = ({
                                     {`Articles (${articles?.length || 0})`}
                                 </Typography>
                             }
-                            secondary={
-                                completedArticles?.length > 0 ? `${completedArticles.length} completed` : undefined
-                            }
+                            // secondary={
+                            //     completedArticles?.length > 0 ? `${completedArticles.length} completed` : undefined
+                            // }
                         />
                     </ListItemButton>
                 </ListItem>

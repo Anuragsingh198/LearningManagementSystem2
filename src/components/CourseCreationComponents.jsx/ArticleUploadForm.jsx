@@ -155,6 +155,14 @@ const ArticleUploadForm = ({ courseId }) => {
       formData.append('courseId', courseId);
       formData.append('moduleId', selectedModule);
       formData.append('article', articleFile); // backend field expected: 'article'
+      
+
+//       for (let [key, value] of formData.entries()) {
+//   console.log(key, value);
+// }
+
+
+
 
       await createArticleAction(formData, dispatch, (p) => setUploadProgress(p));
       setUploadProgress(100);

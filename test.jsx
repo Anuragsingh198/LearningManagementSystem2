@@ -1,467 +1,244 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from 'react';
 import {
   Box,
-  Typography,
   Button,
-  Paper,
-  Divider,
-  LinearProgress,
-  Grid,
-  Chip,
-  Avatar,
-  useAutocomplete,
+  Card,
+  CardHeader,
+  CardContent,
+  TextField,
+  IconButton,
+  FormControl,
+  FormLabel,
+  Radio,
   CircularProgress,
-} from "@mui/material";
-import { NoVideosFound } from "./NoContentFoundPage";
-import { TestResult } from "./TestResult";
-import { useCourseContext } from "../../context/contextFiles/CourseContext";
-import { useAuth } from "../../context/contextFiles/AuthContext";
-import { getCourseProgress, SubmitTest, testProgress } from "../../context/Actions/courseActions";
-import { Loader } from "lucide-react";
-import { useParams } from "react-router-dom";
+  Tabs,
+  Tab,
+  Typography,
+  Switch,
+  Chip
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import SendIcon from '@mui/icons-material/Send';
+import CloseIcon from '@mui/icons-material/Close';
+import AdminQuestionPaper from './AdminQuestionPaper';
 
-// add progress in  inital state and add the the  test also;
-export const QuizContent = ({
-  questions,
-  currentQuestion,
-  handleAnswerSelect,
-  setCurrentQuestion,
-  currentTest,
-  tests,
-}) => {
-  const { state: { user } } = useAuth();
-  const moduleId = useParams().moduleId;
-  const courseId = useParams().courseId;
-  const [userId, setUserId] = useState(null)
-  const [progressId, setProgressId] = useState(null);
-  const [userAnswers, setUserAnswers] = useState({});
-  const [submitted, setSubmitted] = useState(false);
-  const [isLoading, setisLoading] = useState(false)
-  const [score, setScore] = useState(0);
-  const [currentTestData, setCurrentTestData] = useState(currentTest);
-  const { state: { loading, oneCourseProgress, oneModuleProgress, currentTestProgress, allTestProgress }, dispatch } = useCourseContext();
-  // console.log("loading true  Quiz Content: ,", loading)
-  const currentQ = questions && questions[currentQuestion];
-  const [isFailed, setisFailed] = useState(false)
-  // console.log("this is the  current question from quiz content", currentQ);
-  // console.log("this is the  allTestProgress from quiz content", oneCourseProgress,oneModuleProgress, allTestProgress );
-
-  const isPassed = currentTestProgress?.isPassed;
-  const resultStatus = currentTestProgress?.status;
-  // const isFailed = resultStatus === 'failed'
-  useEffect(() => {
-    if(resultStatus === 'failed'){
-      setisFailed(true)
-    } else {
-      setisFailed(false)
+function CreateAssessment() {
+  const [testTitle, setTestTitle] = useState('');
+  const [testDescription, setTestDescription] = useState('');
+  const [duration, setDuration] = useState('');
+  const [topics, setTopics] = useState([]);
+  const [topicInput, setTopicInput] = useState('');
+  const [mandatory, setMandatory] = useState(true);
+  const [questions, setQuestions] = useState([
+    {
+      id: Date.now(),
+      questionText: '',
+      options: ['', '', '', ''],
+      correctAnswer: '',
+      type: 'mcq'
     }
-  }, resultStatus)
-  console.log('is failed is: ', isFailed )
+  ]);
+  const [activeQuestion, setActiveQuestion] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setisModalOpen] = useState(false);
 
-  if (!questions || questions.length === 0) {
-    return <NoVideosFound />;
-  }
-  // console.log("this is the  oneCourseProgress test : ", oneCourseProgress);
-  // console.log("this is the  current test : ", tests[currentTest]._id);
+  const handleTabChange = (e, val) => setActiveQuestion(val);
 
-  const handleTestProgress = async () => {
-    const progressExists = allTestProgress.find(
-      (x) => x.testId === currentTest._id
-    );
+  const handleAddQuestion = () => {
+    setQuestions([
+      ...questions,
+      { id: Date.now(), questionText: '', options: ['', '', '', ''], correctAnswer: '', type: 'mcq' }
+    ]);
+  };
 
-    if (!progressExists) {
-      const createdProgress = await testProgress(
-        oneCourseProgress.courseId,
-        currentTestProgress,
-        oneModuleProgress.moduleId,
-        tests[currentTest]._id,
-        dispatch
-      );
-    } else {
-      // console.log("Test progress exists:", progressExists);
-      dispatch({ type: 'TEST_PROGRESS', payload: progressExists });
+  const handleDeleteQuestion = (id) => {
+    if (questions.length > 1) {
+      const idx = questions.findIndex(q => q.id === id);
+      const newQuestions = questions.filter(q => q.id !== id);
+      setQuestions(newQuestions);
+      if (activeQuestion >= newQuestions.length) setActiveQuestion(newQuestions.length - 1);
     }
   };
 
-  useEffect(() => {
-    handleTestProgress();
-    console.log("this is the  text progresss from te  useeffect : ", allTestProgress)
-  }, []);
+  const handleQuestionChange = (id, value) => {
+    setQuestions(questions.map(q => q.id === id ? { ...q, questionText: value } : q));
+  };
 
-  // useEffect(() => {
-  //   console.log('the questiosn are: ', questions)
-  // }, [questions])
+  const handleOptionChange = (questionId, optionIndex, value) => {
+    setQuestions(questions.map(q =>
+      q.id === questionId
+        ? {
+            ...q,
+            options: q.options.map((opt, idx) => idx === optionIndex ? value : opt),
+            correctAnswer: q.correctAnswer === q.options[optionIndex] ? '' : q.correctAnswer
+          }
+        : q
+    ));
+  };
 
-  const handleSubmit = async () => {
-    let correctAnswers = 0;
-    questions.forEach((q, index) => {
-      if (userAnswers[index] === q.correctAnswer) {
-        correctAnswers++;
+  const handleCorrectAnswerChange = (questionId, value) => {
+    setQuestions(questions.map(q => q.id === questionId ? { ...q, correctAnswer: value } : q));
+  };
+
+  const handleTopicKeyDown = (e) => {
+    if (e.key === 'Enter' && topicInput.trim()) {
+      e.preventDefault();
+      if (!topics.includes(topicInput.trim())) {
+        setTopics([...topics, topicInput.trim()]);
       }
-    });
-    setScore(correctAnswers);
-
-    try {
-      setisLoading(true);
-
-      const testId = tests[currentTest]._id;
-
-      const result = await SubmitTest({ testId, userAnswers, moduleId, courseId, dispatch });
-      // await getCourseProgress(courseId, user._id, dispatch);
-      setisLoading(false);
-      setSubmitted(true);
-      // console.log('the current test progress is: ', currentTestProgress)
-    } catch (error) {
-      console.error("Error submitting test:", error);
-      setisLoading(false);
+      setTopicInput('');
     }
   };
 
-  useEffect(() => {
-    console.log("this is the current test progress : ", currentTestProgress)
-  }, [currentTestProgress])
-
-  const handleRetake = () => {
-    setisFailed(false)
-    setUserAnswers({});
-    setSubmitted(false);
-    setScore(0);
-    setCurrentQuestion(0);
+  const removeTopic = (topic) => {
+    setTopics(topics.filter(t => t !== topic));
   };
 
-  const handleAnswerClick = (questionIndex, optionText) => {
-    setUserAnswers((prev) => ({
-      ...prev,
-      [questionIndex]: optionText,
-    }));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!testTitle || !testDescription) {
+      alert("Please fill title and description");
+      return;
+    }
+    setisModalOpen(true);
   };
 
-if (!currentTestProgress) {
+  const closeModal = () => setisModalOpen(false);
+
+  const handleUploadAssessment = () => {
+    console.log('Uploading...');
+    closeModal();
+  };
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '60vh', // or "100vh" to center in full viewport
-        width: '100%',
-      }}
-    >
-      <CircularProgress color="primary" />
+    <Box sx={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      p: 2, mt: 1, width: '95%', borderRadius: 3, border: '1px solid', borderColor: 'grey.300'
+    }}>
+      
+      {/* Mandatory Toggle */}
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+        <Typography variant="body2" sx={{ mr: 1 }}>Mandatory:</Typography>
+        <Switch checked={mandatory} onChange={(e) => setMandatory(e.target.checked)} />
+        <Typography variant="body2" sx={{ ml: 0.5 }}>
+          {mandatory ? 'Yes' : 'No'}
+        </Typography>
+      </Box>
+
+      {/* Title, Description, Duration */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%', gap: 1 }}>
+        <TextField size="small" label="Title" value={testTitle} onChange={(e) => setTestTitle(e.target.value)} />
+        <TextField size="small" label="Description" value={testDescription} onChange={(e) => setTestDescription(e.target.value)} multiline rows={2} />
+        <TextField size="small" label="Duration (minutes)" type="number" value={duration} onChange={(e) => setDuration(e.target.value)} />
+      </Box>
+
+      {/* Topics Input */}
+      <Box sx={{ mt: 1, width: '40%' }}>
+        <TextField
+          size="small"
+          label="Add Topic"
+          value={topicInput}
+          onChange={(e) => setTopicInput(e.target.value)}
+          onKeyDown={handleTopicKeyDown}
+          fullWidth
+        />
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+          {topics.map((topic, idx) => (
+            <Chip
+              key={idx}
+              label={topic}
+              size="small"
+              onDelete={() => removeTopic(topic)}
+              deleteIcon={<CloseIcon />}
+            />
+          ))}
+        </Box>
+      </Box>
+
+      {/* Question Tabs */}
+      <Box sx={{ mt: 1, width: '40%' }}>
+        <Tabs value={activeQuestion} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
+          {questions.map((_, i) => (
+            <Tab key={i} label={`Q${i + 1}`} sx={{ minWidth: 'unset' }} />
+          ))}
+        </Tabs>
+      </Box>
+
+      {/* Active Question */}
+      <form onSubmit={handleSubmit} style={{ width: '40%' }}>
+        {questions.length > 0 && (
+          <Card sx={{ mb: 2, borderRadius: 2 }}>
+            <CardHeader
+              sx={{ py: 0.5, backgroundColor: '#f5f5f5' }}
+              titleTypographyProps={{ variant: 'subtitle2' }}
+              title={`Question ${activeQuestion + 1}`}
+              action={
+                <IconButton size="small" color="error" onClick={() => handleDeleteQuestion(questions[activeQuestion].id)}>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              }
+            />
+            <CardContent sx={{ p: 1.5 }}>
+              <TextField
+                size="small"
+                fullWidth
+                label="Question"
+                value={questions[activeQuestion].questionText}
+                onChange={(e) => handleQuestionChange(questions[activeQuestion].id, e.target.value)}
+                sx={{ mb: 1 }}
+              />
+              <FormControl component="fieldset" fullWidth>
+                <FormLabel component="legend" sx={{ fontSize: 12 }}>Options</FormLabel>
+                {questions[activeQuestion].options.map((opt, idx) => (
+                  <Box key={idx} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+                    <TextField
+                      size="small"
+                      fullWidth
+                      placeholder={`Option ${idx + 1}`}
+                      value={opt}
+                      onChange={(e) => handleOptionChange(questions[activeQuestion].id, idx, e.target.value)}
+                      sx={{ mr: 1 }}
+                    />
+                    <Radio
+                      size="small"
+                      checked={questions[activeQuestion].correctAnswer === opt}
+                      onChange={() => handleCorrectAnswerChange(questions[activeQuestion].id, opt)}
+                    />
+                  </Box>
+                ))}
+              </FormControl>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Buttons */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button variant="outlined" size="small" startIcon={<AddCircleIcon />} onClick={handleAddQuestion}>
+            Add
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            size="small"
+            color="success"
+            endIcon={isLoading ? <CircularProgress size={16} color="inherit" /> : <SendIcon />}
+          >
+            {isLoading ? 'Uploading...' : 'Upload'}
+          </Button>
+        </Box>
+      </form>
+
+      {isModalOpen && (
+        <AdminQuestionPaper
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+          questions={questions}
+          handleUploadAssessment={handleUploadAssessment}
+        />
+      )}
     </Box>
   );
 }
 
-
-  if (isPassed || isFailed) {
-    return (
-
-      <Box
-        sx={{
-          // position: "relative",
-          display: "flex",
-          justifyContent: "start",
-          // alignItems: "center",
-          minHeight: "100%",
-          overflow: "scroll",
-          p: 2,
-          '&::-webkit-scrollbar': {
-            width: '8px',
-            height: '8px', // also styles horizontal scroll if needed
-          },
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: '#f0f0f0',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#a0a0a0',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: '#808080',
-          }
-        }}
-      >
-
-        {console.log('this is good, we are in if conding ')}
-
-        <TestResult
-          questions={questions}
-          currentTestProgress={currentTestProgress}
-          totalQuestions={questions.length}
-          onRetake={handleRetake}
-        />
-      </Box>
-    )
-  }
-
-
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 3,
-        overflowY: "auto",
-        width: "100%",
-        mt: 2,
-        height: "80%",
-        "&::-webkit-scrollbar": { width: "8px" },
-        "&::-webkit-scrollbar-track": { backgroundColor: "#ffffff" },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#c0c0c0",
-          borderRadius: "4px",
-        },
-        "&::-webkit-scrollbar-thumb:hover": { backgroundColor: "#a0a0a0" },
-        scrollbarColor: "#c0c0c0 #ffffff",
-        scrollbarWidth: "thin",
-      }}
-    >
-      <Paper
-        sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 3,
-          p: 3,
-        }}
-      >
-        <Typography variant="h6" fontWeight="semibold" mb={2}>
-          Assessment Statistics
-        </Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h4" fontWeight="bold" color="success.main">
-                {Object.keys(userAnswers).length}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Answered
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h4" fontWeight="bold" color="warning.main">
-                {questions.length - Object.keys(userAnswers).length}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Remaining
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={4}>
-            <Box textAlign="center">
-              <Typography variant="h4" fontWeight="bold" color="primary.main">
-                {questions.length}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Total
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </Paper>
-
-      <Paper
-        sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 3,
-          p: 3,
-        }}
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={3}
-        >
-          <Typography variant="h4" fontWeight="bold">
-            Assessment
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Question {currentQuestion + 1} of {questions.length}
-          </Typography>
-        </Box>
-
-        <Box mb={4}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            mb={1}
-          >
-            <Typography
-              variant="body2"
-              fontWeight="medium"
-              color="text.secondary"
-            >
-              Progress
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {Math.round(((currentQuestion) / questions.length) * 100)}%
-            </Typography>
-          </Box>
-          <LinearProgress
-            variant="determinate"
-            value={((currentQuestion) / questions.length) * 100}
-            sx={{
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: "grey.200",
-              "& .MuiLinearProgress-bar": {
-                borderRadius: 4,
-                backgroundColor: "primary.main",
-              },
-            }}
-          />
-        </Box>
-
-        <Paper
-          sx={{ backgroundColor: "grey.50", borderRadius: 3, p: 3, mb: 3 }}
-        >
-          <Box
-            display="flex"
-            alignItems="flex-start"
-            justifyContent="space-between"
-            mb={2}
-          >
-            <Typography variant="h6" fontWeight="semibold">
-              Question {currentQuestion + 1}
-            </Typography>
-            <Chip
-              label="5 marks"
-              sx={{ backgroundColor: "primary.light", color: "primary.dark" }}
-            />
-          </Box>
-          <Typography variant="body1" color="text.primary" mb={3}>
-            {currentQ.questionText}
-          </Typography>
-
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {currentQ.options.map((option, index) => (
-              <Button
-                key={option._id}
-                onClick={() =>
-                  handleAnswerClick(currentQuestion, option.optionText)
-                }
-                fullWidth
-                sx={{
-                  justifyContent: "flex-start",
-                  textAlign: "left",
-                  p: 2,
-                  border: "2px solid",
-                  borderColor:
-                    userAnswers[currentQuestion] === option.optionText
-                      ? "primary.main"
-                      : "grey.300",
-                  backgroundColor:
-                    userAnswers[currentQuestion] === option.optionText
-                      ? "primary.light"
-                      : "background.paper",
-                  "&:hover": {
-                    borderColor:
-                      userAnswers[currentQuestion] === option.optionText
-                        ? "primary.main"
-                        : "grey.400",
-                    backgroundColor:
-                      userAnswers[currentQuestion] === option.optionText
-                        ? "primary.light"
-                        : "grey.100",
-                  },
-                  transition: "all 0.3s",
-                }}
-              >
-                <Box display="flex" alignItems="center" gap={2}>
-                  <Avatar
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      border: "2px solid",
-                      borderColor:
-                        userAnswers[currentQuestion] === option.optionText
-                          ? "primary.main"
-                          : "grey.400",
-                      backgroundColor:
-                        userAnswers[currentQuestion] === option.optionText
-                          ? "primary.main"
-                          : "transparent",
-                    }}
-                  >
-                    {userAnswers[currentQuestion] === option.optionText && (
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          backgroundColor: "white",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    )}
-                  </Avatar>
-                  <Typography color="text.primary" sx={{ textTransform: "none" }}>
-                    {/* {console.log(option.optionText)} */}
-                    {option.optionText}
-                  </Typography>
-                </Box>
-              </Button>
-            ))}
-          </Box>
-        </Paper>
-
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Button
-            onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
-            disabled={currentQuestion === 0}
-            variant="outlined"
-            sx={{
-              color: "text.primary",
-              borderColor: "grey.300",
-              "&:hover": {
-                backgroundColor: "grey.50",
-                borderColor: "grey.400",
-              },
-            }}
-          >
-            Previous
-          </Button>
-
-          <Box display="flex" gap={1}>
-            {currentQuestion === questions.length - 1 ? (
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleSubmit}
-                disabled={isLoading}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "success.dark",
-                  },
-                }}
-              >
-                {isLoading ? 'Submitting...' : 'Submit Test'}
-              </Button>
-            ) : (
-              <Button
-                onClick={() =>
-                  setCurrentQuestion(
-                    Math.min(questions.length - 1, currentQuestion + 1)
-                  )
-                }
-                variant="contained"
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "primary.dark",
-                  },
-                }}
-              >
-                Next
-              </Button>
-            )}
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
-  );
-};
+export default CreateAssessment;

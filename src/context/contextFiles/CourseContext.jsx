@@ -8,6 +8,7 @@ const initialState = {
   modules: [],
   moduleNames: [],
   videos: [],
+  articles: [],
   adminCourses: [],
   oneCourse:null,
   oneCourseProgress:null,

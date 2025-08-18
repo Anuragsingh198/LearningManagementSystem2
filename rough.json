@@ -1,0 +1,29 @@
+
+{
+    "Questions":  [
+    {
+        "id": 1755147786028,
+        "questionText": "Hola, comoestas?",
+        "options": [
+            "Spaish",
+            "English",
+            "German",
+            "Urdu"
+        ],
+        "correctAnswer": "Spaish",
+        "type": "mcq"
+    },
+    {
+        "id": 1755147817988,
+        "questionText": "\n**What will be the output of the following Python code?**\n\n```python\nx = [1, 2, 3]\ny = x\ny.append(4)\nprint(x)",
+        "options": [
+            "```python \n[1, 2, 3]",
+            "```python \n[1, 2, 3, 4]",
+            "```python \n[1, 2, 3, 3]",
+            "```python \n[1, 2]"
+        ],
+        "correctAnswer": "```python \n[1, 2, 3, 4]",
+        "type": "mcq"
+    }
+]
+}

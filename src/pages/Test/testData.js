@@ -2,6 +2,7 @@ export const testData = {
   _id: "686cbf48c811dbae8cf9a387",
   title: "Introduction to POSH",
   description: "Assessment on Introduction to POSH",
+  topics: ["POSH", "Ethics", "Manners"],
   questions: [
     {
       _id: "q1",

@@ -70,20 +70,19 @@ const CourseDetails = ({ courseId, moduleId }) => {
         setModule(allModule || []);
         setVideos(allModule.videos || []);
         setTests(allModule.tests || []);
-        const arts = allModule.articles || allModule.resources || allModule.documents || [];
+        // console.log(allModule, allModule.articles)
+        const arts = allModule.articles || [];
         setArticles(Array.isArray(arts) ? arts : []);
-        // console.log('loading in try block: ', isLoading)
       } catch (error) {
         console.error("Error fetching module data:", error);
       } finally {
         setIsLoading(false); // Now this runs after everything is done
-        // console.log('loading in courseDetailsMainPage as soon as the funtion is completed : ', isLoading)
-
       }
     };
 
     fetchData();
   }, [moduleId, dispatch]);
+
 
 
 
