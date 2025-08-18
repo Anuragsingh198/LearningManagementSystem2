@@ -13,6 +13,8 @@ import {
   createTheme
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
+import { getAllLanguageAction } from '../../context/Actions/AssignmentActions';
 
 // Create a custom theme
 const theme = createTheme({
@@ -36,11 +38,12 @@ const TestPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questionStatus, setQuestionStatus] = useState({});
   const [codingAnswers, setCodingAnswers] = useState({});
-  const [timeRemaining, setTimeRemaining] = useState(3600); // 1 hour in seconds
+  const [timeRemaining, setTimeRemaining] = useState(3600); 
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [violationCount, setViolationCount] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [backButtonDisabled, setBackButtonDisabled] = useState(true);
+  const [currentCodingAnswer , setCurrentCodingAnswer] =  useState("");
   const testPageRef = useRef(null);
   let warningToastId = null;
 
@@ -53,6 +56,11 @@ const TestPage = () => {
   console.log('the show submit modal is: ', showSubmitModal);
 }, [showSubmitModal]);
 
+const { state, dispatch } = useAssignmentContext();
+
+useEffect(() => {
+    getAllLanguageAction(dispatch);
+}, []);
 
   // Initialize question status and mark first question as visited
   useEffect(() => {
@@ -74,7 +82,6 @@ const TestPage = () => {
     });
 
     setQuestionStatus(initialStatus);
-    
     // Enter fullscreen when component mounts
     enterFullscreen();
     
@@ -369,12 +376,15 @@ const handleAutoSubmit = () => {
 
   // Handle coding answer change
   const handleCodingAnswerChange = (answer) => {
+    console.log( 'this is  the  coding  answer : ' ,  answer)
+    setCurrentCodingAnswer(answer)
     const question = testData.questions[currentQuestionIndex];
     setCodingAnswers(prev => ({
       ...prev,
       [question._id]: answer
     }));
 
+    
     // Mark as answered if there's content
     setQuestionStatus(prev => ({
       ...prev,
@@ -400,7 +410,10 @@ const handleAutoSubmit = () => {
       [question._id]: 'answered'
     }));
   };
-
+ 
+   const  handleCodingRun =()=>{
+    
+   }
   // Calculate stats
   const calculateStats = () => {
     const mcqQuestions = testData.questions.filter(q => q.type === 'mcq');
@@ -460,9 +473,7 @@ const handleAutoSubmit = () => {
       draggable: true,
       progress: undefined,
     });
-    
-
-    
+        
     exitFullscreen();
     
     navigate('/assessments/test-submitted');

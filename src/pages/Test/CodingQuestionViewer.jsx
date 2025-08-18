@@ -131,7 +131,7 @@ const CodingQuestionViewer = ({
           
           <StyledConstraintBox>
             <List dense sx={{ py: 0 }}>
-              {constraints.map((constraint, index) => (
+              {constraints?.map((constraint, index) => (
                 <ListItem key={index} sx={{ py: 0.5, px: 0 }}>
                   <ListItemIcon sx={{ minWidth: 24 }}>
                     <Box sx={{ width: 8, height: 8, bgcolor: 'warning.main', borderRadius: '50%', mt: '8px' }} />
