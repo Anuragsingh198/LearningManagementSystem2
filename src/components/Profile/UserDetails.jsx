@@ -4,9 +4,11 @@ import {
   Typography,
   Avatar,
   Grid,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import { BookOpen, Award, ClipboardList, Edit } from "lucide-react";
-import coverImg from "../../assets/cover.png";
+import coverImg from "../../assets/cover-2.png";
 import profileImg from "../../assets/profile.png";
 import CourseListItem from "./CourseListItem";
 import EditProfileDialog from "./EditProfileDialog";
@@ -187,32 +189,7 @@ const UserDetails = () => {
             }}
           />
 
-          {/* Edit Profile Button */}
-          <Box
-            sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              backgroundColor: "#1976d2",
-              borderRadius: "4px",
-              px: 2,
-              py: 0.7,
-              display: "flex",
-              alignItems: "center",
-              gap: 0.8,
-              cursor: "pointer",
-              color: "#fff",
-              fontWeight: 500,
-              fontSize: "0.875rem",
-              "&:hover": {
-                backgroundColor: "#1565c0",
-              },
-            }}
-            onClick={handleEditOpen}
-          >
-            <Edit size={16} />
-            Edit Profile
-          </Box>
+          {/* Edit action moved next to the name */}
         </Box>
 
         {/* Avatar */}
@@ -249,6 +226,16 @@ const UserDetails = () => {
             <Typography variant="h6" fontWeight={600}>
               {authUser?.name || authUser?.fullName || authUser?.username || user.name}
             </Typography>
+            <Tooltip title="Edit profile" placement="right">
+              <IconButton
+                size="small"
+                aria-label="Edit profile"
+                onClick={handleEditOpen}
+                sx={{ color: "#1976d2" }}
+              >
+                <Edit size={18} />
+              </IconButton>
+            </Tooltip>
             <Box
               sx={{
                 paddingLeft: "12px",
@@ -272,7 +259,7 @@ const UserDetails = () => {
         </Box>
 
         {/* Right: Stats */}
-        <Box display="flex" gap={6}>
+        <Box display="flex" gap={6} mt={0.5}>
           <Box>
             <Typography
               variant="body2"

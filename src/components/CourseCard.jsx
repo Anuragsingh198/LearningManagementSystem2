@@ -94,15 +94,16 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
   return (
     <Card
       sx={{
-        borderRadius: 3,
+        borderRadius: '8px',
         overflow: 'hidden',
         width: 300,
         height: role === 'instructor' ? 330 : 370,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        boxShadow: 3,
+        boxShadow: 0,
         pb:1,
+        border: '1px solid rgba(218, 217, 217, 0.87)',
       }}
     >
       <Box sx={{ position: 'relative' }}>
@@ -125,7 +126,8 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
               color: 'white',
               fontWeight: 500,
               fontSize: '0.7rem',
-              height: 22
+              height: 22,
+              borderRadius: '4px',
             }}
           />
         )}
@@ -144,8 +146,8 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
               backgroundColor: 'rgba(52, 152, 219, 0.1)', // light blue background
               border: '1px solid #3498db', // blue border
               color: '#3498db', // blue text
-              fontWeight: 600,
-              borderRadius: '20px',
+              fontWeight: 700,
+              borderRadius: '4px',
               maxWidth: 200,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -214,8 +216,12 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
             sx={{
               mt: 1,
               backgroundColor: enrolled ? 'green' : undefined,
+              boxShadow: 'none',
+              borderRadius: '4px',
               '&:hover': {
-                backgroundColor: enrolled ? 'darkgreen' : undefined
+                backgroundColor: enrolled ? 'darkgreen' : undefined,
+                boxShadow: 'none',
+                borderRadius: '4px',
               }
             }}
             onMouseEnter={onHoverDisablePopup}

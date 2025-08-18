@@ -235,7 +235,7 @@ const CourseCard = ({ course, onViewCourse }) => {
         {role !== 'instructor' ? <Box sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
             <Typography variant="body2" color="text.secondary" fontSize="13px" fontWeight='700'>
-              Progress: { Math.round(overallPercentage)  || 0}%
+              Progress: {Math.round(overallPercentage) || 0}%
             </Typography>
             <Box>
               <Chip
@@ -265,10 +265,10 @@ const CourseCard = ({ course, onViewCourse }) => {
                         ? 'rgba(149, 165, 166, 0.1)'
                         : 'rgba(241, 196, 15, 0.1)',
                   border: `1px solid ${status === 'completed'
-                      ? '#2ecc71'
-                      : status === 'pending'
-                        ? '#95a5a6'
-                        : '#f1c40f'
+                    ? '#2ecc71'
+                    : status === 'pending'
+                      ? '#95a5a6'
+                      : '#f1c40f'
                     }`,
                   color:
                     status === 'completed'
@@ -280,27 +280,26 @@ const CourseCard = ({ course, onViewCourse }) => {
               />
             </Box>
 
-{remainingDays !== undefined && status !== 'completed' && (
-  <Chip
-    label={remainingDays === 0 ? 'Overdue' : `${remainingDays} Days left`}
-    size="small"
-    sx={{
-      height: 20,
-      fontSize: '12px',
-      px: 1, 
-      width: 100,
-      borderRadius: '10px',
-      fontWeight: 500,
-      mb: 0.5,
-      backgroundColor:
-        remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
-      border: `1px solid ${
-        remainingDays === 0 ? '#e74c3c' : '#3498db'
-      }`,
-      color: remainingDays === 0 ? '#ffffff' : '#3498db',
-    }}
-  />
-)}
+            {remainingDays !== undefined && status !== 'completed' && (
+              <Chip
+                label={remainingDays === 0 ? 'Overdue' : `${remainingDays} Days left`}
+                size="small"
+                sx={{
+                  height: 20,
+                  fontSize: '12px',
+                  px: 1,
+                  width: 100,
+                  borderRadius: '10px',
+                  fontWeight: 500,
+                  mb: 0.5,
+                  backgroundColor:
+                    remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
+                  border: `1px solid ${remainingDays === 0 ? '#e74c3c' : '#3498db'
+                    }`,
+                  color: remainingDays === 0 ? '#ffffff' : '#3498db',
+                }}
+              />
+            )}
 
 
           </Box>
@@ -402,76 +401,86 @@ const CourseCard = ({ course, onViewCourse }) => {
         {role !== 'instructor' ? '' : (
           <Button
             fullWidth
-            variant="contained"
+            variant="outlined"
             onClick={handleUploadClick}
             startIcon={<Video size={16} />}
             sx={{
-              background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-              borderRadius: '8px',
+              background: '#eff6ff',
+              border: '1px solid #3b82f6',
+              borderRadius: '4px',
               py: 1,
               fontSize: '0.875rem',
               fontWeight: 600,
               letterSpacing: '0.5px',
               textTransform: 'none',
+              color: '#1e3a8a',
               boxShadow: 'none',
               '&:hover': {
-                background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)',
-                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                background: '#dbeafe',
+                border: '1px solid #2563eb',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
               }
             }}
           >
             Manage Content
           </Button>
+
         )}
         <Button
           fullWidth
-          variant="contained"
+          variant="outlined"
           onClick={handleViewClick}
           startIcon={<Book size={16} />}
           sx={{
-            background: 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
-            borderRadius: '8px',
+            background: '#ecfdf5',
+            border: '1px solid #10b981',
+            borderRadius: '4px',
             py: 1,
             marginTop: role !== 'instructor' ? 0 : 2,
             fontSize: '0.875rem',
             fontWeight: 600,
             letterSpacing: '0.5px',
             textTransform: 'none',
-            color: 'white',
+            color: '#065f46',
             boxShadow: 'none',
             '&:hover': {
-              background: 'linear-gradient(135deg, #059669 0%, #0d9488 100%)',
-              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+              background: '#d1fae5',
+              border: '1px solid #059669',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
             }
           }}
         >
-          { isLoading ? "Loading...": " View Course"}
+          {isLoading ? "Loading..." : "View Course"}
         </Button>
+
         {role !== 'instructor' ? '' : (
           <Button
             fullWidth
-            variant="contained"
+            variant="outlined"
             onClick={handleViewEmployeesClick}
             startIcon={<Users size={16} />}
             sx={{
-              background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-              borderRadius: '8px',
+              background: '#fffbeb',
+              border: '1px solid #f59e0b',
+              borderRadius: '4px',
               py: 1,
               marginTop: 2,
               fontSize: '0.875rem',
               fontWeight: 600,
               letterSpacing: '0.5px',
               textTransform: 'none',
-              color: 'white',
+              color: '#92400e',
               boxShadow: 'none',
               '&:hover': {
-                background: 'linear-gradient(135deg,rgb(115, 43, 239) 0%, #6d28d9 100%)',
-                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)'
+                background: '#fef3c7',
+                border: '1px solid #d97706',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
               }
             }}
           >
             View Enrolled Employees
           </Button>
+
         )}
       </CardContent>
     </Card>

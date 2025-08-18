@@ -73,7 +73,7 @@ export default function Layout({ children }) {
         flex: 1,
         mt: '120px',
         p: 1,
-        bgcolor: '#f5f5f5',
+        bgcolor: '#fff',
         width: '100%',
       }}
     >
