@@ -12,7 +12,7 @@ export const getAllLanguageAction = async (dispatch) => {
   try {
     dispatch({ type: "SET_LOADING", payload: true });
 
-    const { data } = await axios.get(`${backendBaseUrl}/api/assements/get-languages`);
+    const { data } = await axios.get(`${backendBaseUrl}/api/assessments/get-languages`);
     console.log('fetched  languages  from action   are : ' , data) 
     dispatch({ type: "SET_LANGUAGES", payload: data });
     dispatch({ type: "SET_LOADING", payload: false });
@@ -21,6 +21,20 @@ export const getAllLanguageAction = async (dispatch) => {
     dispatch({ type: "SET_LOADING", payload: false });
   }
 };
+
+export const getAllCodingQuestions = async (dispatch) => {
+  try{
+    dispatch({ type: 'SET_LOADING', payload: true })
+
+    const {data} = await axios.get(`${backendBaseUrl}/api/assessments/allQuestions`)
+    dispatch({ type: "SET_ALL_CODING_QUESTIONS", payload: data.allCodingQuestions})
+    dispatch({ type: "SET_LOADING", payload: false });
+
+  } catch (error) {
+    dispatch({ type: "SET_ERRORS", payload: error?.response?.data || error.message });
+    dispatch({ type: "SET_LOADING", payload: false });
+  }
+}
 
 /**
  * Fetch coding question by ID
@@ -32,7 +46,7 @@ export const getQuestionByIdAction = async (dispatch, currentQuestionId) => {
     const questionId = currentQuestionId
     const token = getAuthToken();
       console.log(" getQuestion action is called before api call : " );
-      const { data } = await axios.get(`${backendBaseUrl}/api/assements/${questionId}`, {
+      const { data } = await axios.get(`${backendBaseUrl}/api/assessments/${questionId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // console.log(" getQuestion action is called after api call : ", data.question );
@@ -52,7 +66,7 @@ export const runCodeAction = async (dispatch, { code, languageId, testCases }) =
     const token = getAuthToken();
 
     const { data } = await axios.post(
-      `${backendBaseUrl}/api/assements/run-code`,
+      `${backendBaseUrl}/api/assessments/run-code`,
       { 
         source_code: code, 
         language_id: languageId, 
@@ -70,6 +84,7 @@ export const runCodeAction = async (dispatch, { code, languageId, testCases }) =
   }
 };
 
+
 export const submitCodeAction = async (dispatch, { sourceCode, languageId, questionId }) => {
   try {
     dispatch({ type: "SET_LOADING", payload: true });
@@ -77,7 +92,7 @@ export const submitCodeAction = async (dispatch, { sourceCode, languageId, quest
     const token = getAuthToken();
 
     const { data } = await axios.post(
-      `${backendBaseUrl}/api/assements/submit-code`,
+      `${backendBaseUrl}/api/assessments/submit-code`,
       { 
         code: sourceCode, 
         languageId: languageId, 

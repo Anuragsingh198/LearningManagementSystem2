@@ -802,6 +802,51 @@ export const deleteModule = async (chapterId, dispatch) => {
   }
 };
 
+export const addAssessmentAction = async (
+  dispatch,
+  isMandatory,
+  testTitle,
+  testDescription,
+  topics,
+  duration,
+  questions,
+  selectedCodingQuestions,
+  testType
+) => {
+  try {
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const payload = {
+      isMandatory,
+      title: testTitle,
+      description: testDescription,
+      topics,
+      duration,
+      mcqQuestions: questions,            
+      codingQuestions: selectedCodingQuestions.map(q => q._id), 
+      testType,
+    };
+
+    const { data } = await axios.post(
+      `${serverurl}/api/assessments/add-assessment`,
+      payload
+    );
+
+    // dispatch({ type: "ADD_ASSESSMENT_SUCCESS", payload: data });
+    dispatch({ type: "SET_LOADING", payload: false });
+
+    return data;
+  } catch (error) {
+    dispatch({
+      type: "SET_ERRORS",
+      payload: error?.response?.data || error.message,
+    });
+    dispatch({ type: "SET_LOADING", payload: false });
+    throw error; // rethrow so UI can catch
+  }
+};
+
+
 export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
   const token = getAuthToken();
   console.log('the data is: ', payloadData)

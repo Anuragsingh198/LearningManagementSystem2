@@ -4,6 +4,9 @@ import {
     Card,
     CardHeader,
     CardContent,
+    Select,
+    MenuItem,
+    Autocomplete,
     TextField,
     IconButton,
     FormControl,
@@ -14,6 +17,7 @@ import {
     Tabs,
     Tab,
     Chip,
+    Paper,
     Switch,
     FormControlLabel,
     Typography,
@@ -28,19 +32,26 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github.css';
 import CloseIcon from '@mui/icons-material/Close';
+import { getAllCodingQuestions } from '../../context/Actions/AssignmentActions';
+import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
+import { addAssessmentAction } from '../../context/Actions/courseActions';
 
 function CreateAssessment() {
-        const [topics, setTopics] = useState([]);
-        const [duration, setDuration] = useState('');
-        const [isSubmitting, setIsSubmitting] = useState(false);
-        const [isMandatory, setIsMandatory] = useState(false)
-        const [activeQuestion, setActiveQuestion] = useState(0);
-        const [topicInput, setTopicInput] = useState('');
-        const [testTitle, setTestTitle] = useState('');
-        const [testDescription, setTestDescription] = useState('');
-        const [isLoading, setIsLoading] = useState(false)
-        const [isModalOpen, setisModalOpen] = useState(false)
-        const [previewMode, setPreviewMode] = useState(false); // New state for preview toggle
+    const [topics, setTopics] = useState([]);
+    const [duration, setDuration] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isMandatory, setIsMandatory] = useState(false)
+    const [activeQuestion, setActiveQuestion] = useState(0);
+    const [topicInput, setTopicInput] = useState('');
+    const [testTitle, setTestTitle] = useState('');
+    const [testDescription, setTestDescription] = useState('');
+    const [isLoading, setIsLoading] = useState(false)
+    const [isModalOpen, setisModalOpen] = useState(false)
+    const [previewMode, setPreviewMode] = useState(false); // New state for preview toggle
+    const [testType, setTestType] = useState('mcq')
+    const { state: { allCodingQuestions }, dispatch } = useAssignmentContext();
+    const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+    const [selectedCodingQuestions, setSelectedCodingQuestions] = useState([]);
 
     const [questions, setQuestions] = useState([
         {
@@ -66,6 +77,20 @@ function CreateAssessment() {
     const removeTopic = (topic) => {
         setTopics(topics.filter(t => t !== topic));
     };
+
+
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            await getAllCodingQuestions(dispatch);
+        };
+        fetchData();
+    }, []);
+
+    // console.log('all coding questions are: ', allCodingQuestions)
+
+    // console.log('the coding question details ', selectedCodingQuestions)
 
 
     const handleAddQuestion = () => {
@@ -136,39 +161,78 @@ function CreateAssessment() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-
-
+        // check this for bugs 
         if (!testDescription || !testTitle || topics.length === 0) {
             alert("Please add Test Title, Topics and Description");
             return;
         }
 
-        const isValid = questions.every(q =>
-            q.questionText.trim() !== '' &&
-            q.options.every(opt => opt.trim() !== '') &&
-            q.correctAnswer !== '' &&
-            q.options.includes(q.correctAnswer)
-        );
+        if (testType === "mcq") {
+            if (!questions) {
+                alert("Please select at least one MCQ question");
+                return;
+            }
 
-        if (isValid) {
-            const submissionData = {
-                title: testTitle,
-                description: testDescription,
-                questions: questions,
-                
-            };
+            const isValid = questions.every(q =>
+                q.questionText.trim() !== '' &&
+                q.options.every(opt => opt.trim() !== '') &&
+                q.correctAnswer !== '' &&
+                q.options.includes(q.correctAnswer)
+            );
 
-            console.log('submission data is: ', submissionData)
-            setisModalOpen(true);
-        } else {
-            alert("Please fill all fields and select correct answers for all questions!");
+            if (isValid) {
+                const submissionData = {
+                    title: testTitle,
+                    description: testDescription,
+                    questions: questions,
+
+                };
+
+                console.log('submission data is: ', submissionData)
+                setisModalOpen(true);
+            } else {
+                alert("Please fill all fields and select correct answers for all questions!");
+            }
+
+        } else if (testType === "coding") {
+            if (!selectedCodingQuestions) {
+                alert("Please select a coding question");
+                return;
+            } else {
+                setisModalOpen(true)
+            }
+        } else if (testType === "both") {
+            if (!questions || !selectedCodingQuestions) {
+                alert("Please select both MCQ and coding questions");
+                return;
+            }
+
+            const isValid = questions.every(q =>
+                q.questionText.trim() !== '' &&
+                q.options.every(opt => opt.trim() !== '') &&
+                q.correctAnswer !== '' &&
+                q.options.includes(q.correctAnswer)
+            );
+
+            if (isValid) {
+                const submissionData = {
+                    title: testTitle,
+                    description: testDescription,
+                    questions: questions,
+
+                };
+
+                console.log('submission data is: ', submissionData)
+                setisModalOpen(true);
+            } else {
+                alert("Please fill all fields and select correct answers for all questions!");
+            }
         }
+
     };
 
     const handleTitleAndDescriptionChange = (e) => {
         const { name, value } = e.target;
-
         if (name === 'testTitle') {
             setTestTitle(value);
         } else if (name === 'testDescription') {
@@ -176,18 +240,37 @@ function CreateAssessment() {
         }
     };
 
-    const handleUploadAssessment = () => {
-        console.log('Questions ', isMandatory)
+    const handleUploadAssessment = async () => {
+        console.log('is Mandatory ', isMandatory)
         console.log('Title ', testTitle)
         console.log('Description ', testDescription)
         console.log('Topics', topics)
         console.log('Duratrion ', duration)
         console.log('Questions ', questions)
-
-
+        console.log('Coding questions: ', selectedCodingQuestions)
 
         console.log('Uploading assessment...');
-        closeModal();
+
+        try{
+            await addAssessmentAction(
+               dispatch,
+      isMandatory,
+      testTitle,
+      testDescription,
+      topics,
+      duration,
+      questions,
+      selectedCodingQuestions,
+      testType 
+            )
+
+            closeModal();
+        } catch (error) {
+            console.error(
+                'Error uploading assessment: ', err
+            )
+        }
+
     };
 
     const togglePreviewMode = () => {
@@ -236,20 +319,24 @@ function CreateAssessment() {
             border: '1px solid', borderColor: 'grey.300',
         }}>
             <Box sx={{ mb: 2, color: 'black', display: 'flex', flexDirection: 'column' }}>
+
                 {/* Mandatory Toggle Row */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: '0.85rem' }}>
                     <Box>Mandatory Test?</Box>
-                    <Box>Yes</Box>
-                    <Switch
-                        checked={isMandatory}
-                        onChange={() => setIsMandatory(!isMandatory)}
-                        color="primary"
-                    />
-                    <Box>No</Box>
+                    <Box sx={{ display: 'flex', ml: 2.5, justifyContent: 'center', alignItems: 'center' }}>
+                        <Box>No</Box>
+                        <Switch
+                            checked={isMandatory}
+                            onChange={() => setIsMandatory(!isMandatory)}
+                            color="primary"
+                        />
+                        <Box>Yes</Box>
+                    </Box>
+
                 </Box>
 
                 {/* Dynamic Description */}
-                <Box sx={{  color: 'gray', fontSize: '0.8rem' }}>
+                <Box sx={{ color: 'gray', fontSize: '0.8rem' }}>
                     {isMandatory
                         ? '*This test will be mandatory for all.'
                         : '*This test will not be mandatory for all.'}
@@ -363,10 +450,31 @@ function CreateAssessment() {
                 </Box>
             </Box>
 
+            {/* Type, select */}
+            <Box sx={{ mt: 1, width: '60%', mb: 1, color: 'black' }}>
+                <Select
+                    size="small"
+                    label="Test Type"
+                    value={testType}
+                    onChange={(e) => setTestType(e.target.value)}
+                    fullWidth
+                    placeholder='Select Assessment Type'
+                >
+                    <MenuItem value="mcq">MCQ</MenuItem>
+                    <MenuItem value="coding">Coding</MenuItem>
+                    <MenuItem value="both">Both (MCQ + Coding)</MenuItem>
+                </Select>
+            </Box>
 
+            {(testType === 'mcq' || testType === 'both') && <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '60%', ml: 1 }}>
 
+                <Typography sx={{ color: 'black', mb: 1 }}>
+                    Add MCQ Questions
+                </Typography>
+
+            </Box>}
             {/* Question Form */}
-            <form onSubmit={handleSubmit} style={{ width: '60%', mt: 4 }}>
+            {(testType === 'mcq' || testType === 'both') && <form onSubmit={handleSubmit} style={{ width: '60%', mt: 4 }}>
                 {questions.length > 0 && (
                     <Card
                         key={questions[activeQuestion].id}
@@ -536,32 +644,96 @@ function CreateAssessment() {
                         Add
                     </Button>
 
-                    <Button
-                        size="small"
-                        type="submit"
-                        variant="contained"
-                        color="success"
-                        endIcon={
-                            isLoading ? (
-                                <CircularProgress size={16} color="inherit" />
-                            ) : (
-                                <SendIcon fontSize="small" />
-                            )
-                        }
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Uploading...' : 'Upload'}
-                    </Button>
+
                 </Box>
-            </form>
+            </form>}
+
+            {(testType === 'both' || testType === 'coding') && <Box sx={{ width: '60%' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-start', ml: 1, mt: 1, mb: 1 }}>
+
+                    <Typography sx={{ color: 'black', mb: 1 }}>
+                        Add Coding Questions
+                    </Typography>
+
+                </Box>
+                <Autocomplete
+                    options={allCodingQuestions.slice(0, 5)} // show max 5
+                    getOptionLabel={(option) => option.title}
+                    onChange={(event, newValue) => {
+                        if (newValue && !selectedCodingQuestions.find(q => q._id === newValue._id)) {
+                            setSelectedCodingQuestions(prev => [...prev, newValue]);
+                        }
+                    }}
+                    renderOption={(props, option) => (
+                        <li {...props} key={option._id}>
+                            <div>
+                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                                    {option.title}
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: "gray" }}>
+                                    {option.description}
+                                </Typography>
+                            </div>
+                        </li>
+                    )}
+                    renderInput={(params) => (
+                        <TextField {...params} label="Search Coding Questions" size="small" />
+                    )}
+                    fullWidth
+                />
+                <Box sx={{ mt: 2 }}>
+                    {selectedCodingQuestions.map((q, index) => (
+                        <Paper key={q._id} sx={{ p: 2, mb: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Box>
+                                <Typography variant="subtitle1" fontWeight="bold">
+                                    {index + 1}. {q.title}
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: "gray" }}>
+                                    {q.description}
+                                </Typography>
+                            </Box>
+                            <Button
+                                color="error"
+                                onClick={() => setSelectedCodingQuestions(prev => prev.filter(item => item._id !== q._id))}
+                            >
+                                Delete
+                            </Button>
+                        </Paper>
+                    ))}
+                </Box>
+
+
+            </Box>}
+
+            <Button
+                size="small"
+                type="button"
+                onClick={handleSubmit}
+                variant="contained"
+                color="success"
+                endIcon={
+                    isLoading ? (
+                        <CircularProgress size={16} color="inherit" />
+                    ) : (
+                        <SendIcon fontSize="small" />
+                    )
+                }
+                disabled={isLoading}
+                sx={{ mt: 2 }}
+            >
+                {isLoading ? 'Uploading...' : 'Upload'}
+            </Button>
 
             {isModalOpen && (
                 <AdminQuestionPaper
                     isModalOpen={isModalOpen}
                     closeModal={closeModal}
-                    questions={questions}
+                    testType = {testType}
+                    questions={questions}  // MCQs
+                    selectedCodingQuestions={selectedCodingQuestions} // Coding
                     handleUploadAssessment={handleUploadAssessment}
                 />
+
             )}
         </Box>
     );

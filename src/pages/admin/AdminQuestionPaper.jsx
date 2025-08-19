@@ -21,7 +21,6 @@ const style = {
   width: '80%',
   maxHeight: '80vh',
   bgcolor: 'background.paper',
-  // boxShadow: 24,
   p: 4,
   overflowY: 'auto',
   borderRadius: 2,
@@ -74,7 +73,13 @@ const MarkdownRenderer = ({ children }) => {
   );
 };
 
-const AdminQuestionPaper = ({ isModalOpen, closeModal, questions, handleUploadAssessment }) => {
+const AdminQuestionPaper = ({ 
+  isModalOpen, 
+  closeModal, 
+  questions, 
+  selectedCodingQuestions,   // 👈 new prop
+  handleUploadAssessment 
+}) => {
   return (
     <Modal open={isModalOpen} onClose={closeModal}>
       <Box sx={style}>
@@ -95,58 +100,106 @@ const AdminQuestionPaper = ({ isModalOpen, closeModal, questions, handleUploadAs
           Please check the questions carefully, these cannot be changed later!
         </Typography>
 
-<Stack spacing={3}>
-  {questions.map((q, index) => (
-    <React.Fragment key={index}>
-      <Paper elevation={0} sx={{ p: 2 }}>
-        <Typography variant="subtitle1" fontWeight="bold">
-          Q{index + 1}.
-        </Typography>
-        <Box sx={{ 
-          mb: 2,
-          '& p': { margin: 0 },
-          '& pre': { margin: 0 }
-        }}>
-          <MarkdownRenderer>{q.questionText}</MarkdownRenderer>
-        </Box>
-        
-        <Typography variant="body2" sx={{ mt: 1 }}>
-          Options:
-        </Typography>
-        <ul style={{ marginTop: 0 }}>
-          {q.options.map((opt, i) => (
-            <li key={i} style={{ 
-              color: opt === q.correctAnswer ? 'green' : 'inherit',
-              marginBottom: '0.5em'
-            }}>
-              <Box sx={{ 
-                '& p': { margin: 0 },
-                '& pre': { margin: 0 }
+    {/* ---------- MCQs ---------- */}
+{questions.length > 0 && (
+  <Stack spacing={3}>
+    {questions.map((q, index) => (
+      <React.Fragment key={index}>
+        <Paper elevation={0} sx={{ p: 2 }}>
+          <Typography variant="subtitle1" fontWeight="bold">
+            Q{index + 1}.
+          </Typography>
+          <Box sx={{ 
+            mb: 2,
+            '& p': { margin: 0 },
+            '& pre': { margin: 0 }
+          }}>
+            <MarkdownRenderer>{q.questionText}</MarkdownRenderer>
+          </Box>
+          
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Options:
+          </Typography>
+          <ul style={{ marginTop: 0 }}>
+            {q.options.map((opt, i) => (
+              <li key={i} style={{ 
+                color: opt === q.correctAnswer ? 'green' : 'inherit',
+                marginBottom: '0.5em'
               }}>
-                <MarkdownRenderer>{opt}</MarkdownRenderer>
-              </Box>
-            </li>
-          ))}
-        </ul>
-        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-          Correct Answer: <span style={{ color: 'green' }}>
-            <MarkdownRenderer>{q.correctAnswer}</MarkdownRenderer>
-          </span>
-        </Typography>
-      </Paper>
-      
-      {/* Add divider after each question except the last one */}
-      {index < questions.length - 1 && (
-        <Divider sx={{ 
-          my: 1, 
-          height: 2,
-          backgroundColor: 'lightgray',
-          border: 'none'
-        }} />
-      )}
-    </React.Fragment>
-  ))}
-</Stack>
+                <Box sx={{ 
+                  '& p': { margin: 0 },
+                  '& pre': { margin: 0 }
+                }}>
+                  <MarkdownRenderer>{opt}</MarkdownRenderer>
+                </Box>
+              </li>
+            ))}
+          </ul>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+            Correct Answer: <span style={{ color: 'green' }}>
+              <MarkdownRenderer>{q.correctAnswer}</MarkdownRenderer>
+            </span>
+          </Typography>
+        </Paper>
+        
+        {index < questions.length - 1 && (
+          <Divider sx={{ 
+            my: 1, 
+            height: 2,
+            backgroundColor: 'lightgray',
+            border: 'none'
+          }} />
+        )}
+      </React.Fragment>
+    ))}
+  </Stack>
+)}
+
+        {/* ---------- Coding Question ---------- */}
+        {selectedCodingQuestions.length > 0 && (
+          <>
+            <Divider sx={{ my: 3 }} />
+            <Typography variant="h6" sx={{ color: 'black', mb: 2 }}>
+              Coding Questions
+            </Typography>
+
+            <Stack spacing={3}>
+              {selectedCodingQuestions.map((cq, idx) => (
+                <Paper key={cq._id} elevation={0} sx={{ p: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {idx + 1}. {cq.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    {cq.description}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    Difficulty: <b>{cq.difficulty}</b>
+                  </Typography>
+                  {cq.constraints && (
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                      Constraints: {cq.constraints}
+                    </Typography>
+                  )}
+
+                  {cq.run_code_testcases?.length > 0 && (
+                    <>
+                      <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold' }}>
+                        Sample Testcases:
+                      </Typography>
+                      <ul>
+                        {cq.run_code_testcases.map((tc, idxx) => (
+                          <li key={idxx}>
+                            Input: <code>{tc.input}</code>, Expected Output: <code>{tc.expected_output}</code>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </Paper>
+              ))}
+            </Stack>
+          </>
+        )}
 
         <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 4 }}>
           <Button onClick={closeModal} variant="outlined" color="secondary">

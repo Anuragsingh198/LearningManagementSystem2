@@ -12,8 +12,6 @@ import {
 } from '@mui/material';
 import { HelpOutline, ArrowForward } from '@mui/icons-material';
 import CodingIDE from './CodingIDE';
-import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
-import { getAllLanguageAction } from '../../context/Actions/AssignmentActions';
 
 const QuestionDisplay = ({ 
   question, 

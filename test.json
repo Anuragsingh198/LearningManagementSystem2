@@ -35,3 +35,206 @@
     }
 
 ]
+
+[
+    {
+        "_id": "68a2c4b6fe4e72c1323c9456",
+        "title": "Sum of Two Numbers",
+        "type": "coding",
+        "description": "Given two integers, output their sum.",
+        "difficulty": "Easy",
+        "constraints": "1 <= a,b <= 1000",
+        "language_id": 71,
+        "run_code_testcases": [
+            {
+                "input": "2 3\n",
+                "expected_output": "5\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c9457"
+            },
+            {
+                "input": "10 20\n",
+                "expected_output": "30\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c9458"
+            }
+        ],
+        "submit_code_testcases": [
+            {
+                "input": "100 200\n",
+                "expected_output": "300\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c9459"
+            },
+            {
+                "input": "999 1\n",
+                "expected_output": "1000\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c945a"
+            }
+        ],
+        "__v": 0,
+        "createdAt": "2025-08-18T06:14:14.530Z",
+        "updatedAt": "2025-08-18T06:14:14.530Z"
+    },
+    {
+        "_id": "68a2c4b6fe4e72c1323c945b",
+        "title": "Factorial",
+        "type": "coding",
+        "description": "Given an integer n, output its factorial.",
+        "difficulty": "Easy",
+        "constraints": "0 <= n <= 12",
+        "language_id": 71,
+        "run_code_testcases": [
+            {
+                "input": "5\n",
+                "expected_output": "120\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c945c"
+            },
+            {
+                "input": "0\n",
+                "expected_output": "1\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c945d"
+            }
+        ],
+        "submit_code_testcases": [
+            {
+                "input": "3\n",
+                "expected_output": "6\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c945e"
+            },
+            {
+                "input": "7\n",
+                "expected_output": "5040\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c945f"
+            }
+        ],
+        "__v": 0,
+        "createdAt": "2025-08-18T06:14:14.532Z",
+        "updatedAt": "2025-08-18T06:14:14.532Z"
+    },
+    {
+        "_id": "68a2c4b6fe4e72c1323c9460",
+        "title": "Palindrome Check",
+        "type": "coding",
+        "description": "Check if a given string is a palindrome (case-insensitive).",
+        "difficulty": "Medium",
+        "constraints": "String length <= 100",
+        "language_id": 71,
+        "run_code_testcases": [
+            {
+                "input": "madam\n",
+                "expected_output": "YES\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c9461"
+            },
+            {
+                "input": "hello\n",
+                "expected_output": "NO\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c9462"
+            }
+        ],
+        "submit_code_testcases": [
+            {
+                "input": "Racecar\n",
+                "expected_output": "YES\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c9463"
+            },
+            {
+                "input": "Python\n",
+                "expected_output": "NO\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c9464"
+            }
+        ],
+        "__v": 0,
+        "createdAt": "2025-08-18T06:14:14.532Z",
+        "updatedAt": "2025-08-18T06:14:14.532Z"
+    },
+    {
+        "_id": "68a2c4b6fe4e72c1323c9465",
+        "title": "Fibonacci Number",
+        "type": "coding",
+        "description": "Given n, print the nth Fibonacci number (0-indexed).",
+        "difficulty": "Medium",
+        "constraints": "0 <= n <= 30",
+        "language_id": 71,
+        "run_code_testcases": [
+            {
+                "input": "5\n",
+                "expected_output": "5\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c9466"
+            },
+            {
+                "input": "0\n",
+                "expected_output": "0\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c9467"
+            }
+        ],
+        "submit_code_testcases": [
+            {
+                "input": "7\n",
+                "expected_output": "13\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c9468"
+            },
+            {
+                "input": "10\n",
+                "expected_output": "55\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c9469"
+            }
+        ],
+        "__v": 0,
+        "createdAt": "2025-08-18T06:14:14.532Z",
+        "updatedAt": "2025-08-18T06:14:14.532Z"
+    },
+    {
+        "_id": "68a2c4b6fe4e72c1323c946a",
+        "title": "Prime or Not",
+        "type": "coding",
+        "description": "Given a number n, print YES if it's prime, otherwise NO.",
+        "difficulty": "Easy",
+        "constraints": "1 <= n <= 10^6",
+        "language_id": 71,
+        "run_code_testcases": [
+            {
+                "input": "5\n",
+                "expected_output": "YES\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c946b"
+            },
+            {
+                "input": "8\n",
+                "expected_output": "NO\n",
+                "is_sample": true,
+                "_id": "68a2c4b6fe4e72c1323c946c"
+            }
+        ],
+        "submit_code_testcases": [
+            {
+                "input": "97\n",
+                "expected_output": "YES\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c946d"
+            },
+            {
+                "input": "100\n",
+                "expected_output": "NO\n",
+                "is_sample": false,
+                "_id": "68a2c4b6fe4e72c1323c946e"
+            }
+        ],
+        "__v": 0,
+        "createdAt": "2025-08-18T06:14:14.533Z",
+        "updatedAt": "2025-08-18T06:14:14.533Z"
+    }
+]

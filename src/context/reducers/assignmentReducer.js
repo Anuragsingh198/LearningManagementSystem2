@@ -59,6 +59,12 @@ export const assignmentReducer = (state, action) => {
                 ...state, 
                 testResults: action.payload 
             };
+        
+        case "SET_ALL_CODING_QUESTIONS":
+            return {
+                ...state,
+                allCodingQuestions: action.payload
+            }
 
         case "SET_EXECUTION_OUTPUT":
             return { 

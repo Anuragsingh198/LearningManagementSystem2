@@ -6,6 +6,7 @@ const initialState = {
   selectedLanguage: '',
   assignmentQuestions: null,
   currentQuestion:null,
+  allCodingQuestions: [],
   loading: false,
   error: null,
   results: [],
