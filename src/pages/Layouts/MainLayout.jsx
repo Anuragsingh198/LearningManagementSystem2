@@ -99,7 +99,7 @@ export default function Layout({ children }) {
         <Box component="span" sx={{ color: 'red', fontSize: 20 }}>
           ❤
         </Box>{' '}
-        by Gopal, Anurag, and Adi
+        by Gopal, Anurag, Adi and Sreeraaj
       </Typography>
 
       <Typography variant="body2" color="#1976D2">

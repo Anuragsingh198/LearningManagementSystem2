@@ -228,9 +228,10 @@ const CourseList = () => {
                       gap: 1,
                     }}
                   >
-                    <BadgeCheck size={18} strokeWidth={2} />
-                    Ongoing Courses
-                    <BadgeCheck size={18} strokeWidth={2} />
+                    
+                    <SchoolIcon fontSize="small" color="primary" />
+                    Ongoing Courses                    
+                    <SchoolIcon fontSize="small" color="primary" />
                   </Typography>
                   <Box sx={{ flex: 1, borderBottom: "2px dashed #ccc" }} />
                 </Box>
@@ -268,9 +269,9 @@ const CourseList = () => {
                     fontWeight="bold"
                     sx={{ px: 2, position: "relative", display: "flex", alignItems: "center", gap: 1 }}
                   >
-                    <SchoolIcon fontSize="small" color="primary" />
+                    <BadgeCheck size={18} strokeWidth={2} />
                     Completed Courses
-                    <SchoolIcon fontSize="small" color="primary" />
+                    <BadgeCheck size={18} strokeWidth={2} />
                   </Typography>
                   <Box sx={{ flex: 1, borderBottom: "2px dashed #ccc" }} />
                 </Box>
