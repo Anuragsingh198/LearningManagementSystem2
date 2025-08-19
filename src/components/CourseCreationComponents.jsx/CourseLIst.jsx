@@ -95,8 +95,8 @@ const CourseList = () => {
     <Container
       sx={{
         p: 2,
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
-        borderRadius: 10,
+        // boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
+        // borderRadius: 10,
         minWidth: '100%'
       }}
     >
