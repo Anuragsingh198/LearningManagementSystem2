@@ -4,29 +4,27 @@ import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { createCourseAction } from '../../context/Actions/courseActions';
 import {
   Box, Typography, Button, TextField, Select, MenuItem,
-  FormControl, IconButton, Paper, CircularProgress, Avatar, Input,
-  FormHelperText, Container, Switch
+  FormControl, CircularProgress, Avatar, Input,
+  FormHelperText, Container, Switch, IconButton
 } from '@mui/material';
-import { Upload as UploadIcon, Close as CloseIcon } from '@mui/icons-material';
+import { Upload, Image, X } from 'lucide-react'; // Lucide icons
 
 const HeaderForm = () => (
   <Box sx={headerStyles}>
-    <Container maxWidth="xl" sx={headerContentStyles}>
-      <Box sx={headerTextStyles}>
-        <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', color: 'gray' }}>
-          Create New Course
-        </Typography>
-        <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-          Fill in the details to create your course and upload videos.
-        </Typography>
-      </Box>
+    <Container maxWidth="lg">
+      <Typography variant="h4" sx={headerTitleStyles}>
+        Create New Course
+      </Typography>
+      <Typography variant="body2" sx={headerSubtitleStyles}>
+        Fill in the details to create your course and upload videos.
+      </Typography>
     </Container>
   </Box>
 );
 
 const CourseForm = () => {
   const navigate = useNavigate();
-  const { state:{myCourses}, dispatch } = useCourseContext();
+  const { state: { myCourses }, dispatch } = useCourseContext();
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
@@ -70,11 +68,6 @@ const CourseForm = () => {
         const value = formData[key];
         formDataToSend.append(key, typeof value === 'boolean' ? String(value) : value);
       }
-
-      for (let pair of formDataToSend.entries()) {
-        console.log('we are reaching here')
-        console.log(pair[0], pair[1]);
-      }
       const newCourse = await createCourseAction(formDataToSend, myCourses, dispatch);
       if (newCourse) navigate(`/teacher/upload-video/${newCourse._id}`);
     } catch (error) {
@@ -85,17 +78,12 @@ const CourseForm = () => {
   };
 
   return (
-    // <Container>
-
-
-    <Box sx={mainContainerStyles}>
+    <Box sx={pageStyles}>
       <HeaderForm />
-      <Container maxWidth="lg" sx={formContainerStyles}>
-
-        <Paper elevation={1} sx={paperStyles}>
-
-          <FormControl sx={{ mt: 2, mx: 4 }} component="fieldset">
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={formStyles}>
+          <FormControl sx={{ mb: 3 }}>
+            <Typography variant="subtitle1" sx={labelStyles}>
               Compulsory Course?
             </Typography>
             <Box display="flex" alignItems="center" gap={1}>
@@ -109,83 +97,32 @@ const CourseForm = () => {
             </Box>
           </FormControl>
 
-          <Box component="form" onSubmit={handleSubmit} sx={formStyles}>
-            <Box sx={gridContainerStyles}>
-              <FormField
-                label="Title"
-                name="title"
-                value={formData.title}
-                error={errors.title}
-
-                onChange={handleInputChange}
-              />
-
-
-              <FormField
-                label="Instructor"
-                name="instructor"
-                value={formData.instructor}
-                error={errors.instructor}
-                onChange={handleInputChange}
-              />
-
-              <CategorySelect
-                value={formData.category}
-                onChange={handleInputChange}
-                error={errors.category}
-              />
-            </Box>
-
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)', // two equal-width columns
-                gap: 4, // space between fields
-              }}
-            >
-              <FormField
-                label="Course Duration (In Days)"
-                name="courseDuration"
-                value={formData.courseDuration}
-                  type="number"
-                error={errors.courseDuration}
-                onChange={handleInputChange}
-              />
-
-              <Box sx={{ gridColumn: 'span 2' }}>
-                <FormField
-                  label="Remark"
-                  name="remark"
-                  required={false}
-                  value={formData.remark}
-                  onChange={handleInputChange}
-                />
-              </Box>
-            </Box>
-
-
-            <FormField
-              label="Description"
-              name="description"
-              value={formData.description}
-              error={errors.description}
-              onChange={handleInputChange}
-              multiline
-              rows={4}
-            />
-            <ThumbnailUpload
-              thumbnailPreview={thumbnailPreview}
-              onThumbnailChange={handleThumbnailChange}
-              onClearThumbnail={() => setThumbnailPreview(null)}
-              error={errors.thumbnail}
-            />
-
-            <SubmitButton isSubmitting={isSubmitting} />
+          <Box sx={gridContainerStyles}>
+            <FormField label="Title" name="title" value={formData.title} error={errors.title} onChange={handleInputChange} />
+            <FormField label="Instructor" name="instructor" value={formData.instructor} error={errors.instructor} onChange={handleInputChange} />
+            <CategorySelect value={formData.category} onChange={handleInputChange} error={errors.category} />
           </Box>
-        </Paper>
+
+          <Box sx={gridThreeStyles}>
+            <FormField label="Course Duration (In Days)" name="courseDuration" type="number" value={formData.courseDuration} error={errors.courseDuration} onChange={handleInputChange} />
+            <Box sx={{ gridColumn: 'span 2' }}>
+              <FormField label="Remark" name="remark" required={false} value={formData.remark} onChange={handleInputChange} />
+            </Box>
+          </Box>
+
+          <FormField label="Description" name="description" value={formData.description} error={errors.description} onChange={handleInputChange} multiline rows={4} />
+
+          <ThumbnailUpload
+            thumbnailPreview={thumbnailPreview}
+            onThumbnailChange={handleThumbnailChange}
+            onClearThumbnail={() => setThumbnailPreview(null)}
+            error={errors.thumbnail}
+          />
+
+          <SubmitButton isSubmitting={isSubmitting} />
+        </Box>
       </Container>
     </Box>
-    // </Container>
   );
 };
 
@@ -201,11 +138,11 @@ const FormField = ({ label, name, value, error, onChange, multiline, rows, requi
       error={Boolean(error)}
       helperText={error}
       variant="outlined"
-       type={type}
+      type={type}
       fullWidth
       multiline={multiline}
       rows={rows}
-            inputProps={{
+      inputProps={{
         inputMode: type === 'number' ? 'numeric' : undefined,
         pattern: type === 'number' ? '[0-9]*' : undefined,
       }}
@@ -240,9 +177,13 @@ const ThumbnailUpload = ({ thumbnailPreview, onThumbnailChange, onClearThumbnail
       Thumbnail <RequiredStar />
     </Typography>
     {!thumbnailPreview ? (
-      <Paper variant="outlined" component="label" htmlFor="thumbnail" sx={uploadPaperStyles}>
+      <Box
+        component="label"
+        htmlFor="thumbnail"
+        sx={uploadBoxStyles}
+      >
         <Avatar sx={uploadAvatarStyles}>
-          <UploadIcon />
+          <Image size={20} />
         </Avatar>
         <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
           Click or drag to upload
@@ -257,7 +198,7 @@ const ThumbnailUpload = ({ thumbnailPreview, onThumbnailChange, onClearThumbnail
           sx={{ display: 'none' }}
           onChange={onThumbnailChange}
         />
-      </Paper>
+      </Box>
     ) : (
       <Box sx={thumbnailPreviewStyles}>
         <Box
@@ -271,7 +212,7 @@ const ThumbnailUpload = ({ thumbnailPreview, onThumbnailChange, onClearThumbnail
           sx={removeThumbnailButtonStyles}
           aria-label="Remove thumbnail"
         >
-          <CloseIcon />
+          <X size={16} />
         </IconButton>
       </Box>
     )}
@@ -280,12 +221,12 @@ const ThumbnailUpload = ({ thumbnailPreview, onThumbnailChange, onClearThumbnail
 );
 
 const SubmitButton = ({ isSubmitting }) => (
-  <Box sx={submitButtonContainerStyles}>
+  <Box sx={{ pt: 2 }}>
     <Button
       type="submit"
       variant="contained"
       disabled={isSubmitting}
-      startIcon={isSubmitting ? <CircularProgress size={20} /> : <UploadIcon />}
+      startIcon={isSubmitting ? <CircularProgress size={20} /> : <Upload size={18} />}
       sx={submitButtonStyles}
       fullWidth
     >
@@ -296,7 +237,6 @@ const SubmitButton = ({ isSubmitting }) => (
 
 const RequiredStar = () => <span style={{ color: 'red' }}>*</span>;
 
-// Constants
 const categories = [
   'Programming', 'Design', 'Business', 'Marketing', 'Photography',
   'Music', 'Health & Fitness', 'Personal Development', 'Other'
@@ -307,56 +247,35 @@ const initialFormState = {
   description: '',
   instructor: '',
   category: '',
-  price: 0,
+  courseDuration: '',
+  remark: '',
   thumbnail: '',
   compulsory: false
 };
 
-// Responsive styles
-const mainContainerStyles = {
-  display: 'flex',
-  flexDirection: 'column',
-  borderRadius: 10,
-  border: '1px solid',
-  borderColor: 'grey.300',
-  // minHeight: '100vh',
-  backgroundColor: 'background.default'
+// ---------------- STYLES ----------------
+const pageStyles = {
+  backgroundColor: '#fff',
+  minHeight: '100vh',
+  color: 'rgba(0,0,0,0.87)'
 };
 
 const headerStyles = {
-  width: '100%',
-  maxWidth: 'lg',
-  mx: 'auto',
-  backgroundColor: 'background.paper',
-  // borderBottom: '1px solid',
-  // borderColor: 'divider',
-  // boxShadow: 1,
-  py: 2
+  borderBottom: '1px solid #e0e0e0',
+  py: 3,
+  backgroundColor: '#fff'
 };
 
-const headerContentStyles = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start'
+const headerTitleStyles = {
+  fontWeight: 600,
+  color: 'rgba(0,0,0,0.87)'
 };
 
-const headerTextStyles = {
-  width: '100%'
-};
-
-const formContainerStyles = {
-  py: 4,
-  flex: 1
-};
-
-const paperStyles = {
-  borderRadius: 2,
-  overflow: 'hidden',
-  width: '100%'
+const headerSubtitleStyles = {
+  color: 'rgba(0,0,0,0.6)'
 };
 
 const formStyles = {
-  p: { xs: 2, sm: 3, md: 4 },
   display: 'flex',
   flexDirection: 'column',
   gap: 3
@@ -368,62 +287,68 @@ const gridContainerStyles = {
   gap: 3
 };
 
+const gridThreeStyles = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gap: 3
+};
+
 const labelStyles = {
-  fontWeight: 'medium',
-  color: 'text.primary',
+  fontWeight: 600,
+  color: 'rgba(0,0,0,0.87)',
   mb: 1
 };
 
-const uploadPaperStyles = {
-  p: { xs: 2, sm: 3, md: 4 },
-  border: 2,
-  borderStyle: 'dashed',
-  borderColor: 'divider',
+const uploadBoxStyles = {
+  p: { xs: 2, sm: 3 },
+  border: '2px dashed #cbd5e0',
+  borderRadius: 1,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  cursor: 'pointer',
   textAlign: 'center',
-  '&:hover': { borderColor: 'primary.main' }
+  cursor: 'pointer',
+  backgroundColor: '#fafafa',
+  '&:hover': { borderColor: '#1976d2' }
 };
 
 const uploadAvatarStyles = {
-  bgcolor: 'primary.light',
-  color: 'primary.main',
+  bgcolor: '#e3f2fd',
+  color: '#1976d2',
   mb: 1
 };
 
 const thumbnailPreviewStyles = {
   position: 'relative',
-  width: '100%'
+  width: '100%',
+  borderRadius: 1,
+  overflow: 'hidden'
 };
 
 const thumbnailImageStyles = {
   width: '100%',
   height: { xs: 200, sm: 300 },
-  objectFit: 'cover',
-  borderRadius: 2
+  objectFit: 'cover'
 };
 
 const removeThumbnailButtonStyles = {
   position: 'absolute',
   top: 8,
   right: 8,
-  backgroundColor: 'background.paper',
+  backgroundColor: 'rgba(255,255,255,0.85)',
   '&:hover': { color: 'error.main' }
 };
 
-const submitButtonContainerStyles = {
-  width: '100%',
-  pt: 2
-};
-
 const submitButtonStyles = {
-  background: 'linear-gradient(to right, #2563eb, #4f46e5)',
-  '&:hover': { background: 'linear-gradient(to right, #1d4ed8, #4338ca)' },
-  width: '100%',
-  py: 1.5
+  backgroundColor: '#1976d2',
+  fontWeight: 'bold',
+  py: 1.5,
+  textTransform: 'none',
+  fontSize: '1rem',
+  '&:hover': {
+    backgroundColor: '#1565c0'
+  }
 };
 
 export default CourseForm;

@@ -97,20 +97,24 @@ const CourseCard = ({ course, onViewCourse }) => {
   }
 
   return (
-    <Card sx={{
-      width: 330,
-      height: '98%',
-      border: '2.5px solid',
-      borderColor: 'grey.300',
-      borderRadius: '12px',
-      overflow: 'hidden',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-      '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
-      }
-    }}>
+    <Card
+      sx={{
+        width: 330,
+        height: '98%',
+        border: '1px solid rgba(218, 217, 217, 0.87)',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        backgroundColor: 'transparent', 
+        boxShadow: 'none', 
+        transition: 'transform 0.3s ease, border-color 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-6px)',
+          borderColor: 'rgba(180, 180, 180, 0.95)',
+          backgroundColor: 'transparent',
+        },
+      }}
+    >
+
       {/* Header with Image */}
       <Box sx={{ position: 'relative' }}>
         {role === 'instructor' && (
@@ -186,14 +190,15 @@ const CourseCard = ({ course, onViewCourse }) => {
         </Dialog>
         <CardMedia
           component="img"
-          height="200"
           image={course.thumbnail || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'}
           alt={course.title}
           sx={{
-            transition: 'transform 0.5s ease',
-            '&:hover': {
-              transform: 'scale(1.05)'
-            }
+            width: '100%',
+            maxWidth: '330px',
+            height: '200px',
+            maxHeight: '200px',
+            objectFit: 'cover',
+            objectPosition: 'center'
           }}
         />
         <Box sx={{
@@ -204,17 +209,6 @@ const CourseCard = ({ course, onViewCourse }) => {
           p: 2,
           background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)'
         }}>
-          <Typography
-            variant="h6"
-            sx={{
-              color: 'white',
-              fontWeight: 700,
-              lineHeight: 1.3,
-              mb: 0.5
-            }}
-          >
-            {course.title}
-          </Typography>
           {course.category && (
             <Chip
               label={course.category}
@@ -232,75 +226,95 @@ const CourseCard = ({ course, onViewCourse }) => {
       </Box>
 
       <CardContent sx={{ p: 1.5 }}>
+        {/* Course Title and Status */}
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          mb: 2 
+        }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'text.primary',
+              fontWeight: 700,
+              lineHeight: 1.3,
+              fontSize: '1.1rem',
+              flex: 1,
+              mr: 2
+            }}
+          >
+            {course.title}
+          </Typography>
+          {role !== 'instructor' && (
+            <Chip
+              label={
+                status === 'pending'
+                  ? 'Ongoing'
+                  : status === 'completed'
+                    ? 'Completed'
+                    : status === 'enrolled'
+                      ? 'Pending'
+                      : 'N/A'
+              }
+              size="small"
+              sx={{
+                px: 1,
+                height: 24,
+                fontSize: '12px',
+                minWidth: 80,
+                borderRadius: '12px',
+                fontWeight: 500,
+                backgroundColor:
+                  status === 'completed'
+                    ? 'rgba(11, 208, 93, 0.2)'
+                    : status === 'pending'
+                      ? 'rgba(149, 165, 166, 0.1)'
+                      : 'rgba(241, 196, 15, 0.1)',
+                border: `1px solid ${status === 'completed'
+                  ? '#2ecc71'
+                  : status === 'pending'
+                    ? '#95a5a6'
+                    : '#f1c40f'
+                  }`,
+                color:
+                  status === 'completed'
+                    ? '#2ecc71'
+                    : status === 'pending'
+                      ? '#95a5a6'
+                      : '#f1c40f',
+              }}
+            />
+          )}
+        </Box>
+        
         {role !== 'instructor' ? <Box sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
             <Typography variant="body2" color="text.secondary" fontSize="13px" fontWeight='700'>
-              Progress: { Math.round(overallPercentage)  || 0}%
+              Progress: {Math.round(overallPercentage) || 0}%
             </Typography>
-            <Box>
-              <Chip
-                label={
-                  status === 'pending'
-                    ? 'Ongoing'
-                    : status === 'completed'
-                      ? 'Completed'
-                      : status === 'enrolled'
-                        ? 'Pending'
-                        : 'N/A'
-                }
-                size="small"
-                sx={{
-                  ml: 2,
-                  mb: 0.5,
-                  px: 1,
-                  height: 20,
-                  fontSize: '12px',
-                  width: 80,
-                  borderRadius: '10px',
-                  fontWeight: 500,
-                  backgroundColor:
-                    status === 'completed'
-                      ? 'rgba(11, 208, 93, 0.2)'
-                      : status === 'pending'
-                        ? 'rgba(149, 165, 166, 0.1)'
-                        : 'rgba(241, 196, 15, 0.1)',
-                  border: `1px solid ${status === 'completed'
-                      ? '#2ecc71'
-                      : status === 'pending'
-                        ? '#95a5a6'
-                        : '#f1c40f'
-                    }`,
-                  color:
-                    status === 'completed'
-                      ? '#2ecc71'
-                      : status === 'pending'
-                        ? '#95a5a6'
-                        : '#f1c40f',
-                }}
-              />
-            </Box>
 
-{remainingDays !== undefined && status !== 'completed' && (
-  <Chip
-    label={remainingDays === 0 ? 'Overdue' : `${remainingDays} Days left`}
-    size="small"
-    sx={{
-      height: 20,
-      fontSize: '12px',
-      px: 1, 
-      width: 100,
-      borderRadius: '10px',
-      fontWeight: 500,
-      mb: 0.5,
-      backgroundColor:
-        remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
-      border: `1px solid ${
-        remainingDays === 0 ? '#e74c3c' : '#3498db'
-      }`,
-      color: remainingDays === 0 ? '#ffffff' : '#3498db',
-    }}
-  />
-)}
+                                                                                                       {remainingDays !== undefined && status !== 'completed' && (
+                 <Chip
+                   label={remainingDays === 0 ? 'Overdue' : `${remainingDays} days left`}
+                   size="small"
+                   sx={{
+                     height: 20,
+                     fontSize: '12px',
+                     px: 1,
+                     minWidth: 100,
+                     maxWidth: 'fit-content',
+                     borderRadius: '10px',
+                     fontWeight: 500,
+                     mb: 0.5,
+                     backgroundColor:
+                       remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
+                     border: `1px solid ${remainingDays === 0 ? '#e74c3c' : '#3498db'
+                       }`,
+                     color: remainingDays === 0 ? '#ffffff' : '#3498db',
+                   }}
+                 />
+               )}
 
 
           </Box>
@@ -402,76 +416,86 @@ const CourseCard = ({ course, onViewCourse }) => {
         {role !== 'instructor' ? '' : (
           <Button
             fullWidth
-            variant="contained"
+            variant="outlined"
             onClick={handleUploadClick}
             startIcon={<Video size={16} />}
             sx={{
-              background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-              borderRadius: '8px',
+              background: '#eff6ff',
+              border: '1px solid #3b82f6',
+              borderRadius: '4px',
               py: 1,
               fontSize: '0.875rem',
               fontWeight: 600,
               letterSpacing: '0.5px',
               textTransform: 'none',
+              color: '#1e3a8a',
               boxShadow: 'none',
               '&:hover': {
-                background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)',
-                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                background: '#dbeafe',
+                border: '1px solid #2563eb',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
               }
             }}
           >
             Manage Content
           </Button>
+
         )}
         <Button
           fullWidth
-          variant="contained"
+          variant="outlined"
           onClick={handleViewClick}
           startIcon={<Book size={16} />}
           sx={{
-            background: 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
-            borderRadius: '8px',
+            background: '#ecfdf5',
+            border: '1px solid #10b981',
+            borderRadius: '4px',
             py: 1,
             marginTop: role !== 'instructor' ? 0 : 2,
             fontSize: '0.875rem',
             fontWeight: 600,
             letterSpacing: '0.5px',
             textTransform: 'none',
-            color: 'white',
+            color: '#065f46',
             boxShadow: 'none',
             '&:hover': {
-              background: 'linear-gradient(135deg, #059669 0%, #0d9488 100%)',
-              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+              background: '#d1fae5',
+              border: '1px solid #059669',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
             }
           }}
         >
-          { isLoading ? "Loading...": " View Course"}
+          {isLoading ? "Loading..." : "View Course"}
         </Button>
+
         {role !== 'instructor' ? '' : (
           <Button
             fullWidth
-            variant="contained"
+            variant="outlined"
             onClick={handleViewEmployeesClick}
             startIcon={<Users size={16} />}
             sx={{
-              background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-              borderRadius: '8px',
+              background: '#fffbeb',
+              border: '1px solid #f59e0b',
+              borderRadius: '4px',
               py: 1,
               marginTop: 2,
               fontSize: '0.875rem',
               fontWeight: 600,
               letterSpacing: '0.5px',
               textTransform: 'none',
-              color: 'white',
+              color: '#92400e',
               boxShadow: 'none',
               '&:hover': {
-                background: 'linear-gradient(135deg,rgb(115, 43, 239) 0%, #6d28d9 100%)',
-                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)'
+                background: '#fef3c7',
+                border: '1px solid #d97706',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
               }
             }}
           >
             View Enrolled Employees
           </Button>
+
         )}
       </CardContent>
     </Card>

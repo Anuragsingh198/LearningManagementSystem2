@@ -133,10 +133,10 @@ const OutputPanel = ({
               <Box
                 component="pre"
                 sx={{
-                  color: "error.dark",
-                  fontSize: "0.75rem",
-                  whiteSpace: "pre-wrap",
-                  fontFamily: "monospace",
+                  color: 'error.dark',
+                  fontSize: '0.75rem',
+                  whiteSpace: 'pre-wrap',
+                  fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                   m: 0
                 }}
               >
@@ -213,9 +213,9 @@ const OutputPanel = ({
                         variant="outlined"
                         sx={{
                           p: 1,
-                          bgcolor: "background.paper",
-                          fontFamily: "monospace",
-                          fontSize: "0.75rem"
+                          bgcolor: 'background.paper',
+                          fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                          fontSize: '0.75rem'
                         }}
                       >
                         {result.input}
@@ -236,9 +236,9 @@ const OutputPanel = ({
                           variant="outlined"
                           sx={{
                             p: 1,
-                            bgcolor: "background.paper",
-                            fontFamily: "monospace",
-                            fontSize: "0.75rem"
+                            bgcolor: 'background.paper',
+                           fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                            fontSize: '0.75rem'
                           }}
                         >
                           {result.expectedOutput}
@@ -258,14 +258,10 @@ const OutputPanel = ({
                           variant="outlined"
                           sx={{
                             p: 1,
-                            fontFamily: "monospace",
-                            fontSize: "0.75rem",
-                            bgcolor: result.passed
-                              ? "background.paper"
-                              : "error.50",
-                            borderColor: result.passed
-                              ? undefined
-                              : "error.light"
+                            fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                            fontSize: '0.75rem',
+                            bgcolor: result.passed ? 'background.paper' : 'error.50',
+                            borderColor: result.passed ? undefined : 'error.light'
                           }}
                         >
                           {result.actualOutput}
@@ -290,10 +286,10 @@ const OutputPanel = ({
               sx={{
                 p: 2,
                 borderRadius: 1,
-                bgcolor: "grey.900",
-                color: "success.light",
-                fontFamily: "monospace",
-                fontSize: "0.75rem"
+                bgcolor: 'grey.900',
+                color: 'success.light',
+                fontFamily: 'Fira Code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                fontSize: '0.75rem'
               }}
             >
               <Box component="pre" sx={{ m: 0, whiteSpace: "pre-wrap" }}>

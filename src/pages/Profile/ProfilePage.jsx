@@ -35,18 +35,16 @@ const ProfilePage = () => {
     }
   };
 
-  return (
-    <Container  sx={{ p: 4 }}>
-    
+return (
+  <Container sx={{ p: 4, mt: -5, maxWidth: '1800px !important' }}>
+    <Paper elevation={0}>
+      {renderTabContent()}
+    </Paper>
+  </Container>
+);
 
-      <Paper  sx={{ }}>
 
-        {renderTabContent()}
 
-      </Paper>
-
-    </Container>
-  );
 };
 
 export default ProfilePage;

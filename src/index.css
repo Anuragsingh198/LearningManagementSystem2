@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 .michroma-regular {
   font-family: "Michroma", sans-serif;
   font-weight: 400;
@@ -6,13 +9,15 @@
 
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-sans: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: #161327;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -62,20 +67,20 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Light theme defaults */
+a:hover {
+  color: #747bff;
+}
+button {
+  background-color: #f9f9f9;
 }
 
 .custom-toast-container {
   z-index: 9999 !important;
   position: fixed;
+}
+
+/* Use Fira Code for numerals and code-heavy UI where applied */
+.numeric, .mono, code, pre, kbd, samp, input[type="number"] {
+  font-family: var(--font-mono) !important;
 }
