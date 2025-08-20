@@ -133,6 +133,19 @@ export const courseReducer = (state, action) => {
         error: action.payload,
       };
 
+    case "ALL_ASSESSMENTS":
+      return {
+        ...state,
+        loading: false,
+        allAssessments: action.payload
+      }
+
+    case "SET_CURRENT_ASSESSMENT":
+      return {
+        ...state,
+        currentAssessment: action.payload
+      }
+
     default:
       return state;
   }

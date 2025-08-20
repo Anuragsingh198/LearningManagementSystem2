@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Chip, Stack, Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useCourseContext } from '../context/contextFiles/CourseContext';
 
 
 function formatDuration(mins) {
@@ -14,15 +15,22 @@ function formatDuration(mins) {
 
 function TestCard({ test, role }) {
     const navigate = useNavigate();
-    // console.log('the role is: ', role)
-    const handleOnClick = () => {
 
-        // toast.warning('This section is under development')
+    const {state: {currentAssessment}, dispatch} = useCourseContext(); 
+    // console.log('the test is: ', test)
+    // console.log('the partial test data from context is in testcard: ', currentAssessment)
+
+    const handleOnClick = () => {        
         if (test.completed) {
             navigate(`/assessments/review/${test._id}`)
         } else {
+             dispatch({
+        type: "SET_CURRENT_ASSESSMENT",
+        payload: test
+      });
             navigate(`/assessments/start-test/${test._id}`) // it will go to <TestStartPage/>
         }
+
     }
 
     const handleOnAdminClick = () => {
@@ -36,10 +44,10 @@ function TestCard({ test, role }) {
         <Box border={1} borderColor="grey.300" borderRadius={5} p={2} mb={0} sx={{ color: 'black', width: 550, background: 'white', height: 200 }}>
             {/* Top section */}
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="h6" fontWeight="bold">{test.name}</Typography>
+                <Typography variant="h6" fontWeight="bold">{test.title}</Typography>
 
                 <Stack spacing={1} direction="row" alignItems="center">
-                    {test.compulsory && <Chip label="Mandatory" color="error" size="small" />}
+                    {test.isMandatory && <Chip label="Mandatory" color="error" size="small" />}
                     {role !== 'instructor' ? <Chip
                         label={test.completed ? "Completed" : "Not Attempted"}
                         color={test.completed ? "success" : "warning"}
@@ -53,9 +61,9 @@ function TestCard({ test, role }) {
                     <Typography variant="body2" mt={1}>
                         Duration: <strong>{formatDuration(test.duration)}</strong>
                     </Typography>
-                    <Typography variant="body2" mb={1}>
+                    {/* <Typography variant="body2" mb={1}>
                         Complete test by: <strong>{test.dueDate}</strong>
-                    </Typography>
+                    </Typography> */}
 
                 </Box>
 
@@ -83,11 +91,11 @@ function TestCard({ test, role }) {
             <Typography variant="body2" mb={1}>
                 Type:{" "}
                 <Box component="span" sx={{ fontSize: '0.8rem', fontWeight: 'bold' }}>
-                    {test.type.toUpperCase()}
+                    {test.testType.toUpperCase()}
                 </Box>
                 {" "} | Questions:{" "}
                 <Box component="span" sx={{ fontWeight: 'bold' }}>
-                    {test.totalQuestions}
+                    {test.numberOfQuestions}
                 </Box>
             </Typography>
 
@@ -105,7 +113,7 @@ function TestCard({ test, role }) {
 
 
 
-            {role === 'employee' && <Button
+            {/* {role === 'employee' && <Button
                 variant="contained"
                 sx={{
                     backgroundColor: test.completed ? '#6c757d' : '#007BFF',
@@ -122,7 +130,27 @@ function TestCard({ test, role }) {
                 onClick={handleOnClick}
             >
                 {test.completed ? 'Review Test' : 'Start Test'}
+            </Button>} */}
+
+             {role === 'employee' && <Button
+                variant="contained"
+                sx={{
+                    backgroundColor: '#007BFF',
+                    '&:hover': {
+                        backgroundColor: '#0056b3',
+                    },
+                    width: '100%',
+                    color: '#ffffff',
+                    mt: 1,
+                    fontWeight: 'bold',
+                    textTransform: 'none', // keeps text casing natural
+                    borderRadius: 2
+                }}
+                onClick={handleOnClick}
+            >
+                Start Test
             </Button>}
+
 
             {role === 'instructor' && <Button
                 variant="contained"

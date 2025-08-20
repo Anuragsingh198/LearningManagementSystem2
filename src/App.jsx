@@ -54,7 +54,7 @@ function App() {
         <Route path="/reset-password" element={<ForgotPasswordPage />} />
 
         <Route
-          path="/assessments/start-test/test"
+          path="/assessments/start-test/test/:id"
           element={
             <PrivateRoute>
               <TestPage />
@@ -83,6 +83,7 @@ function App() {
                   <Route path="/assessments/test-submitted" element={<TestExitPage />} />
                   <Route path="/assessments/create" element={<CreateAssessment />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
                 </Routes>
               </Layout>
             </PrivateRoute>

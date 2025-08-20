@@ -874,7 +874,6 @@ export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
     })
 
     if(data.success){
-      console.log('the data is: ', data)
           dispatch({
       type: 'SET_VIDEO_PROGRESS',
       payload: {
@@ -892,3 +891,25 @@ export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
 }
 
 
+export const fetchAllAssessment = async (dispatch) => {
+  const token = getAuthToken()
+  try {
+  dispatch({type: 'SET_LOADING', payload: true});
+  const { data } = await axios.get(`${serverurl}/api/assessments/get-all-assessments`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const assessments = data.data
+    if(data.success){
+      dispatch({type: 'ALL_ASSESSMENTS', payload: assessments })
+
+    }
+
+    console.log('the data is:', data)
+
+  } catch (error) {
+    console.error('Error fetching the questions: ', error)
+  } 
+}

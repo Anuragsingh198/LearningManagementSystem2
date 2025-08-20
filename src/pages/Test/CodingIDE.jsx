@@ -40,12 +40,13 @@ const SubmissionResultBox = styled(Box)(({ theme, success }) => ({
 }));
 
 const CodingIDE = ({
+  question,
   value,
   onChange,
   onSubmit
 }) => {
   const theme = useTheme();
-  const [question, setQuestion] = useState(null);
+  // const [question, setQuestion] = useState(null);
 
   const [language, setLanguage] = useState(71);
   const [isCompiling, setIsCompiling] = useState(false);
@@ -66,8 +67,9 @@ const CodingIDE = ({
   }, [])
 
   useEffect(() => {
-    setQuestion(assignmentQuestions);
+    // setQuestion(assignmentQuestions);
     console.log(" this is the  question data ; ", question)
+    console.log("the already existing coding question as assignment question is: ", assignmentQuestions)
   }, [assignmentQuestions])
 
   const handleCompileAndRun = async () => {
@@ -78,7 +80,8 @@ const CodingIDE = ({
       const payload = {
         code: value,
         languageId: language,
-        testCases: question.runCodeTestCases
+        testCases: question.run_code_testcases
+
       };
 
       // Call your action to run the code
@@ -92,15 +95,15 @@ const CodingIDE = ({
       // Map Judge0 results to examples format for CodingQuestionViewer
       const mappedResults = (data.results || []).map((result, idx) => ({
         input: result.testcase_input || "",
-        expectedOutput:result.expected_output || "",
+        expectedOutput: result.expected_output || "",
         actualOutput: result.actual_output || "",
         status: result.status || "Unknown",
-        passed: result.status === "Accepted"?true: false
+        passed: result.status === "Accepted" ? true : false
       }));
       console.log(" this is  the testcase result : ", mappedResults);
       setCompilationSuccess(data.success || false);
       setCompilationError(data.error || "");
-      setTestResults(mappedResults); 
+      setTestResults(mappedResults);
       setExecutionOutput(data.results.output || "");
 
     } catch (error) {
@@ -113,45 +116,45 @@ const CodingIDE = ({
       setIsCompiling(false);
     }
   };
-const handleSubmit = async () => {
-  setIsSubmitting(true);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
 
-  try {
-    const payload = {
-      sourceCode: value,
-      languageId: language,
-      questionId: question?.id,
-    };
+    try {
+      const payload = {
+        sourceCode: value,
+        languageId: language,
+        questionId: question?.id,
+      };
 
-    const data = await submitCodeAction(dispatch, payload);
+      const data = await submitCodeAction(dispatch, payload);
 
-    if (!data) {
-      throw new Error(`Submit request failed`);
+      if (!data) {
+        throw new Error(`Submit request failed`);
+      }
+
+      // Safely get results
+      const safeResults = Array.isArray(data.results) ? data.results : [];
+
+      // Count passed vs total
+      const total = safeResults.length;
+      const passed = safeResults.filter(r => r.status?.id === 3).length; // 3 = Accepted
+
+      setSubmissionResult({
+        success: passed === total,
+        passed,
+        total,
+        results: safeResults
+      });
+
+      if (typeof onSubmit === "function") {
+        onSubmit();
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Safely get results
-    const safeResults = Array.isArray(data.results) ? data.results : [];
-
-    // Count passed vs total
-    const total = safeResults.length;
-    const passed = safeResults.filter(r => r.status?.id === 3).length; // 3 = Accepted
-
-    setSubmissionResult({
-      success: passed === total,
-      passed,
-      total,
-      results: safeResults
-    });
-
-    if (typeof onSubmit === "function") {
-      onSubmit();
-    }
-  } catch (error) {
-    console.error("Submission failed:", error);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
 
   const handleLanguageChange = (newLanguage) => {
@@ -212,8 +215,10 @@ const handleSubmit = async () => {
                     title={question?.title || ""}
                     description={question?.description || ""}
                     examples={
-                      Array.isArray(question?.runCodeTestCases)
-                        ? question.runCodeTestCases.map(tc => ({
+                      Array.isArray(question?.run_code_testcases
+                      )
+                        ? question.run_code_testcases
+                          .map(tc => ({
                             input: tc.input,
                             output: tc.expected_output
                           }))
@@ -226,10 +231,11 @@ const handleSubmit = async () => {
               <CodingQuestionViewer
                 title={question?.title || ''}
                 description={question?.description || ''}
-                examples={question?.runCodeTestCases?.map(tc => ({
-                  input: tc.input,
-                  output: tc.expected_output
-                })) || []}
+                examples={question?.run_code_testcases
+                  ?.map(tc => ({
+                    input: tc.input,
+                    output: tc.expected_output
+                  })) || []}
                 constraints={question?.constraints || []}
               />
             )}

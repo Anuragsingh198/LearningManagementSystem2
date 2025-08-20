@@ -10,7 +10,8 @@ const initialState = {
   loading: false,
   error: null,
   results: [],
-  codingResult: []
+  codingResult: [],
+  testData: null
 };
 
 

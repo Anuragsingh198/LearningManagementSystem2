@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Checkbox, FormControlLabel, Button, Stack, Divider } from '@mui/material';
+import { Box, Typography, Checkbox, FormControlLabel, Button, Stack, Divider, Chip } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { useCourseContext } from '../../context/contextFiles/CourseContext';
+import { useAuth } from '../../context/contextFiles/AuthContext';
+const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
-// Sample data for mocking (replace with actual fetch if needed)
-const mockTests = [
-  {
-    _id: "1",
-    name: "Fullstack Developer Test",
-    description: "Covers both frontend and backend development concepts including React and Node.js.",
-    topics: ["React", "Node.js", "APIs"],
-    dueDate: "2025-07-20",
-    duration: 120,
-    totalQuestions: 40,
-    type: "mcq and coding",
-    compulsory: false,
-    completed: false
-  }
-];
+import axios from 'axios';
+import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
+
 
 function formatDuration(mins) {
   const hrs = String(Math.floor(mins / 60)).padStart(2, '0');
@@ -29,43 +20,116 @@ function formatDuration(mins) {
 function TestStartPage() {
   const { id } = useParams();
   const [checked, setChecked] = useState(false);
-  const [testData, setTestData] = useState(null);
+  const { state: { user } } = useAuth();
+  const userToken = user.token;
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate(); 
+  const { state: { currentAssessment }, dispatch } = useCourseContext();
+  const { state: { testData }, dispatch: assignmentDispatch } = useAssignmentContext();
+
+  const navigate = useNavigate();
+
+  // console.log('the test id is: ', id)
+  // console.log('the current test partial data is from context is: ', currentAssessment)
+
+  const getTestData = async () => {
+    try {
+      const res = await axios.post(
+        `${serverURL}/api/assessments/start-assessment`,
+        { assessmentId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`
+          }
+        }
+      );
+
+      const testData = res.data.data;
+
+      console.log('the question data for coding dispatch is: ', testData.questions)
+
+      const codingQuestions = testData.questions.filter(q => q.type === "coding")
+
+      console.log('the coding questions array is final', codingQuestions)
+
+      
+      assignmentDispatch({type: "SET_TEST_DATA", payload: testData })
+      assignmentDispatch({ type: "SET_QUESTIONS", payload: codingQuestions });
+
+      
+      console.log('the test data from context is in test start page is:', testData)
+      return testData;
+
+    } catch (error) {
+      console.error('Failed to Start Test', error);
+    }
+  };
 
 
-  useEffect(() => {
-    // Replace this with an API call
-    const found = mockTests.find(test => String(test._id) === id);
-    setTestData(found);
-  }, [id]);
-
-  const handleStart = () => {
+  const handleStart = async () => {
     if (!checked) {
       toast.error("Please confirm you have read all instructions.");
       return;
     }
 
+    setLoading(true);
+
     console.log("Start Test!");
-    navigate('/assessments/start-test/test')
-    // Navigate to actual test-taking page or logic
+      let dataToUse = testData;
+
+      if (!testData || testData.assessment !== id) {
+        dataToUse = await getTestData();
+        }
+
+    setLoading(false);
+
+
+    navigate(`/assessments/start-test/test/${id}`, { state: { dataToUse } })
+
+
   };
 
-  if (!testData) {
-    return <Typography>Loading test info...</Typography>;
-  }
+  // if (!currentAssessment) {
+  //   return <Typography>Loading test info...</Typography>;
+  // }
 
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 4, color: 'black' }}>
+      <Box mb={2}>
+        {/* Title */}
+        <Typography variant="h4" fontWeight="bold">
+          {currentAssessment?.title}
+        </Typography>
+
+        {/* Description */}
+        <Typography variant="body1" color="text.secondary" mt={1}>
+          {currentAssessment?.description}
+        </Typography>
+
+        {/* Topics as rectangular chips */}
+        <Stack direction="row" spacing={1} mt={2} flexWrap="wrap">
+          {currentAssessment?.topics?.map((topic, idx) => (
+            <Chip
+              key={idx}
+              label={topic}
+              variant="outlined"
+              sx={{
+                borderRadius: "6px", // rectangular feel
+                fontWeight: 500,
+              }}
+            />
+          ))}
+        </Stack>
+      </Box>
       {/* Top section */}
       <Box mb={2}>
-        <Typography variant="h4" fontWeight="bold">{testData?.name}</Typography>
-        <Typography variant="subtitle1" color="text.secondary">Duration: {formatDuration(testData?.duration)}</Typography>
+        <Typography variant="h4" fontWeight="bold">{currentAssessment?.name}</Typography>
+        <Typography variant="subtitle1" color="text.secondary">Duration: {formatDuration(currentAssessment?.duration)}</Typography>
       </Box>
 
       <Stack direction="row" justifyContent="space-between" mb={2}>
-        <Typography variant="body1"><strong>Type:</strong> {testData?.type.toUpperCase()}</Typography>
-        <Typography variant="body1"><strong>Questions:</strong> {testData?.totalQuestions}</Typography>
+        <Typography variant="body1"><strong>Type:</strong> {currentAssessment?.testType?.toUpperCase()}</Typography>
+        <Typography variant="body1"><strong>Questions:</strong> {currentAssessment?.numberOfQuestions}</Typography>
       </Stack>
 
       <Box
@@ -78,15 +142,20 @@ function TestStartPage() {
         }}
       >
         <Typography variant="body1" mb={2}>
-          {testData?.description}
+          {currentAssessment?.description}
         </Typography>
 
         <Divider sx={{ my: 2 }} />
 
         <Typography variant="h6" gutterBottom>Instructions:</Typography>
         <ul style={{ paddingLeft: 18, margin: 0 }}>
-          <li>Do not refresh the page during the test.</li>
-          <li>Do not open other tabs or use external help.</li>
+          <li>
+            Do not refresh the page during the test as <strong>Test will auto submit</strong>
+          </li>
+          <li>
+            Do not open other tabs or use external help as <strong>Test will auto submit</strong>
+          </li>
+
           <li>Once started, the test must be completed in one go.</li>
           <li>Make sure your internet connection is stable.</li>
         </ul>
@@ -115,7 +184,7 @@ function TestStartPage() {
           disabled={!checked}
           onClick={handleStart}
         >
-          Start Test
+          {loading ? 'Starting...' : 'Start Test'}
         </Button>
       </Box>
 

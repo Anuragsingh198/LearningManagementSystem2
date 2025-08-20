@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { testData } from './testData';
+// import { testData } from './testData';
 import QuestionStatsBar from './QuestionStatsBar';
 import QuestionSidebar from './QuestionSidebar';
 import QuestionDisplay from './QuestionDisplay';
@@ -12,7 +12,7 @@ import {
   ThemeProvider,
   createTheme
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useParams} from 'react-router-dom';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
 import { getAllLanguageAction } from '../../context/Actions/AssignmentActions';
 
@@ -35,6 +35,8 @@ const theme = createTheme({
 });
 
 const TestPage = () => {
+    const { id } = useParams();
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questionStatus, setQuestionStatus] = useState({});
   const [codingAnswers, setCodingAnswers] = useState({});
@@ -45,18 +47,30 @@ const TestPage = () => {
   const [backButtonDisabled, setBackButtonDisabled] = useState(true);
   const [currentCodingAnswer , setCurrentCodingAnswer] =  useState("");
   const testPageRef = useRef(null);
+  const {state: {testData}, dispatch} = useAssignmentContext();
+
+  // console.log('the test data from context in test page is: ', contextTestData)
+
   let warningToastId = null;
 
-  const testId = testData._id;
+  const testId = testData?._id;
   const storageKey = `test_${testId}`;
 
   const navigate = useNavigate();
+
+  // console.log('the id from param is: ', id)
 
   useEffect(() => {
   console.log('the show submit modal is: ', showSubmitModal);
 }, [showSubmitModal]);
 
-const { state, dispatch } = useAssignmentContext();
+if(!testData || (testData.assessment !== id)){
+  console.log('the context test data is:', testData)
+  console.log('the context test data is:', testData?.assessment)
+  // console.log('the context test data is:', id)
+  return <Box sx={{color: 'black'}}> Loading... </Box>
+}
+
 
 useEffect(() => {
     getAllLanguageAction(dispatch);
@@ -125,22 +139,6 @@ useEffect(() => {
     }
   };
 
-  // Enter fullscreen function
-  // const enterFullscreen = () => {
-  //   if (testPageRef.current) {
-  //     if (testPageRef.current.requestFullscreen) {
-  //       testPageRef.current.requestFullscreen()
-  //         .then(() => setIsFullScreen(true))
-  //         .catch(err => console.error('Error attempting to enable fullscreen:', err));
-  //     } else if (testPageRef.current.webkitRequestFullscreen) {
-  //       testPageRef.current.webkitRequestFullscreen();
-  //       setIsFullScreen(true);
-  //     } else if (testPageRef.current.msRequestFullscreen) {
-  //       testPageRef.current.msRequestFullscreen();
-  //       setIsFullScreen(true);
-  //     }
-  //   }
-  // };
 
   const enterFullscreen = async () => {
   if (!testPageRef.current) return false;
@@ -483,6 +481,8 @@ const handleAutoSubmit = () => {
   const currentQuestion = testData.questions[currentQuestionIndex];
   const stats = calculateStats();
   const totalAnswered = stats.mcqAnswered + stats.codingAnswered;
+
+  
 
   return (
     <ThemeProvider theme={theme}>

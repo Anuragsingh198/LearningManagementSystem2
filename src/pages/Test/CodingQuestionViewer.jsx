@@ -75,18 +75,18 @@ const CodingQuestionViewer = ({
               Examples
             </Typography>
           </Box>
-          
+
           {examples.map((example, index) => (
             <Paper key={index} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Chip 
-                    label={`Example ${index + 1}`} 
-                    size="small" 
-                    sx={{ bgcolor: 'primary.light', color: 'primary.dark' }} 
+                  <Chip
+                    label={`Example ${index + 1}`}
+                    size="small"
+                    sx={{ bgcolor: 'primary.light', color: 'primary.dark' }}
                   />
                 </Box>
-                
+
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={6}>
                     <Typography variant="caption" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>
@@ -96,7 +96,7 @@ const CodingQuestionViewer = ({
                       {example.input}
                     </StyledCodeBlock>
                   </Grid>
-                  
+
                   <Grid item xs={12} md={6}>
                     <Typography variant="caption" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>
                       Output:
@@ -106,7 +106,7 @@ const CodingQuestionViewer = ({
                     </StyledCodeBlock>
                   </Grid>
                 </Grid>
-                
+
                 <Box>
                   <Typography variant="caption" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>
                     Explanation:
@@ -128,13 +128,21 @@ const CodingQuestionViewer = ({
               Constraints
             </Typography>
           </Box>
-          
+
           <StyledConstraintBox>
             <List dense sx={{ py: 0 }}>
-              {constraints?.map((constraint, index) => (
+              {(Array.isArray(constraints) ? constraints : [constraints])?.map((constraint, index) => (
                 <ListItem key={index} sx={{ py: 0.5, px: 0 }}>
                   <ListItemIcon sx={{ minWidth: 24 }}>
-                    <Box sx={{ width: 8, height: 8, bgcolor: 'warning.main', borderRadius: '50%', mt: '8px' }} />
+                    <Box
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        bgcolor: 'warning.main',
+                        borderRadius: '50%',
+                        mt: '8px'
+                      }}
+                    />
                   </ListItemIcon>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     {constraint}
@@ -143,6 +151,7 @@ const CodingQuestionViewer = ({
               ))}
             </List>
           </StyledConstraintBox>
+
         </Box>
       </Box>
     </Box>

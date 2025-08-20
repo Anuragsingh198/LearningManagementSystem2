@@ -26,6 +26,7 @@ const QuestionDisplay = ({
 }) => {
   const theme = useTheme();
   // console.log('this is the  langiages  afwyehqgesahbster  extraction: ' ,codingLanguages.languages )
+  // console.log('the questions in the questionDisplay.jsx', question)
   if (question.type === 'coding') {
     return (
       <Box sx={{ flex: 1, bgcolor: 'background.paper' }}>

@@ -72,6 +72,12 @@ export const assignmentReducer = (state, action) => {
                 executionOutput: action.payload 
             };
 
+        case "SET_TEST_DATA":
+            return {
+                ...state,
+                testData: action.payload
+            }
+
         default:
             return state;
     }

@@ -137,9 +137,9 @@ const CodeEditor = ({
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 
           <LanguageSelect
-            value={languages.length > 0 ? language : ""}
+            value={languages?.length > 0 ? language : ""}
             onChange={(e) => onLanguageChange(e.target.value)}
-            disabled={languages.length === 0}
+            disabled={languages?.length === 0}
             IconComponent={() => (
               <ChevronDown
                 style={{
@@ -161,7 +161,7 @@ const CodeEditor = ({
               }
             }}
           >
-            {languages.map(option => (
+            {languages?.map(option => (
               <MenuItem
                 key={option.id}
                 value={option.id}

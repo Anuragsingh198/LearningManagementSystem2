@@ -23,10 +23,13 @@ export const getAllLanguageAction = async (dispatch) => {
 };
 
 export const getAllCodingQuestions = async (dispatch) => {
+  const token = getAuthToken();
   try{
     dispatch({ type: 'SET_LOADING', payload: true })
 
-    const {data} = await axios.get(`${backendBaseUrl}/api/assessments/allQuestions`)
+    const {data} = await axios.get(`${backendBaseUrl}/api/assessments/allQuestions`,
+      { headers: { Authorization: `Bearer ${token}` },}
+    )
     dispatch({ type: "SET_ALL_CODING_QUESTIONS", payload: data.allCodingQuestions})
     dispatch({ type: "SET_LOADING", payload: false });
 

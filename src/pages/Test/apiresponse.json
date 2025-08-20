@@ -1,0 +1,46 @@
+{
+    "success": true,
+    "message": "Assessment already started",
+    "data": {
+        "_id": "68a574d1123c1fd8de4997d9",
+        "user": "68907aa2b592151ccfc1c8a5",
+        "title": "Developer test just for MCQs",
+        "assessment": "68a41308cbb42988e7fa7fba",
+        "questions": [
+            {
+                "_id": "68a41308cbb42988e7fa7fbb",
+                "questionText": "asdf",
+                "type": "mcq",
+                "options": [
+                    {
+                        "optionText": "a",
+                        "_id": "68a41308cbb42988e7fa7fbc"
+                    },
+                    {
+                        "optionText": "s",
+                        "_id": "68a41308cbb42988e7fa7fbd"
+                    },
+                    {
+                        "optionText": "d",
+                        "_id": "68a41308cbb42988e7fa7fbe"
+                    },
+                    {
+                        "optionText": "f",
+                        "_id": "68a41308cbb42988e7fa7fbf"
+                    }
+                ]
+            }
+        ],
+        "status": "in-progress",
+        "startedAt": "2025-08-20T07:10:09.382Z",
+        "completeTestByDateAndTime": "2025-08-20T07:30:09.382Z",
+        "score": 0,
+        "isPassed": false,
+        "retakeCount": 0,
+        "lastAttemptedTime": "2025-08-20T07:10:09.388Z",
+        "yourAnswers": [],
+        "createdAt": "2025-08-20T07:10:09.394Z",
+        "updatedAt": "2025-08-20T07:10:09.394Z",
+        "__v": 0
+    }
+}
