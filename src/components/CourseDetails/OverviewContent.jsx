@@ -12,20 +12,21 @@ import {
   DialogContent,
   DialogActions,
   CircularProgress,
+  Stack,
 } from '@mui/material';
 import {
-  Download as DownloadIcon,
-  Share as ShareIcon,
-  CheckCircle as CheckCircleIcon,
-  Book as BookIcon,
-  PlayCircle as PlayCircleIcon,
-  Article as ArticleIcon,
-  Psychology as PsychologyIcon,
-  Help as HelpIcon,
-  AccessTime as AccessTimeIcon,
-  ChevronRight as ChevronRightIcon,
-  Delete as DeleteIcon,
-} from '@mui/icons-material';
+  Share,
+  CheckCircle,
+  BookOpen,
+  PlayCircle,
+  FileText,
+  Brain,
+  HelpCircle,
+  Clock,
+  ChevronRight,
+  Trash2,
+} from 'lucide-react';
+import { Download as DownloadIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import NoContentPage from './NoContentPage';
@@ -33,13 +34,13 @@ import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { getCoursesAction, moduleProgress } from '../../context/Actions/courseActions';
 import axios from 'axios';
-
+import noDataImage from '../../assets/no-data.png';
 
 const CourseDescription = ({ description }) => {
   return (
     <Box sx={{
       minHeight: 60,
-      maxHeight:100,
+      maxHeight: 'none',
       overflowY: 'auto',
       pr: 1,
       '&::-webkit-scrollbar': {
@@ -53,7 +54,7 @@ const CourseDescription = ({ description }) => {
         borderRadius: 2,
       },
     }}>
-      <Typography color="rgba(255, 255, 255, 0.8)" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize:'15px' }}>
+      <Typography color="black" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '15px' }}>
         {description}
       </Typography>
     </Box>
@@ -91,12 +92,12 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   const moduleProgressMap = {};
 
   if (Array.isArray(allModuleProgress)) {
-  allModuleProgress.forEach((module) => {
-    moduleProgressMap[module.moduleId] = module.status;
-  });
-} else {
-  console.warn('Expected allModuleProgress to be an array:', allModuleProgress);
-}
+    allModuleProgress.forEach((module) => {
+      moduleProgressMap[module.moduleId] = module.status;
+    });
+  } else {
+    console.warn('Expected allModuleProgress to be an array:', allModuleProgress);
+  }
 
 
   //  useEffect(()=>{
@@ -113,8 +114,8 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
       if (!courseId || !user?._id) return;
       console.log('we are fetching course')
       try {
-      
-  
+
+
         dispatch({ type: 'COURSE_LOADING' });
         await getCoursesAction(courseId, user._id, dispatch);
         setLoading(false)
@@ -138,7 +139,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
   //     const moduleProgress = allModuleProgress.find(
   //       (x) => x.moduleId === moduleId && x.courseId === courseId
   //     );
-  
+
   //     if (moduleProgress) {
   //       dispatch({ type: "MODULE_PROGRESS", payload: moduleProgress });
   //     }
@@ -231,122 +232,233 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
     setDeleteDialogOpen(true);
   };
 
-   const cancelDelete = () => {
+  const cancelDelete = () => {
     setDeleteDialogOpen(false);
     setModuleToDelete(null);
   };
 
   const confirmDelete = async () => {
-    
+
 
   };
-  
+
 
   return (
     <Box
-  sx={{
-    width: '98%', 
-    boxSizing: 'border-box', 
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 3,
-    py: 3, 
-    px: 2,
-    '&::-webkit-scrollbar': {
-      width: '6px',
-    },
-    '&::-webkit-scrollbar-track': {
-      background: 'transparent',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'lightGray',
-      borderRadius: '8px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: '#e0e0e0',
-    },
-  }}
->
-      <Paper sx={{
-        background: 'linear-gradient(to right, #2563eb, #9333ea)',
-        borderRadius: 3,
-        p: 3,
-        color: 'white',
-        // height:"27vh"
-      }}>
-        <Typography variant="h4" fontWeight="bold" mb={1} fontSize={25}>
-          {oneCourse?.title}
-        </Typography>
-
-        <CourseDescription description={oneCourse?.description} />
-
-        <Grid container spacing={3} mb={4} mt={2}>
-
-          <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
-              {totalChapters}
-            </Typography>
-            <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
-              Total Chapters
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
-              {totalVideos}
-            </Typography>
-            <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
-              Videos
-            </Typography>
-          </Grid>
-          <Grid item xs={6} sm={3} textAlign="center">
-            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
-              {totalTests}
-            </Typography>
-            <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
-              Tests
-            </Typography>
-          </Grid>
-          {role !== 'instructor' && <Grid item xs={6} sm={3} textAlign="center" fontSize='25px'>
-            <Typography variant="h4" fontWeight="bold" fontSize='25px'>
-              {completedChapters}
-            </Typography>
-            <Typography color="rgba(255, 255, 255, 0.8)" fontSize="small">
-              Completed
-            </Typography>
-          </Grid>}
-        </Grid>
-
-        {role !== 'instructor' && <Box sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 2, py:1 , px:2,  position:'relative'}}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" >
-            <Typography variant="body2" fontWeight="medium" mb='4px'>
-              Course Progress
-            </Typography>
-            <Typography variant="body2">
-              {Math.round(progressPercentage)}%
-            </Typography>
-          </Box>
-          <LinearProgress
-            variant="determinate"
-            value={progressPercentage}
+      sx={{
+        width: '98%',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+        py: 3,
+        px: 2,
+        '&::-webkit-scrollbar': {
+          width: '6px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: 'transparent',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: 'lightGray',
+          borderRadius: '8px',
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+          backgroundColor: '#e0e0e0',
+        },
+      }}
+    >
+      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'nowrap', flexDirection: { xs: 'column', md: 'row' } }}>
+        {/* Left Section - Course Info */}
+        <Box
+          sx={{
+            flex: { xs: '1 1 auto', md: '0 0 70%' },
+            maxWidth: { xs: '100%', md: '70%' },
+            minWidth: 0,
+          }}
+        >
+          <Paper
             sx={{
-              height: 6,
-              mb:'4px',
-              borderRadius: 4,
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              '& .MuiLinearProgress-bar': {
-                borderRadius: 4,
-                backgroundColor: 'white'
-              }
+              height: '81%',
+              backgroundColor: 'background.paper',
+              borderRadius: '4px',
+              p: { xs: 2, md: 3 },
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 'none',
+              display: 'flex',
+              flexDirection: 'column',
             }}
-          />
-        </Box>}
-      </Paper>
+          >
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+              mb={1}
+              fontSize={{ xs: 20, md: 25 }}
+              color="black"
+            >
+              {oneCourse?.title}
+            </Typography>
+
+            {/* Scrollable Description - grows based on progress bar presence */}
+            <Box
+              sx={{
+                color: 'black',
+                flexGrow: 1,
+                overflowY: 'auto',
+                pr: 1,
+                mb: role !== 'instructor' ? 2 : 0,
+                width: '100%',
+                maxHeight: 190,
+                minHeight: 190,
+                '&::-webkit-scrollbar': {
+                  width: '8px',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: '#cbd5e1',
+                  borderRadius: '8px',
+                },
+              }}
+            >
+              <CourseDescription description={oneCourse?.description} />
+            </Box>
+
+
+            {/* Progress Bar stays pinned at bottom if exists */}
+            {role !== 'instructor' && (
+              <Box
+                sx={{
+                  backgroundColor: '#eef2ff',
+                  borderRadius: '4px',
+                  py: 1.25,
+                  px: 2,
+                  borderColor: 'divider',
+                  mt: 'auto',
+                }}
+                aria-label="Course progress"
+              >
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography variant="body2" fontWeight="medium" mb="4px" color="black">
+                    Course Progress
+                  </Typography>
+                  <Typography variant="body2" color="black">
+                    {Math.round(Math.max(0, Math.min(100, progressPercentage || 0)))}%
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  variant="determinate"
+                  value={Math.max(0, Math.min(100, progressPercentage || 0))}
+                  sx={{
+                    height: 8,
+                    mb: '2px',
+                    borderRadius: '4px',
+                    backgroundColor: '#e5e7eb',
+                    '& .MuiLinearProgress-bar': {
+                      borderRadius: '4px',
+                      background: 'linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%)',
+                    },
+                  }}
+                />
+              </Box>
+            )}
+          </Paper>
+        </Box>
+
+        {/* Right Section - Stats (Stack layout) */}
+        <Box
+          sx={{
+            flex: { xs: '1 1 auto', md: '0 0 30%' },
+            maxWidth: { xs: '100%', md: '30%' },
+            minWidth: 0,
+          }}
+        >
+          <Paper
+            sx={{
+              p: { xs: 2, md: 3 },
+              borderRadius: '4px',
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 'none',
+              backgroundColor: 'background.paper',
+              minHeight: 283,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+            }}
+          >
+            <Stack spacing={2} sx={{ flexGrow: 1 }}>
+              {[
+                { label: 'Total Chapters', value: totalChapters },
+                { label: 'Total Videos', value: totalVideos },
+                { label: 'Total Tests', value: totalTests },
+                ...(role !== 'instructor'
+                  ? [{ label: 'Chapters Completed', value: completedChapters }]
+                  : []),
+              ].map((item, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    px: 3,
+                    py: 2,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    borderRadius: 2,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    bgcolor: 'grey.50',
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      bgcolor: 'grey.100',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0px 4px 10px rgba(0,0,0,0.05)',
+                    },
+                  }}
+                >
+                  <Typography color="text.secondary">{item.label}</Typography>
+                  <Typography color="primary.main" fontWeight="bold">
+                    {item.value}
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
+          </Paper>
+        </Box>
+
+      </Box>
+
 
       {chapters?.length === 0 ? (
-        <NoContentPage
-          title="Modules"
-          description="No Modules Found for this course"
-        />
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          sx={{
+            minHeight: 200,
+            gap: 3,
+            textAlign: 'left',
+            mt: '-150px',
+          }}
+        >
+          <img
+            src={noDataImage}
+            alt="No data"
+            style={{
+              maxWidth: "200px",
+              marginBottom: 0,
+              display: "block"
+            }}
+          />
+          <Box>
+            <NoContentPage
+              title="Modules"
+              description="No Modules Found for this course"
+            />
+          </Box>
+        </Box>
+
       ) : (
         <>
           <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -354,18 +466,48 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
               Course Chapters
             </Typography>
             <Box display="flex" gap={1}>
-              {role !== 'instructor' && <Button
-                variant="contained"
-                color="primary"
-                onClick={handleGenerateCertificate}
-                startIcon={<DownloadIcon />}
-                sx={{ textTransform: 'none' }}
-                disabled={progressPercentage != 100}
+              {role !== 'instructor' && (
+                <Button
+                  variant="contained"
+                  onClick={handleGenerateCertificate}
+                  startIcon={<DownloadIcon />}
+                  disabled={progressPercentage !== 100}
+                  sx={{
+                    textTransform: 'none',
+                    transition: 'all 0.2s ease-in-out',
 
-              >
-                Generate Certificate
-              </Button>}
+                    backgroundColor: '#1976d2',
+                    color: '#fff',
+
+                    '&:hover': {
+                      backgroundColor: '#1565c0',
+                      boxShadow: 3,
+                    },
+
+                    '&:active': {
+                      backgroundColor: '#115293',
+                      transform: 'scale(0.98)',
+                      boxShadow: 2,
+                    },
+
+                    '&:focus': {
+                      outline: '2px solid #42a5f5',
+                      outlineOffset: '2px',
+                    },
+
+                    '&.Mui-disabled': {
+                      backgroundColor: '#d3d3d3',
+                      color: '#9e9e9e',
+                      boxShadow: 'none',
+                      borderRadius: '4px',
+                    },
+                  }}
+                >
+                  Generate Certificate
+                </Button>
+              )}
             </Box>
+
           </Box>
 
           <Box display="flex" flexDirection="column" gap={1}>
@@ -376,10 +518,10 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                 sx={{
                   border: '1px solid',
                   borderColor: 'divider',
-                  borderRadius: 3,
-                  height:'60px',
-                  py:1,
-                  px:2,
+                  borderRadius: '4px',
+                  height: '55px',
+                  py: 1,
+                  px: 2,
                   '&:hover': {
                     boxShadow: 3
                   },
@@ -389,21 +531,10 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                   <Box display="flex" alignItems="center" gap={2}>
                     {(() => {
-                      const progressStatus = moduleProgressMap[chapter._id] || 'not-started';
+                      const progressStatus = moduleProgressMap[chapter._id] || 'Not Started';
                       const isCompleted = progressStatus === 'completed';
 
-                      return (
-                        <Avatar
-                          sx={{
-                            width: 48,
-                            height: 48,
-                            bgcolor: isCompleted ? 'success.light' : 'primary.light',
-                            color: isCompleted ? 'success.main' : 'primary.main'
-                          }}
-                        >
-                          {isCompleted ? <CheckCircleIcon /> : <BookIcon />}
-                        </Avatar>
-                      );
+                      return isCompleted ? <CheckCircle size={24} color="#22c55e" /> : <BookOpen size={24} color="#3b82f6" />;
                     })()}
                     <Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-arounds', alignItems: 'center' }}>
@@ -411,25 +542,66 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                         <Typography variant="h6" fontWeight={600} color="text.primary" fontSize='16px'>
                           {chapter.title}
                         </Typography>
-                        {role !== 'instructor' && <Typography variant="body2" fontWeight={400} sx={{ ml: 1 }} color="text.secondary">
-                          ( Status: {moduleProgressMap[chapter._id] || 'Not Started'} )
-                        </Typography>}
+                        {role !== 'instructor' && (
+                          <Box
+                            sx={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              px: 1,
+                              py: 0.25,
+                              borderRadius: '4px',
+                              fontSize: '0.55rem',
+                              fontWeight: 600,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px',
+                              ml: 1,
+                              backgroundColor: (() => {
+                                const status = moduleProgressMap[chapter._id] || 'not-started';
+                                if (status === 'completed') return '#e6f4ea';
+                                if (status === 'in-progress') return '#fff8e6';
+                                return '#ffe9e3'; // pastel peach
+                              })(),
+                              color: (() => {
+                                const status = moduleProgressMap[chapter._id] || 'not-started';
+                                if (status === 'completed') return '#2d6a4f';
+                                if (status === 'in-progress') return '#b08900';
+                                return '#d45d00';
+                              })(),
+                              border: '1px solid',
+                              borderColor: (() => {
+                                const status = moduleProgressMap[chapter._id] || 'not-started';
+                                if (status === 'completed') return '#cce3d4';
+                                if (status === 'in-progress') return '#ffeebd';
+                                return '#ffd5c2';
+                              })(),
+                            }}
+                          >
+                            {(() => {
+                              const status = moduleProgressMap[chapter._id] || 'not-started';
+                              if (status === 'completed') return 'Completed';
+                              if (status === 'in-progress') return 'In Progress';
+                              return 'Not Started';
+                            })()}
+                          </Box>
+                        )}
+
                       </Box>
                       <Box display="flex" alignItems="center" gap={2} mt={0.5}>
                         {[
                           {
-                            icon: <PlayCircleIcon fontSize="small" />,
+                            icon: <PlayCircle size={20} />,
                             text: `${chapter.videos?.length || 0} Videos`
                           },
                           {
-                            icon: <HelpIcon fontSize="small" />,
+                            icon: <HelpCircle size={20} />,
                             text: `${chapter.tests?.length || 0} Assessment(s)`
                           },
                           // {
                           //   icon: <AccessTimeIcon fontSize="small" />,
                           //   text: chapter.duration || 'N/A'
-                          // }
+                          // },
                         ].map((item, index) => (
+
                           <Box key={index} display="flex" alignItems="center" gap={0.5}>
                             {item.icon}
                             <Typography variant="body2" color="text.secondary">
@@ -447,17 +619,36 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                   </Box>
                   <Box display="flex" alignItems="center" gap={1}>
                     <Button
+                      variant="outlined"
                       onClick={() => handleSubmit(chapter._id, chapter)}
                       endIcon={
-                        loadingChapterId === chapter._id ? null : <ChevronRightIcon />
+                        loadingChapterId === chapter._id ? null : <ChevronRight size={18} />
                       }
                       sx={{
                         textTransform: 'none',
-                        backgroundColor: 'primary.light',
-                        color: 'white',
-                        height:'35px',
+                        height: '35px',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        color: 'primary.main',
                         '&:hover': {
-                          backgroundColor: 'primary.main'
+                          // backgroundColor: 'white',
+                          color: 'primary.dark',
+                          // boxShadow: '0px 2px 8px rgba(0,0,0,0.1)'
+                        },
+                        '&:active': {
+                          // backgroundColor: 'primary.main',
+                          color: 'primary.main',
+                          transform: 'scale(0.98)'
+                        },
+                        '&:focus': {
+                          outline: '2px solid',
+                          outlineColor: 'primary.main',
+                          outlineOffset: '2px'
+                        },
+                        '&:disabled': {
+                          backgroundColor: 'grey.100',
+                          color: 'grey.500',
+                          cursor: 'not-allowed'
                         }
                       }}
                     >
@@ -476,7 +667,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                       onClick={() => handleDeleteChapter(chapter._id)}
                       sx={{ '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' } }}
                     >
-                      <DeleteIcon />
+                      <Trash2 />
                     </IconButton> : ''}
                   </Box>
 

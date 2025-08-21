@@ -17,7 +17,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAuth } from "../../context/contextFiles/AuthContext";
 // const serverurl = import.meta.env.VITE_SERVER_URL;
-
+import {
+  VideoContentSkeleton,
+  SidebarSkeleton
+} from "./skeletons";
 
 
 const CourseDetails = ({ courseId, moduleId }) => {
@@ -135,7 +138,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
         scrollbarWidth: "none",
       }}
     >
-      <Button
+      {/* <Button
         onClick={() => {
           setTimeout(() => navigate(-1), 100);
         }}
@@ -161,10 +164,10 @@ const CourseDetails = ({ courseId, moduleId }) => {
         }}
       >
         Back
-      </Button>
+      </Button> */}
 
       <Box sx={{
-        width: "30%", display: 'flex', flexDirection: 'column', px: 6, mt: 2,
+        width: "30%", display: 'flex', flexDirection: 'column', px: 6, mt: 'none',
 
         maxHeight: '100vh',
         overflowY: 'auto',
@@ -183,28 +186,32 @@ const CourseDetails = ({ courseId, moduleId }) => {
         },
 
       }}>
-        <Sidebar
-          currentView={currentView}
-          setCurrentView={setCurrentView}
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          videos={videos}
-          currentVideo={currentVideo}
-          setCurrentVideo={setCurrentVideo}
-          tests={tests}
-          currentTest={currentQuiz}
-          setCurrentTest={setCurrentQuiz}
-          currentQuestion={currentQuestion}
-          setCurrentQuestion={setCurrentQuestion}
-          articles={articles}
-          currentArticle={currentArticle}
-          setCurrentArticle={setCurrentArticle}
-          moduleId={moduleId}
-          courseId={courseId}
-          currVidData={currVidData}
-          lastTimeTracker={lastTimeTracker}
-          completedArticles={completedArticles}
-        />
+        {isLoading ? (
+          <SidebarSkeleton />
+        ) : (
+          <Sidebar
+            currentView={currentView}
+            setCurrentView={setCurrentView}
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            videos={videos}
+            currentVideo={currentVideo}
+            setCurrentVideo={setCurrentVideo}
+            tests={tests}
+            currentTest={currentQuiz}
+            setCurrentTest={setCurrentQuiz}
+            currentQuestion={currentQuestion}
+            setCurrentQuestion={setCurrentQuestion}
+            articles={articles}
+            currentArticle={currentArticle}
+            setCurrentArticle={setCurrentArticle}
+            moduleId={moduleId}
+            courseId={courseId}
+            currVidData={currVidData}
+            lastTimeTracker={lastTimeTracker}
+            completedArticles={completedArticles}
+          />
+        )}
         {/*tests.length > 0 && tests[currentQuiz]?.questions?.length > 0 ? (
           <QuizHistory questions={tests[currentQuiz]?.questions || []} moduleId={moduleId}
             currentTest={currentQuiz}
@@ -240,9 +247,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
 
         {currentView === "video" && (
           isLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4, mt: 10 }}>
-              <CircularProgress size={80} />
-            </Box>
+            <VideoContentSkeleton />
           ) : (
             videos.length !== 0 ? (
               <Box>

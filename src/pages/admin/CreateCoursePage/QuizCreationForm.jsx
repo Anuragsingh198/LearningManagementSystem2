@@ -18,20 +18,19 @@ import {
     Tab,
     Typography,
     Avatar,
-    Paper
-
+    Paper,
+    Snackbar,
+    Alert
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import SendIcon from '@mui/icons-material/Send';
 import {
-    Upload as UploadIcon,
-    Close as CloseIcon,
-    Add as AddIcon,
-    VideoLibrary as VideoLibraryIcon,
-    KeyboardArrowDown as KeyboardArrowDownIcon,
-    CloudUpload as CloudUploadIcon
-} from '@mui/icons-material';
+    Trash2,
+    PlusCircle,
+    Send,
+    Plus,
+    Video,
+    ChevronDown,
+    UploadCloud
+} from 'lucide-react';
 import axios from 'axios';
 
 import { useCourseContext } from '../../../context/contextFiles/CourseContext';
@@ -58,6 +57,7 @@ function QuizCreationForm({ courseId }) {
     const serverurl = import.meta.env.VITE_SERVER_URL;
     const [testDescription, setTestDescription] = useState('');
     const [isLoading, setIsLoading] = useState(false)
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const { state: { user } } = useAuth();
     const role = user?.role;
@@ -71,15 +71,15 @@ function QuizCreationForm({ courseId }) {
         }
     ]);
 
-    useEffect(()=> {
+    useEffect(() => {
         const foundCourse = courses.find(c => c._id === courseId)
         setCourse(foundCourse)
     }, courses, courseId)
 
-    useEffect(()=> {
-    setExistingModules(moduleNames);
+    useEffect(() => {
+        setExistingModules(moduleNames);
     }, [moduleNames])
-    
+
 
     const handleAddQuestion = () => {
         setQuestions([
@@ -113,7 +113,7 @@ function QuizCreationForm({ courseId }) {
                 setActiveQuestion(activeQuestion - 1);
             }
         } else {
-            alert("You need at least one question!");
+            setSnackbarOpen(true);
         }
     };
 
@@ -282,8 +282,7 @@ function QuizCreationForm({ courseId }) {
 
     return (
         <Box sx={{
-            display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: 'background.default', p: 3, mt: 2, width: '96%', borderRadius: 10, border: '1px solid',
-            borderColor: 'grey.300',
+            display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
         }}>
 
             <Box sx={{
@@ -294,10 +293,10 @@ function QuizCreationForm({ courseId }) {
                 mb: 3,
                 alignItems: 'flex-start',
                 p: 2,
-                backgroundColor: '#f9f9f9',
-                borderRadius: 5,
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', // soft shadow for depth
-                border: '1px solid #e0e0e0', // subtle border
+                backgroundColor: '#fff',
+                borderRadius: '4px',
+                boxShadow: 'none',
+                border: '1px solid #e0e0e0',
 
             }}>
                 {/* Module Section - Left Column */}
@@ -306,24 +305,58 @@ function QuizCreationForm({ courseId }) {
                     flexShrink: 0,
                     position: 'relative'
                 }}>
-                    <Box sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        mb: 2,
-                        flexWrap: 'wrap',
-                        gap: 1
-                    }}>
-                        <Typography variant="h6" fontWeight="600" color='gray'>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            mb: 2,
+                            flexWrap: 'wrap',
+                            gap: 1,
+                        }}
+                    >
+                        <Typography variant="h6" fontWeight="600">
                             {showModuleForm ? "Create New Module" : "Select Module"}
                         </Typography>
+
                         <Button
                             onClick={() => setShowModuleForm(!showModuleForm)}
-                            startIcon={!showModuleForm ? <AddIcon /> : null}
+                            startIcon={!showModuleForm ? <Plus strokeWidth={1.5} /> : null}
                             size="small"
-                            variant={showModuleForm ? "outlined" : "contained"}
-                            color={showModuleForm ? "error" : "primary"}
-                            sx={{ ml: 'auto' }}
+                            variant="outlined"
+                            sx={{
+                                ml: 'auto',
+                                borderRadius: '4px',
+                                borderColor: showModuleForm ? '#d32f2f' : '#1976d2',
+                                color: showModuleForm ? '#d32f2f' : '#1976d2',
+                                fontWeight: 600,
+                                textTransform: 'none',
+
+                                // hover
+                                '&:hover': {
+                                    borderColor: showModuleForm ? '#b71c1c' : '#0d47a1',
+                                    backgroundColor: showModuleForm ? '#fdecea' : '#e3f2fd',
+                                },
+
+                                // active (pressed)
+                                '&:active': {
+                                    borderColor: showModuleForm ? '#9a0007' : '#0b3c91',
+                                    backgroundColor: showModuleForm ? '#f9d7d7' : '#bbdefb',
+                                },
+
+                                // focus ring
+                                '&:focus': {
+                                    outline: '2px solid',
+                                    outlineColor: showModuleForm ? '#f28b82' : '#90caf9',
+                                    outlineOffset: '2px',
+                                },
+
+                                // disabled
+                                '&.Mui-disabled': {
+                                    borderColor: '#cbd5e1',
+                                    color: '#9ca3af',
+                                },
+                            }}
                         >
                             {showModuleForm ? "Cancel" : "New Module"}
                         </Button>
@@ -336,8 +369,8 @@ function QuizCreationForm({ courseId }) {
                             sx={{
                                 p: 3,
                                 backgroundColor: 'background.paper',
-                                boxShadow: 1,
-                                borderRadius: 2
+                                boxShadow: 'none',
+                                borderRadius: 'none'
                             }}
                         >
                             <TextField
@@ -376,18 +409,49 @@ function QuizCreationForm({ courseId }) {
                                 gap: 2,
                                 mt: 2
                             }}>
-                                <Button
+                                {/* <Button
                                     onClick={() => setShowModuleForm(false)}
                                     variant="outlined"
                                     color="secondary"
                                 >
                                     Cancel
-                                </Button>
+                                </Button> */}
                                 <Button
                                     type="submit"
-                                    variant="contained"
-                                    color="primary"
+                                    variant="outlined"
                                     disabled={isSubmitting}
+                                    sx={{
+                                        borderRadius: '4px',
+                                        borderColor: '#1976d2',
+                                        color: '#1976d2',
+                                        fontWeight: 600,
+                                        textTransform: 'none',
+
+                                        // hover
+                                        '&:hover': {
+                                            borderColor: '#0d47a1',
+                                            backgroundColor: '#e3f2fd',
+                                        },
+
+                                        // active (pressed)
+                                        '&:active': {
+                                            borderColor: '#0b3c91',
+                                            backgroundColor: '#bbdefb',
+                                        },
+
+                                        // focus ring
+                                        '&:focus': {
+                                            outline: '2px solid',
+                                            outlineColor: '#90caf9',
+                                            outlineOffset: '2px',
+                                        },
+
+                                        // disabled
+                                        '&.Mui-disabled': {
+                                            borderColor: '#cbd5e1',
+                                            color: '#9ca3af',
+                                        },
+                                    }}
                                 >
                                     {isSubmitting ? (
                                         <CircularProgress size={24} color="inherit" />
@@ -395,6 +459,7 @@ function QuizCreationForm({ courseId }) {
                                         "Create Module"
                                     )}
                                 </Button>
+
                             </Box>
                         </Card>
                     ) : (
@@ -414,7 +479,7 @@ function QuizCreationForm({ courseId }) {
                                             value={selectedModule}
                                             onChange={handleModuleChange}
                                             label="Select a Module *"
-                                            IconComponent={KeyboardArrowDownIcon}
+                                            IconComponent={ChevronDown}
                                             sx={{ mb: 1 }}
                                         >
                                             <MenuItem value="">
@@ -447,7 +512,7 @@ function QuizCreationForm({ courseId }) {
                                         width: 56,
                                         height: 56
                                     }}>
-                                        <VideoLibraryIcon fontSize="medium" />
+                                        <Video strokeWidth={1.5} size={32} />
                                     </Avatar>
                                     <Typography variant="h6" fontWeight="500" gutterBottom>
                                         No modules found
@@ -463,7 +528,7 @@ function QuizCreationForm({ courseId }) {
                                         onClick={() => setShowModuleForm(true)}
                                         variant="contained"
                                         color="primary"
-                                        startIcon={<AddIcon />}
+                                        startIcon={<Plus />}
                                         size="large"
                                     >
                                         Create Module
@@ -488,8 +553,8 @@ function QuizCreationForm({ courseId }) {
                     sx={{
                         mb: 2,
                         backgroundColor: 'white',
-                        borderRadius: 1,
-                        boxShadow: 1,
+                        borderRadius: '4px',
+                        // boxShadow: 1,
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
                                 borderColor: '#ccc',
@@ -513,10 +578,9 @@ function QuizCreationForm({ courseId }) {
                     margin="normal"
                     required
                     sx={{
-                        mb: 2,
                         backgroundColor: 'white',
-                        borderRadius: 1,
-                        boxShadow: 1,
+                        borderRadius: '4px',
+                        // boxShadow: 1,
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
                                 borderColor: '#ccc',
@@ -553,55 +617,90 @@ function QuizCreationForm({ courseId }) {
             </Box>
 
             <form onSubmit={handleSubmit} style={{ width: '50%' }}>
-                {/* Only show the active question */}
                 {questions.length > 0 && (
-                    <Card key={questions[activeQuestion].id} sx={{ mb: 3, borderRadius: 4 }}>
+                    <Card
+                        key={questions[activeQuestion].id}
+                        sx={{
+                            borderRadius: '4px',
+                            border: '1px solid #1976d2',
+                            backgroundColor: '#fff',
+                            boxShadow: 'none',
+                        }}
+                    >
                         <CardHeader
-                            sx={{ backgroundColor: 'lightgray' }}
+                            sx={{
+                                backgroundColor: '#e3f2fd',
+                                borderBottom: '1px solid #1976d2',
+                                borderRadius: '4px 4px 0 0',
+                                '& .MuiCardHeader-title': { fontWeight: 600, color: '#0d47a1' },
+                            }}
                             title={`Question ${activeQuestion + 1}`}
                             action={
                                 <IconButton
                                     aria-label="delete"
                                     onClick={() => handleDeleteQuestion(questions[activeQuestion].id)}
-                                    color="error"
+                                    sx={{
+                                        color: '#d32f2f',
+                                        '&:hover': { backgroundColor: '#fdecea' },
+                                    }}
                                 >
-                                    <DeleteIcon />
+                                    <Trash2 strokeWidth={1.5} />
                                 </IconButton>
                             }
                         />
-                        <CardContent>
+                        <CardContent sx={{ backgroundColor: '#fff' }}>
                             <TextField
                                 fullWidth
                                 label="Question"
                                 value={questions[activeQuestion].questionText}
-                                onChange={(e) => handleQuestionChange(questions[activeQuestion].id, e.target.value)}
+                                onChange={(e) =>
+                                    handleQuestionChange(questions[activeQuestion].id, e.target.value)
+                                }
                                 placeholder="Enter your question"
                                 required
                                 sx={{ mb: 3 }}
                             />
 
                             <FormControl component="fieldset" fullWidth>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <FormLabel component="legend">Options</FormLabel>
-                                    <Typography sx={{ textAlign: 'end' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                    <FormLabel component="legend" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                                        Options
+                                    </FormLabel>
+                                    <Typography sx={{ textAlign: 'end', color: '#6b7280' }}>
                                         Select
                                     </Typography>
                                 </Box>
+
                                 {questions[activeQuestion].options.map((option, optionIndex) => (
-                                    <Box key={optionIndex} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                    <Box
+                                        key={optionIndex}
+                                        sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                                    >
                                         <TextField
                                             fullWidth
                                             value={option}
-                                            onChange={(e) => handleOptionChange(questions[activeQuestion].id, optionIndex, e.target.value)}
+                                            onChange={(e) =>
+                                                handleOptionChange(
+                                                    questions[activeQuestion].id,
+                                                    optionIndex,
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder={`Option ${optionIndex + 1}`}
                                             required
                                             sx={{ mr: 2 }}
                                         />
                                         <Radio
                                             checked={questions[activeQuestion].correctAnswer === option}
-                                            onChange={() => handleCorrectAnswerChange(questions[activeQuestion].id, option)}
+                                            onChange={() =>
+                                                handleCorrectAnswerChange(questions[activeQuestion].id, option)
+                                            }
                                             value={option}
                                             name={`correct-answer-${questions[activeQuestion].id}`}
+                                            sx={{
+                                                color: '#1976d2',
+                                                '&.Mui-checked': { color: '#0d47a1' },
+                                            }}
                                         />
                                     </Box>
                                 ))}
@@ -612,32 +711,51 @@ function QuizCreationForm({ courseId }) {
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
                     <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<AddCircleIcon />}
+                        variant="outlined"
+                        startIcon={<PlusCircle strokeWidth={1.5} />}
                         onClick={handleAddQuestion}
+                        sx={{
+                            borderRadius: '4px',
+                            borderColor: '#1976d2',
+                            color: '#1976d2',
+                            '&:hover': { backgroundColor: '#e3f2fd', borderColor: '#0d47a1' },
+                        }}
                     >
                         Add Question
                     </Button>
 
                     <Button
                         type="submit"
-                        variant="contained"
-                        color="success"
+                        variant="outlined"
                         endIcon={
                             isLoading ? (
                                 <CircularProgress size={20} color="inherit" />
                             ) : (
-                                <SendIcon />
+                                <Send strokeWidth={1.5} />
                             )
                         }
                         disabled={isLoading}
+                        sx={{
+                            borderRadius: '4px',
+                            borderColor: '#2e7d32',
+                            color: '#2e7d32',
+                            '&:hover': { backgroundColor: '#e8f5e9', borderColor: '#1b5e20' },
+                        }}
                     >
                         {isLoading ? 'Uploading...' : 'Upload Assessment'}
                     </Button>
                 </Box>
             </form>
-
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert severity="warning" onClose={() => setSnackbarOpen(false)} sx={{ width: '100%' }}>
+                    You need at least one question!
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

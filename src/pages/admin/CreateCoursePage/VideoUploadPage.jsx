@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import VideoUploadForm from '../../../components/CourseCreationComponents.jsx/VideoUploadForm';
 import ArticleUploadForm from '../../../components/CourseCreationComponents.jsx/ArticleUploadForm';
-
+import { AlertTriangle } from 'lucide-react';
 import QuizCreationForm from './QuizCreationForm';
 import { useCourseContext } from '../../../context/contextFiles/CourseContext';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, Chip } from '@mui/material';
 import AddAssessment from '../AddAssessment';
 import { getModulesByCourseId, getMyCoursesAction } from '../../../context/Actions/courseActions';
 
@@ -60,17 +60,49 @@ const VideoUploadPage = () => {
 
         {/* Conditional Note */}
         {activeTab === 'quiz' && (
-          <Typography variant="body2" color="gray" sx={{ ml: 2 }}>
-            *It will be necessary for enrolled users to take the test
-          </Typography>
+          <Chip
+            icon={
+              <AlertTriangle
+                size={18}
+                strokeWidth={2}
+                style={{ color: '#fbc02d' }}
+              />
+            }
+            label="It will be necessary for enrolled users to take the test"
+            variant="outlined"
+            sx={{
+              ml: 2,
+              fontSize: '0.85rem',
+              fontWeight: 500,
+              borderColor: '#fbc02d',
+              backgroundColor: '#fffde7',
+              color: '#795548',
+              borderRadius: '6px',
+              padding: '2px 8px',
+              '& .MuiChip-icon': {
+                marginLeft: '4px',
+                marginRight: '-4px',
+              },
+            }}
+          />
         )}
+
         {activeTab === 'assessment' && (
           <Typography variant="body2" color="gray" sx={{ ml: 2 }}>
             *Assessments are for the overall course.
           </Typography>
         )}
       </Box>
-      <Box sx={{ background: '#F0F0F0', padding: 1, mb: 2, borderRadius: 2 }}>
+      <Box
+        sx={{
+          backgroundColor: '#fff',
+          padding: 2,
+          mb: 2,
+          borderRadius: '4px',
+          border: '1px solid #e5e7eb',
+          borderLeft: '4px solid #1976d2', 
+        }}
+      >
 
         <Typography variant="h5" mb={2} color='black'>
           {course ? `Course: ${course.title}` : 'Course not found'}

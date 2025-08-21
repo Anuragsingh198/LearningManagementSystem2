@@ -124,13 +124,27 @@ const CourseList = () => {
             <Link to="/teacher/create-course" style={{ textDecoration: 'none' }}>
               <Button
                 variant="contained"
-                color="primary"
                 startIcon={<PlusCircle size={20} />}
                 sx={{
-                  background: 'linear-gradient(to right, #2563eb, #4f46e5)',
+                  backgroundColor: '#1976d2', 
+                  color: '#fff',
+                  borderRadius: '4px',
+                  boxShadow: 'none',
+                  transition: 'all 0.2s ease',
+
                   '&:hover': {
-                    background: 'linear-gradient(to right, #1d4ed8, #4338ca)'
-                  }
+                    backgroundColor: '#1565c0',
+                    boxShadow: 'none',
+                  },
+                  '&:active': {
+                    backgroundColor: '#0d47a1', 
+                    boxShadow: 'none',
+                  },
+                  '&:disabled': {
+                    backgroundColor: '#90caf9',
+                    color: '#e0e0e0',
+                    boxShadow: 'none',
+                  },
                 }}
               >
                 Create New Course
@@ -228,9 +242,9 @@ const CourseList = () => {
                       gap: 1,
                     }}
                   >
-                    
+
                     <SchoolIcon fontSize="small" color="primary" />
-                    Ongoing Courses                    
+                    Ongoing Courses
                     <SchoolIcon fontSize="small" color="primary" />
                   </Typography>
                   <Box sx={{ flex: 1, borderBottom: "2px dashed #ccc" }} />

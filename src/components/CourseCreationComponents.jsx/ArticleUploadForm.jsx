@@ -155,11 +155,11 @@ const ArticleUploadForm = ({ courseId }) => {
       formData.append('courseId', courseId);
       formData.append('moduleId', selectedModule);
       formData.append('article', articleFile); // backend field expected: 'article'
-      
 
-//       for (let [key, value] of formData.entries()) {
-//   console.log(key, value);
-// }
+
+      //       for (let [key, value] of formData.entries()) {
+      //   console.log(key, value);
+      // }
 
 
 
@@ -178,14 +178,14 @@ const ArticleUploadForm = ({ courseId }) => {
     }
   };
 
-  if (!course) return <BlurLoading/>;
+  if (!course) return <BlurLoading />;
 
   return (
-    <Box sx={{ backgroundColor: 'background.default', py: 3, width: '99%', borderRadius: 10, border: '1px solid', borderColor: 'grey.300' }}>
+    <Box sx={{ backgroundColor: 'background.default', py: 3, }}>
       <Header />
 
       <Box sx={{ maxWidth: 'lg', mx: 'auto', mt: 2 }}>
-        <Paper elevation={1} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Paper elevation={1} sx={{ borderRadius: '4px', overflow: 'hidden' }}>
           <Box sx={{ p: 2 }}>
             {isUploaded && (
               <Alert severity="success" sx={{ mb: 3 }}>
@@ -208,11 +208,53 @@ const ArticleUploadForm = ({ courseId }) => {
                 </Box>
 
                 {showModuleForm ? (
-                  <Card component="form" onSubmit={handleCreateModule} sx={{ p: 2, backgroundColor: 'background.paper' }}>
+                  <Card component="form" onSubmit={handleCreateModule} sx={{ p: 2, backgroundColor: 'background.paper', boxShadow: 'none', border: '1px solid', borderColor: 'divider' }}>
                     <TextField fullWidth label="Module Title" id="title" name="title" value={moduleData.title} onChange={handleModuleInputChange} error={Boolean(errors.moduleTitle)} helperText={errors.moduleTitle} margin="normal" required />
                     <TextField fullWidth label="Module Description" id="description" name="description" value={moduleData.description} onChange={handleModuleInputChange} error={Boolean(errors.moduleDescription)} helperText={errors.moduleDescription} margin="normal" required multiline rows={3} />
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                      <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>Create Module</Button>
+                      <Button
+                        type="submit"
+                        variant="outlined"
+                        disabled={isSubmitting}
+                        sx={{
+                          borderRadius: '4px',
+                          borderColor: '#1976d2',   // primary blue border
+                          color: '#1976d2',         // blue text
+                          fontWeight: 600,
+                          textTransform: 'none',
+
+                          // hover
+                          '&:hover': {
+                            borderColor: '#0d47a1',
+                            backgroundColor: '#e3f2fd', // pastel blue background
+                          },
+
+                          // active (pressed)
+                          '&:active': {
+                            borderColor: '#0b3c91',
+                            backgroundColor: '#bbdefb',
+                          },
+
+                          // focus ring
+                          '&:focus': {
+                            outline: '2px solid',
+                            outlineColor: '#90caf9',
+                            outlineOffset: '2px',
+                          },
+
+                          // disabled
+                          '&.Mui-disabled': {
+                            borderColor: '#cbd5e1',
+                            color: '#9ca3af',
+                          },
+                        }}
+                      >
+                        {isSubmitting ? (
+                          <CircularProgress size={24} color="inherit" />
+                        ) : (
+                          "Create Module"
+                        )}
+                      </Button>
                     </Box>
                   </Card>
                 ) : (
@@ -303,7 +345,7 @@ const ArticleUploadForm = ({ courseId }) => {
                     <Typography variant="caption" fontWeight="medium">Upload Progress</Typography>
                     <Typography variant="caption" color="text.secondary">{uploadProgress}%</Typography>
                   </Box>
-                  <LinearProgress variant="determinate" value={uploadProgress} sx={{ height: 8, borderRadius: 4, '& .MuiLinearProgress-bar': { background: 'linear-gradient(to right, #3b82f6, #6366f1)' } }} />
+                  <LinearProgress variant="determinate" value={uploadProgress} sx={{ height: 8, borderRadius: "4px", '& .MuiLinearProgress-bar': { background: 'linear-gradient(to right, #3b82f6, #6366f1)' } }} />
                 </Box>
               )}
 

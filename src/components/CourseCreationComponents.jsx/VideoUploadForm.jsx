@@ -291,12 +291,11 @@ const handleUploadVideo = async (e) => {
   return (
     <Box sx={{ 
       
-      backgroundColor: 'background.default', py: 3, width: '99%', borderRadius:10, border: '1px solid',
-    borderColor: 'grey.300', }}>
+    backgroundColor: 'background.default', py: 3, width: '100%', }}>
       <Header />
       
       <Box sx={{ maxWidth: 'lg', mx: 'auto', mt: 2 }}>
-        <Paper elevation={1} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Paper elevation={1} sx={{ borderRadius: 2, overflow: 'hidden', boxShadow: 'none' }}>
           <Box sx={{ p: 2 }}>
             {isUploaded && (
               <Alert severity="success" sx={{ mb: 3 }}>
@@ -327,7 +326,7 @@ const handleUploadVideo = async (e) => {
                 </Box>
                 
                 {showModuleForm ? (
-                  <Card component="form" onSubmit={handleCreateModule} sx={{ p: 2, backgroundColor: 'background.paper' }}>
+                  <Card component="form" onSubmit={handleCreateModule} sx={{ p: 2, backgroundColor: 'background.paper', border: '1px solid #e3dfdf9f', boxShadow: 'none' }}>
                     <TextField
                       fullWidth
                       label="Module Title"
@@ -357,14 +356,50 @@ const handleUploadVideo = async (e) => {
                     />
                     
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        disabled={isSubmitting}
-                      >
-                        Create Module
-                      </Button>
+                        <Button
+                          type="submit"
+                          variant="outlined"
+                          disabled={isSubmitting}
+                          sx={{
+                            borderRadius: '4px',
+                            borderColor: '#1976d2',   // soft blue border
+                            color: '#1976d2',         // text color
+                            fontWeight: 600,
+                            textTransform: 'none',
+
+                            // hover
+                            '&:hover': {
+                              borderColor: '#0d47a1',
+                              backgroundColor: '#e3f2fd', // pastel blue hover
+                            },
+
+                            // active (pressed)
+                            '&:active': {
+                              borderColor: '#0b3c91',
+                              backgroundColor: '#bbdefb',
+                            },
+
+                            // focus (keyboard nav)
+                            '&:focus': {
+                              outline: '2px solid',
+                              outlineColor: '#90caf9',
+                              outlineOffset: '2px',
+                            },
+
+                            // disabled
+                            '&.Mui-disabled': {
+                              borderColor: '#cbd5e1',
+                              color: '#9ca3af',
+                            },
+                          }}
+                        >
+                          {isSubmitting ? (
+                            <CircularProgress size={22} color="inherit" />
+                          ) : (
+                            "Create Module"
+                          )}
+                        </Button>
+
                     </Box>
                   </Card>
                 ) : (
