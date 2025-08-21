@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const backendBaseUrl = import.meta.env.VITE_SERVER_URL; // e.g., http://localhost:5000/api
+const serverurl = import.meta.env.VITE_SERVER_URL;
 
 const getAuthToken = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -13,7 +14,7 @@ export const getAllLanguageAction = async (dispatch) => {
     dispatch({ type: "SET_LOADING", payload: true });
 
     const { data } = await axios.get(`${backendBaseUrl}/api/assessments/get-languages`);
-    console.log('fetched  languages  from action   are : ' , data) 
+    // console.log('fetched  languages  from action   are : ' , data) 
     dispatch({ type: "SET_LANGUAGES", payload: data });
     dispatch({ type: "SET_LOADING", payload: false });
   } catch (error) {
@@ -115,3 +116,71 @@ export const submitCodeAction = async (dispatch, { sourceCode, languageId, quest
     dispatch({ type: "SET_LOADING", payload: false });
   }
 };
+
+export const submitAssessment = async (dispatch, { allAnswers, assessmentId }) => {
+  try {
+
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const token = getAuthToken();
+
+    const { data } = await axios.post(
+      `${serverurl}/api/assessments/submit-assessment`,
+      { 
+       allAnswers, assessmentId
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const questionsAndAnswers = data.data
+    console.log("This is the output after test submission:", data);
+
+    dispatch({type: "SET_QUES_AND_ANS", payload: questionsAndAnswers })
+    if (data) return data; 
+    
+  } catch (error) {
+
+    console.error('Could not submit the assessment')
+    dispatch({ type: "SET_ERRORS", payload: error?.response?.data || error.message });
+
+  } finally {
+
+    dispatch({ type: "SET_LOADING", payload: false });
+
+  }
+};
+
+export const reviewAssignment = async (dispatch, { assessmentId }) => {
+  try {
+
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const token = getAuthToken();
+
+    console.log('the token is: ', token)
+
+    const { data } = await axios.post(
+      `${serverurl}/api/assessments/review-assessment`,
+      { 
+        assessmentId
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const questionsAndAnswers = data.data
+    console.log("This is the output after test submission:", data);
+
+    dispatch({type: "SET_QUES_AND_ANS", payload: questionsAndAnswers })
+    if (data) return data; 
+    
+  } catch (error) {
+
+    console.error('Could not submit the assessment')
+    dispatch({ type: "SET_ERRORS", payload: error?.response?.data || error.message });
+
+  } finally {
+
+    dispatch({ type: "SET_LOADING", payload: false });
+
+  }
+};
+
+

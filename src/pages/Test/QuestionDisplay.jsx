@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { 
   Box,
   Typography,
@@ -7,11 +7,59 @@ import {
   FormControlLabel,
   Paper,
   Stack,
-  Divider,
   useTheme
 } from '@mui/material';
 import { HelpOutline, ArrowForward } from '@mui/icons-material';
 import CodingIDE from './CodingIDE';
+
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/github.css';
+
+const MarkdownRenderer = ({ text }) => (
+  <ReactMarkdown
+    remarkPlugins={[remarkGfm]}
+    rehypePlugins={[rehypeHighlight]}
+    components={{
+      code({ node, inline, className, children, ...props }) {
+        const match = /language-(\w+)/.exec(className || '');
+        return !inline && match ? (
+          <div
+            style={{
+              backgroundColor: '#f6f8fa',
+              padding: '0.5em',
+              borderRadius: '3px',
+              margin: '0.5em 0',
+              overflowX: 'auto',
+            }}
+          >
+            <pre style={{ margin: 0 }}>
+              <code className={className} {...props}>
+                {children}
+              </code>
+            </pre>
+          </div>
+        ) : (
+          <code
+            style={{
+              backgroundColor: '#f0f0f0',
+              padding: '2px 4px',
+              borderRadius: '4px',
+              fontSize: '0.9em',
+            }}
+            className={className}
+            {...props}
+          >
+            {children}
+          </code>
+        );
+      },
+    }}
+  >
+    {text}
+  </ReactMarkdown>
+);
 
 const QuestionDisplay = ({ 
   question, 
@@ -25,8 +73,7 @@ const QuestionDisplay = ({
   onCodingSubmit,
 }) => {
   const theme = useTheme();
-  // console.log('this is the  langiages  afwyehqgesahbster  extraction: ' ,codingLanguages.languages )
-  // console.log('the questions in the questionDisplay.jsx', question)
+
   if (question.type === 'coding') {
     return (
       <Box sx={{ flex: 1, bgcolor: 'background.paper' }}>
@@ -41,22 +88,19 @@ const QuestionDisplay = ({
   }
 
   return (
-    <Box sx={{ 
-      flex: 1, 
-      width: '93vw',
-      // bgcolor: 'background.paper',
-      [theme.breakpoints.up('md')]: {
-        p: 6
-      }
-    }}>
-      <Box sx={{ 
-        maxWidth: '100%',
-        mx: 'auto'
-      }}>
+    <Box
+      sx={{
+        flex: 1,
+        width: '93vw',
+        [theme.breakpoints.up('md')]: { p: 6 },
+      }}
+    >
+      <Box sx={{ maxWidth: '100%', mx: 'auto' }}>
+        {/* Question Header */}
         <Box sx={{ mb: 3 }}>
-          <Stack 
-            direction="row" 
-            justifyContent="space-between" 
+          <Stack
+            direction="row"
+            justifyContent="space-between"
             alignItems="center"
             sx={{ mb: 2 }}
           >
@@ -70,23 +114,23 @@ const QuestionDisplay = ({
               Multiple Choice
             </Typography>
           </Stack>
-          
-          <Paper 
+
+          {/* Question Text with Markdown */}
+          <Paper
             elevation={0}
             sx={{
               p: 3,
               bgcolor: 'lightGray',
               borderLeft: 4,
               borderColor: 'gray',
-              borderRadius: 1
+              borderRadius: 1,
             }}
           >
-            <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-              {question.questionText}
-            </Typography>
+            <MarkdownRenderer text={question.questionText} />
           </Paper>
         </Box>
 
+        {/* Options with Markdown */}
         <Box sx={{ mb: 4 }}>
           <Stack spacing={2}>
             {question.options?.map((option) => (
@@ -98,36 +142,34 @@ const QuestionDisplay = ({
                   border: 1,
                   borderColor: 'divider',
                   borderRadius: 1,
-                  '&:hover': {
-                    bgcolor: 'lightGray'
-                  },
+                  '&:hover': { bgcolor: 'lightGray' },
                   ...(selectedOption === option._id && {
                     borderColor: 'primary.main',
-                    bgcolor: 'lightGray'
-                  })
+                    bgcolor: 'lightGray',
+                  }),
                 }}
               >
                 <FormControlLabel
                   value={option._id}
                   control={
-                    <Radio 
+                    <Radio
                       checked={selectedOption === option._id}
                       onChange={() => onOptionSelect(option._id)}
                       color="primary"
                     />
                   }
                   label={
-                    <Typography variant="body1" color="text.primary">
-                      {option.optionText}
-                    </Typography>
+                    <Box sx={{ width: '100%' }}>
+                      <MarkdownRenderer text={option.optionText} />
+                    </Box>
                   }
                   sx={{
                     width: '100%',
                     m: 0,
                     alignItems: 'flex-start',
                     '& .MuiFormControlLabel-label': {
-                      flex: 1
-                    }
+                      flex: 1,
+                    },
                   }}
                 />
               </Paper>
@@ -135,6 +177,7 @@ const QuestionDisplay = ({
           </Stack>
         </Box>
 
+        {/* Save & Next Button */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             onClick={onSaveAndNext}
@@ -144,7 +187,7 @@ const QuestionDisplay = ({
               px: 4,
               py: 1.5,
               fontWeight: 'medium',
-              textTransform: 'none'
+              textTransform: 'none',
             }}
           >
             Save & Next

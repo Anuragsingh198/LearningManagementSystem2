@@ -77,6 +77,11 @@ export const assignmentReducer = (state, action) => {
                 ...state,
                 testData: action.payload
             }
+        case "SET_QUES_AND_ANS":
+            return {
+                ...state,
+                overAllResult: action.payload
+            }
 
         default:
             return state;

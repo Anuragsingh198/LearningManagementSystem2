@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Stack,
@@ -22,7 +22,20 @@ const OutputPanel = ({
 
   // Map backend results to UI format
 
-  console.log( " complietionSuccess , compiloerError , testresults, executionOutput, ",testResults )
+  // console.log( " complietionSuccess , compiloerError , testresults, executionOutput, ",testResults )
+
+  // console.log('compilationSuccess is:', compilationSuccess)
+  // console.log('compilationError is:', compilationError)
+  // console.log('compilationSuccess is:', executionOutput)
+
+  useEffect(() => {
+    
+  console.log('compilationSuccess is:', compilationSuccess)
+  console.log('compilationError is:', compilationError)
+  console.log('compilationSuccess is:', executionOutput)
+
+  }, [compilationSuccess, compilationError, executionOutput])
+
   const normalizedResults = (testResults || []).map(r => ({
     input: r.input || "",
     expectedOutput: r.expectedOutput || "",
@@ -32,9 +45,9 @@ const OutputPanel = ({
    
   const passedTests = normalizedResults.filter(result => result.passed).length;
   const totalTests = normalizedResults.length;
-  console.log("compiled  result is : ", normalizedResults);
-  console.log("passedTests  result is : ", passedTests);
-  console.log("totalTests  result is : ", totalTests);
+  // console.log("compiled  result is : ", normalizedResults);
+  // console.log("passedTests  result is : ", passedTests);
+  // console.log("totalTests  result is : ", totalTests);
   return (
     <Box
       sx={{

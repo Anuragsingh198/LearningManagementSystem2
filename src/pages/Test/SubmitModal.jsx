@@ -17,7 +17,8 @@ const SubmitModal = ({
   onConfirm, 
   answeredCount, 
   totalCount,
-  isFullScreen // Add this new prop
+  isFullScreen, // Add this new prop
+  loading
 }) => {
   const unansweredCount = totalCount - answeredCount;
 
@@ -108,7 +109,7 @@ const SubmitModal = ({
             fullWidth
             sx={{ py: 1 }}
           >
-            Submit Test
+            { loading ? 'Submitting...' : 'Submit Test'}
           </Button>
         </Stack>
       </Box>

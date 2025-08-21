@@ -228,7 +228,7 @@ export const getMyCoursesAction = async (dispatch) => {
   }
 
   const userId = user._id
-  console.log("this is the  user Id : ", userId);
+  // console.log("this is the  user Id : ", userId);
   try {
     dispatch({ type: 'COURSE_LOADING' });
     const response = await axios.get(`${serverurl}/api/users/${userId}`, {
@@ -251,7 +251,7 @@ export const getMyCoursesAction = async (dispatch) => {
         payload: myCourses
       });
 
-      console.log('My Courses fetched:', myCourses);
+      // console.log('My Courses fetched:', myCourses);
       return myCourses;
     } else {
       throw new Error(data.message || 'Failed to fetch my courses');
@@ -814,6 +814,9 @@ export const addAssessmentAction = async (
   testType
 ) => {
   try {
+
+    const token = getAuthToken()
+
     dispatch({ type: "SET_LOADING", payload: true });
 
     const payload = {
@@ -829,7 +832,12 @@ export const addAssessmentAction = async (
 
     const { data } = await axios.post(
       `${serverurl}/api/assessments/add-assessment`,
-      payload
+      payload,
+            {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     // dispatch({ type: "ADD_ASSESSMENT_SUCCESS", payload: data });
@@ -849,7 +857,7 @@ export const addAssessmentAction = async (
 
 export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
   const token = getAuthToken();
-  console.log('the data is: ', payloadData)
+  // console.log('the data is: ', payloadData)
   try {
     dispatch({type: 'SET_LOADING', payload: true});
 
@@ -907,7 +915,7 @@ export const fetchAllAssessment = async (dispatch) => {
 
     }
 
-    console.log('the data is:', data)
+    // console.log('the data is:', data)
 
   } catch (error) {
     console.error('Error fetching the questions: ', error)

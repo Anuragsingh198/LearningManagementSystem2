@@ -79,8 +79,9 @@ function App() {
                   <Route path="/course/module/:courseId/:moduleId" element={<ModuleDetails />} />
                   <Route path="/assessments" element={<MainAssessment />} />
                   <Route path="/assessments/start-test/:id" element={<TestStartPage />} />
-                  <Route path="/assessments/review/:id" element={<TestReviewPage />} />
-                  <Route path="/assessments/test-submitted" element={<TestExitPage />} />
+                  {/* <Route path="/assessments/review/:id" element={<TestReviewPage />} /> */}
+                  <Route path="/assessments/review/:id" element={<TestExitPage />} />
+                  {/* <Route path="/assessments/test-submitted/:id" element={<TestExitPage />} /> */}
                   <Route path="/assessments/create" element={<CreateAssessment />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
 

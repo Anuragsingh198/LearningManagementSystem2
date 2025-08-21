@@ -46,11 +46,11 @@ function TestStartPage() {
 
       const testData = res.data.data;
 
-      console.log('the question data for coding dispatch is: ', testData.questions)
+      // console.log('the question data for coding dispatch is: ', testData.questions)
 
       const codingQuestions = testData.questions.filter(q => q.type === "coding")
 
-      console.log('the coding questions array is final', codingQuestions)
+      // console.log('the coding questions array is final', codingQuestions)
 
       
       assignmentDispatch({type: "SET_TEST_DATA", payload: testData })

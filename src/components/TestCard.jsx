@@ -1,8 +1,10 @@
 import React from 'react';
 import { Box, Typography, Chip, Stack, Button } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useCourseContext } from '../context/contextFiles/CourseContext';
+import { useAssignmentContext } from '../context/contextFiles/assignmentContext';
+import { reviewAssignment } from '../context/Actions/AssignmentActions';
 
 
 function formatDuration(mins) {
@@ -15,13 +17,17 @@ function formatDuration(mins) {
 
 function TestCard({ test, role }) {
     const navigate = useNavigate();
+    const { id } = useParams()
+    const assessmentId = id
 
-    const {state: {currentAssessment}, dispatch} = useCourseContext(); 
+    const {state: {}, dispatch} = useAssignmentContext(); 
     // console.log('the test is: ', test)
     // console.log('the partial test data from context is in testcard: ', currentAssessment)
 
-    const handleOnClick = () => {        
-        if (test.completed) {
+    const handleOnClick = async () => {        
+        if (test.attempted) {
+            // fetch attempted test details
+            await reviewAssignment(dispatch, {assessmentId: test._id});
             navigate(`/assessments/review/${test._id}`)
         } else {
              dispatch({
@@ -35,7 +41,7 @@ function TestCard({ test, role }) {
 
     const handleOnAdminClick = () => {
 
-        navigate(`/assessments/test-submitted`)
+        navigate(`/assessments/review-admin`)
 
     }
 
@@ -113,12 +119,12 @@ function TestCard({ test, role }) {
 
 
 
-            {/* {role === 'employee' && <Button
+            {role === 'employee' && <Button
                 variant="contained"
                 sx={{
-                    backgroundColor: test.completed ? '#6c757d' : '#007BFF',
+                    backgroundColor: test.attempted ? '#6c757d' : '#007BFF',
                     '&:hover': {
-                        backgroundColor: test.completed ? '#5a6268' : '#0056b3',
+                        backgroundColor: test.attempted ? '#5a6268' : '#0056b3',
                     },
                     width: '100%',
                     color: '#ffffff',
@@ -129,10 +135,10 @@ function TestCard({ test, role }) {
                 }}
                 onClick={handleOnClick}
             >
-                {test.completed ? 'Review Test' : 'Start Test'}
-            </Button>} */}
+                {test.attempted ? 'Review Test' : 'Start Test'}
+            </Button>}
 
-             {role === 'employee' && <Button
+             {/* {role === 'employee' && <Button
                 variant="contained"
                 sx={{
                     backgroundColor: '#007BFF',
@@ -148,8 +154,8 @@ function TestCard({ test, role }) {
                 }}
                 onClick={handleOnClick}
             >
-                Start Test
-            </Button>}
+                { test.attempted ? 'Review Test' : 'Start Test'}
+            </Button>} */}
 
 
             {role === 'instructor' && <Button

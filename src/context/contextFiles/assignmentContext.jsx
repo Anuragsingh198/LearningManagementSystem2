@@ -11,7 +11,8 @@ const initialState = {
   error: null,
   results: [],
   codingResult: [],
-  testData: null
+  testData: null,
+  overAllResult: null,
 };
 
 

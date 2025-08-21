@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { useNavigate , useParams} from 'react-router-dom';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
-import { getAllLanguageAction } from '../../context/Actions/AssignmentActions';
+import { getAllLanguageAction, submitAssessment } from '../../context/Actions/AssignmentActions';
 
 // Create a custom theme
 const theme = createTheme({
@@ -48,6 +48,7 @@ const TestPage = () => {
   const [currentCodingAnswer , setCurrentCodingAnswer] =  useState("");
   const testPageRef = useRef(null);
   const {state: {testData}, dispatch} = useAssignmentContext();
+  const [loading, setLoading] = useState(false)
 
   // console.log('the test data from context in test page is: ', contextTestData)
 
@@ -305,20 +306,7 @@ useEffect(() => {
 
 // Add this new function for auto-submission
 const handleAutoSubmit = () => {
-  toast.info('Time is up! Submitting your test automatically...', {
-    position: "top-center",
-    autoClose: 3000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
-  
-  // Delay the actual submission slightly to let the toast show
-  setTimeout(() => {
-    handleSubmitTest();
-  }, 3000);
+  handleSubmitTest();
 };
 
   // Load saved MCQ answers from localStorage
@@ -434,8 +422,9 @@ const handleAutoSubmit = () => {
   };
 
   // Handle submit test
-  const handleSubmitTest = () => {
+  const handleSubmitTest = async () => {
     // Get MCQ answers from localStorage
+    setLoading(true)
     const mcqAnswers = loadSavedAnswers();
 
     // Get coding answers from state
@@ -447,6 +436,14 @@ const handleAutoSubmit = () => {
     const allAnswers = [...mcqAnswers, ...codingAnswersArray];
 
     console.log('Test submitted with answers:', allAnswers);
+    console.log('Test details are:', testData._id);
+    console.log('Total Questions', testData.questions.length)
+    console.log('Total Answered:', totalAnswered);
+
+    const assessmentId = testData._id
+    
+    await submitAssessment(dispatch, {allAnswers, assessmentId})
+
 
     // Clear localStorage
     localStorage.removeItem(storageKey);
@@ -471,10 +468,16 @@ const handleAutoSubmit = () => {
       draggable: true,
       progress: undefined,
     });
+
+    setLoading(false)
+
+    setTimeout(() => {
+      exitFullscreen();
+
+    }, 2000)
         
-    exitFullscreen();
     
-    navigate('/assessments/test-submitted');
+    navigate(`/assessments/review/${id}`);
     
   };
 
@@ -541,6 +544,7 @@ const handleAutoSubmit = () => {
           answeredCount={totalAnswered}
           totalCount={testData.questions.length}
            isFullScreen={isFullScreen}
+           loading={loading}
         />
       </Box>
     </ThemeProvider>

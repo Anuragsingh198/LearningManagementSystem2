@@ -45,6 +45,7 @@ const CodingIDE = ({
   onChange,
   onSubmit
 }) => {
+
   const theme = useTheme();
   // const [question, setQuestion] = useState(null);
 
@@ -60,17 +61,16 @@ const CodingIDE = ({
 
   // Load question from context
   const { state: { assignmentQuestions }, dispatch } = useAssignmentContext();
-  const currentQuestionId = '689d670534b755cc788a7dc0';
 
-  useEffect(() => {
-    getQuestionByIdAction(dispatch, currentQuestionId);
-  }, [])
+  // useEffect(() => {
+  //   getQuestionByIdAction(dispatch, currentQuestionId);
+  // }, [])
 
-  useEffect(() => {
-    // setQuestion(assignmentQuestions);
-    console.log(" this is the  question data ; ", question)
-    console.log("the already existing coding question as assignment question is: ", assignmentQuestions)
-  }, [assignmentQuestions])
+  // useEffect(() => {
+  //   // setQuestion(assignmentQuestions);
+  //   console.log(" this is the  question data ; ", question)
+  //   console.log("the already existing coding question as assignment question is: ", assignmentQuestions)
+  // }, [assignmentQuestions, question])
 
   const handleCompileAndRun = async () => {
     setIsCompiling(true);
@@ -117,6 +117,7 @@ const CodingIDE = ({
     }
   };
   const handleSubmit = async () => {
+
     setIsSubmitting(true);
 
     try {
