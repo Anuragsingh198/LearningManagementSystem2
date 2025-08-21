@@ -272,7 +272,7 @@ const CourseListItem = ({ course, onViewCourse }) => {
             </Box>
           </Tooltip>
 
-          <Tooltip title="Mark as Helpful" arrow>
+          {/* <Tooltip title="Mark as Helpful" arrow>
             <Box
               sx={{
                 display: "flex",
@@ -318,7 +318,7 @@ const CourseListItem = ({ course, onViewCourse }) => {
               <Share2 size={16} />
               <Typography variant="body2">Share</Typography>
             </Box>
-          </Tooltip>
+          </Tooltip> */}
         </Box>
       </Box>
 

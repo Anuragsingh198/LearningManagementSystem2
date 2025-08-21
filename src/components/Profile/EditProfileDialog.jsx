@@ -13,6 +13,8 @@ import {
   IconButton,
 } from "@mui/material";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from 'react-toastify';
+
 
 const emptyValues = {
   name: "",
@@ -43,13 +45,15 @@ const EditProfileDialog = ({ open, onClose, initialValues, onSave, onChangePassw
   };
 
   const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setValues((prev) => ({ ...prev, avatar: reader.result }));
-    };
-    reader.readAsDataURL(file);
+    toast.error("Feature under development")
+    console.log("button clicked")
+    // const file = e.target.files?.[0];
+    // if (!file) return;
+    // const reader = new FileReader();
+    // reader.onload = () => {
+    //   setValues((prev) => ({ ...prev, avatar: reader.result }));
+    // };
+    // reader.readAsDataURL(file);
   };
 
   const handleSave = () => {
@@ -118,7 +122,7 @@ const EditProfileDialog = ({ open, onClose, initialValues, onSave, onChangePassw
         <Box sx={{ display: "flex", gap: 3, minHeight: 320 }}>
           <Box sx={{ width: "16rem", flex: "0 0 16rem" }}>
             <SidebarItem id="profile" label="Edit Profile" />
-            <SidebarItem id="password" label="Change Password" />
+            {/* <SidebarItem id="password" label="Change Password" /> */}
           </Box>
           <Box sx={{ flex: 1 }}>
             {activeSection === "profile" ? (
@@ -134,6 +138,7 @@ const EditProfileDialog = ({ open, onClose, initialValues, onSave, onChangePassw
                   label="Name"
                   name="name"
                   value={values.name}
+                  disabled
                   onChange={handleChange}
                   fullWidth
                 />

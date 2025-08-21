@@ -16,6 +16,7 @@ import { useCourseContext } from "../../context/contextFiles/CourseContext";
 import { useAuth } from "../../context/contextFiles/AuthContext";
 import { getCourseWithProgress } from "../../context/Actions/courseActions";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const numericStyle = { fontFamily: "'Fira Code', monospace" };
 
@@ -98,13 +99,13 @@ const UserDetails = () => {
   );
 
   const certificates = [
-    { title: "Full Stack Developer", provider: "Digividya", date: "Mar 2024" },
-    { title: "Cloud Fundamentals", provider: "Digividya", date: "Apr 2024" },
+    // { title: "Full Stack Developer", provider: "Digividya", date: "Mar 2024" },
+    // { title: "Cloud Fundamentals", provider: "Digividya", date: "Apr 2024" },
   ];
 
   const tests = [
-    { title: "JavaScript Test", score: "85%", date: "May 2024" },
-    { title: "React Test", score: "90%", date: "Jun 2024" },
+    // { title: "JavaScript Test", score: "85%", date: "May 2024" },
+    // { title: "React Test", score: "90%", date: "Jun 2024" },
   ];
 
   const menu = [
@@ -329,7 +330,10 @@ const UserDetails = () => {
           {menu.map((m) => (
             <Box
               key={m.key}
-              onClick={() => setActiveTab(m.key)}
+              onClick={() => {
+                // setActiveTab(m.key)
+                toast.warning("Feature under development")
+              }}
               sx={{
                 display: "flex",
                 alignItems: "center",
