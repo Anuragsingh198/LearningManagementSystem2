@@ -68,56 +68,134 @@ useEffect(() => {
   // const isPageLoading = loading || !oneCourse || !oneCourseProgress;
   // const isPageLoading =false;
 
-   if (isPageLoading) {
+  if (isPageLoading) {
     return (
-      <Box display="flex" flexDirection="column" gap={4} width="95%" sx={{px: 2, py: 3}}>
-        {/* Header */}
-        <Paper
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          flexWrap: 'nowrap',
+          flexDirection: { xs: 'column', md: 'row' },
+          px: 2,
+          py: 3,
+          width: '100%',
+        }}
+      >
+        {/* Left Section - Course Info Skeleton */}
+        <Box
           sx={{
-            background: "linear-gradient(to right, #2563eb, #9333ea)",
-            borderRadius: 3,
-            p: 4,
-            color: "white"
+            flex: { xs: '1 1 auto', md: '0 0 70%' },
+            maxWidth: { xs: '100%', md: '70%' },
+            minWidth: 0,
           }}
         >
-          <Skeleton variant="text" width="60%" height={40} sx={{ bgcolor: "grey.200" }} />
-          <Skeleton variant="rectangular" height={60} sx={{ my: 2, bgcolor: "grey.200" }} />
-          <Grid container spacing={3} mb={4} mt={2}>
-            {[...Array(4)].map((_, i) => (
-              <Grid item xs={6} sm={3} key={i} textAlign="center">
-                <Skeleton variant="text" width="40%" height={30} sx={{ bgcolor: "transparent" }} />
-                <Skeleton variant="text" width="60%" height={20} sx={{ bgcolor: "transparent" }} />
-              </Grid>
-            ))}
-          </Grid>
-          <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 2, bgcolor: "grey.200" }} />
-        </Paper>
+          <Paper
+            sx={{
+              height: '81%',
+              backgroundColor: 'background.paper',
+              borderRadius: '4px',
+              p: { xs: 2, md: 3 },
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 'none',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            {/* Title */}
+            <Skeleton variant="text" width="60%" height={35} sx={{ mb: 2 }} />
 
-        {/* Chapters List */}
-        <Box display="flex" flexDirection="column" gap={2}>
-          {[...Array(3)].map((_, i) => (
-            <Paper
-              key={i}
+            {/* Description block */}
+            <Box
               sx={{
-                border: "1px solid",
-                borderColor: "divider",
-                borderRadius: 3,
-                p: 3
+                flexGrow: 1,
+                overflow: 'hidden',
+                mb: 2,
+                maxHeight: 190,
+                minHeight: 190,
               }}
             >
-              <Box display="flex" alignItems="center" gap={2}>
-                <Skeleton variant="circular" width={48} height={38} sx={{ bgcolor: "grey.200" }} />
-                <Box flex={1}>
-                  <Skeleton variant="text" width="50%" height={20} sx={{ bgcolor: "grey.200" }} />
-                  <Skeleton variant="text" width="30%" height={15} sx={{ bgcolor: "grey.200" }} />
-                </Box>
+              {[...Array(5)].map((_, i) => (
+                <Skeleton
+                  key={i}
+                  variant="text"
+                  width={`${70 - i * 10}%`}
+                  height={20}
+                  sx={{ mb: 1 }}
+                />
+              ))}
+            </Box>
+
+            {/* Progress Bar */}
+            <Box
+              sx={{
+                backgroundColor: '#eef2ff',
+                borderRadius: '4px',
+                py: 1.25,
+                px: 2,
+                borderColor: 'divider',
+                mt: 'auto',
+              }}
+            >
+              <Box display="flex" justifyContent="space-between" mb={1}>
+                <Skeleton variant="text" width="40%" height={20} />
+                <Skeleton variant="text" width="15%" height={20} />
               </Box>
-            </Paper>
-          ))}
+              <Skeleton variant="rectangular" height={10} sx={{ borderRadius: 2 }} />
+            </Box>
+          </Paper>
+        </Box>
+
+        {/* Right Section - Stats Skeleton */}
+        <Box
+          sx={{
+            flex: { xs: '1 1 auto', md: '0 0 30%' },
+            maxWidth: { xs: '100%', md: '30%' },
+            minWidth: 0,
+          }}
+        >
+          <Paper
+            sx={{
+              p: { xs: 2, md: 3 },
+              borderRadius: '4px',
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 'none',
+              backgroundColor: 'background.paper',
+              minHeight: 295,
+              maxWidth: '70%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+            }}
+          >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {[...Array(4)].map((_, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    px: 3,
+                    py: 2,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    borderRadius: 2,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    bgcolor: 'grey.50',
+                  }}
+                >
+                  <Skeleton variant="text" width="40%" height={20} />
+                  <Skeleton variant="text" width="20%" height={20} />
+                </Box>
+              ))}
+            </Box>
+          </Paper>
         </Box>
       </Box>
     );
   }
+
 
   return (
     <Box

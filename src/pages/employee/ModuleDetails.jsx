@@ -16,10 +16,10 @@ export const ModuleDetails = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 width: '100%',
-                borderRadius: 6,
+                borderRadius: 'none',
                 minHeight: '100vh', // Ensure it takes full screen height
-                border: '1px solid',
-                 borderColor: 'grey.300', // You can adjust this to grey.100 or grey.200 for even lighter
+                border: 'none',
+                 borderColor: 'none', // You can adjust this to grey.100 or grey.200 for even lighter
                 // backgroundColor: 'black',
                 overflowY: 'hidden',
                 '&::-webkit-scrollbar': {

@@ -22,14 +22,25 @@ import {
     useMediaQuery,
     useTheme
 } from '@mui/material';
+// import {
+//     Book as BookIcon,
+//     PlayCircle as PlayCircleIcon,
+//     Help as HelpIcon,
+//     CheckCircle as CheckCircleIcon,
+//     Close as CloseIcon
+// } from '@mui/icons-material';
 import {
-    Book as BookIcon,
-    PlayCircle as PlayCircleIcon,
-    Help as HelpIcon,
-    CheckCircle as CheckCircleIcon,
-    Close as CloseIcon
-} from '@mui/icons-material';
+    TvMinimalPlay,
+    Newspaper,
+    NotebookPen,
+    Book,
+    HelpCircle,
+    CircleCheckBig,
+    PlayCircle,
+} from 'lucide-react';
 import { toast } from 'react-toastify';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
 
 import NoContentPage from './NoContentPage';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
@@ -74,7 +85,7 @@ export const Sidebar = ({
         // setCurrentView('quiz');
         // sendWatchTime();
 
-        if(completedVideos >= totalVideos){
+        if (completedVideos >= totalVideos) {
             setCurrentView('quiz');
         } else {
             toast.error('Please complete all the Videos')
@@ -84,9 +95,11 @@ export const Sidebar = ({
 
     console.log('the articles in sidebar are ', articles)
 
-    useEffect(()=> {
+    useEffect(() => {
         // console.log('the tests are: ', tests)
     }, [tests])
+
+    const navigate = useNavigate();
 
     return (
         <Box sx={{
@@ -94,11 +107,54 @@ export const Sidebar = ({
             bgcolor: 'background.paper',
             p: 2,
             mt: 2,
-            border: '1px solid #ccc', // light gray border
-            borderRadius: 4,      // optional: small rounded corners for better aesthetics
-            boxShadow: 1,
-            height: 'fit-content'
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            boxShadow: 'none',
+            height: 'fit-content',
+            position: 'relative'
         }}>
+            {/* Back Button */}
+            <Button
+                onClick={() => {
+                    setTimeout(() => navigate(-1), 100);
+                }}
+                startIcon={<ArrowBackIcon sx={{ color: '#1976D2', fontSize: 10 }} />}
+                sx={{
+                    position: 'absolute',
+                    top: 16,
+                    left: 16,
+                    backgroundColor: 'transparent',
+                    color: '#1976D2',
+                    textTransform: 'none',
+                    fontSize: 12,
+                    padding: '5px 8px',
+                    minWidth: 'auto',
+                    boxShadow: 'none',
+                    '& .MuiButton-startIcon': {
+                        marginRight: '4px',
+                    },
+                    '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        boxShadow: 'none',
+                    },
+                }}
+            >
+                Back
+            </Button>
+
+            {/* Stroke line below the button */}
+            <Box
+                sx={{
+                    height: '1px',
+                    width: '100%',
+                    mt: 5,
+                    mb: 2,
+                    background: 'gray',
+                    borderRadius: 1,
+                    opacity: 0.6,
+                }}
+            />
+
             <Typography
                 variant="h6"
                 sx={{ fontWeight: 'bold', mb: 1, color: 'black' }}
@@ -125,29 +181,41 @@ export const Sidebar = ({
                         selected={currentView === 'video'}
                         onClick={() => setCurrentView('video')}
                         sx={{
+                            mb: '6px',
+                            border: '1px solid',
+                            borderColor: currentView === 'video' ? 'primary.main' : '#cfcfcf',
+                            borderRadius: '6px',
+                            bgcolor: currentView === 'video' ? '#E3F2FD' : 'transparent',
+                            boxShadow: 'none',
 
-                            border: '1px solid #ccc',
-                            mb: '4px',
-                            borderRadius: '8px',
                             '&.Mui-selected': {
-                                bgcolor: 'primary.main',
-                                color: 'primary.contrastText',
-                                '&:hover': { bgcolor: 'primary.dark' },
+                                bgcolor: '#E3F2FD',
+                                borderColor: 'primary.main',
+                                color: 'primary.main',
+                            },
+
+                            '&.Mui-selected:hover': {
+                                bgcolor: '#BBDEFB',
+                            },
+
+                            '&:hover': {
+                                bgcolor: '#f5f5f5',
                             },
                         }}
                     >
                         <ListItemIcon
                             sx={{
-                                color: currentView === 'video' ? 'primary.contrastText' : 'black',
+                                color: currentView === 'video' ? 'primary.main' : 'text.secondary',
                             }}
                         >
-                            <PlayCircleIcon />
+                            <TvMinimalPlay strokeWidth={currentView === 'video' ? 2 : 1} />
                         </ListItemIcon>
                         <ListItemText
                             primary={
                                 <Typography
                                     sx={{
-                                        color: currentView === 'video' ? 'primary.contrastText' : 'black',
+                                        fontWeight: currentView === 'video' ? 600 : 400,
+                                        color: currentView === 'video' ? 'primary.main' : 'text.primary',
                                     }}
                                 >
                                     {`Videos (${videos.length})`}
@@ -157,42 +225,53 @@ export const Sidebar = ({
                     </ListItemButton>
                 </ListItem>
 
-                {/* Articles button after Videos */}
                 <ListItem disablePadding>
                     <ListItemButton
                         selected={currentView === 'articles'}
                         onClick={() => setCurrentView('articles')}
                         sx={{
-                            border: '1px solid #ccc',
-                            mb: '4px',
-                            borderRadius: '8px',
+                            mb: '6px',
+                            border: '1px solid',
+                            borderColor: currentView === 'articles' ? 'primary.main' : '#cfcfcf',
+                            borderRadius: '6px',
+                            bgcolor: currentView === 'articles' ? '#E3F2FD' : 'transparent',
+                            boxShadow: 'none',
+
                             '&.Mui-selected': {
-                                bgcolor: 'primary.main',
-                                color: 'primary.contrastText',
-                                '&:hover': { bgcolor: 'primary.dark' },
+                                bgcolor: '#E3F2FD',
+                                borderColor: 'primary.main',
+                                color: 'primary.main',
+                            },
+
+                            '&.Mui-selected:hover': {
+                                bgcolor: '#BBDEFB',
+                            },
+
+                            '&:hover': {
+                                bgcolor: '#f5f5f5',
                             },
                         }}
                     >
                         <ListItemIcon
                             sx={{
-                                color: currentView === 'articles' ? 'primary.contrastText' : 'black',
+                                color:
+                                    currentView === 'articles' ? 'primary.main' : 'text.secondary',
                             }}
                         >
-                            <BookIcon />
+                            <Newspaper strokeWidth={currentView === 'articles' ? 2 : 1} />
                         </ListItemIcon>
                         <ListItemText
                             primary={
                                 <Typography
                                     sx={{
-                                        color: currentView === 'articles' ? 'primary.contrastText' : 'black',
+                                        fontWeight: currentView === 'articles' ? 600 : 400,
+                                        color:
+                                            currentView === 'articles' ? 'primary.main' : 'text.primary',
                                     }}
                                 >
                                     {`Articles (${articles?.length || 0})`}
                                 </Typography>
                             }
-                            // secondary={
-                            //     completedArticles?.length > 0 ? `${completedArticles.length} completed` : undefined
-                            // }
                         />
                     </ListItemButton>
                 </ListItem>
@@ -202,28 +281,40 @@ export const Sidebar = ({
                         selected={currentView === 'quiz'}
                         onClick={handleAssessmentTabSelection}
                         sx={{
+                            border: '1px solid',
+                            borderColor: currentView === 'quiz' ? 'primary.main' : '#cfcfcf',
+                            borderRadius: '6px',
+                            bgcolor: currentView === 'quiz' ? '#E3F2FD' : 'transparent',
+                            boxShadow: 'none',
 
-                            border: '1px solid #ccc',
-                            borderRadius: '8px',
                             '&.Mui-selected': {
-                                bgcolor: 'primary.main',
-                                color: 'primary.contrastText',
-                                '&:hover': { bgcolor: 'primary.dark' },
+                                bgcolor: '#E3F2FD',
+                                borderColor: 'primary.main',
+                                color: 'primary.main',
+                            },
+
+                            '&.Mui-selected:hover': {
+                                bgcolor: '#BBDEFB',
+                            },
+
+                            '&:hover': {
+                                bgcolor: '#f5f5f5',
                             },
                         }}
                     >
                         <ListItemIcon
                             sx={{
-                                color: currentView === 'quiz' ? 'primary.contrastText' : 'black',
+                                color: currentView === 'quiz' ? 'primary.main' : 'text.secondary',
                             }}
                         >
-                            <HelpIcon />
+                            <NotebookPen strokeWidth={currentView === 'quiz' ? 2 : 1} />
                         </ListItemIcon>
                         <ListItemText
                             primary={
                                 <Typography
                                     sx={{
-                                        color: currentView === 'quiz' ? 'primary.contrastText' : 'black',
+                                        fontWeight: currentView === 'quiz' ? 600 : 400,
+                                        color: currentView === 'quiz' ? 'primary.main' : 'text.primary',
                                     }}
                                 >
                                     {`Assessments (${tests?.length})`}
@@ -231,7 +322,6 @@ export const Sidebar = ({
                             }
                         />
                     </ListItemButton>
-
                 </ListItem>
             </List>
 
@@ -251,154 +341,156 @@ export const Sidebar = ({
                                 opacity: 0.6, // subtle feel
                             }}
                         />
-                        <List >
+                        <List>
                             {videos.map((video, index) => {
                                 const status = videoStatusMap[video._id];
-                                console.log("the status for particular video is:", video._id, status);
                                 return (
                                     <ListItem key={video._id} disablePadding>
                                         <ListItemButton
                                             selected={currentVideo === index}
-                                            onClick={() => {
-                                                setCurrentVideo(index)
-                                            }}
+                                            onClick={() => setCurrentVideo(index)}
                                             sx={{
-                                                borderLeft: status === 'completed' ? '4px solid' : 'none',
-                                                borderColor: 'success.main',
-                                                border: '1px solid #ccc',
-                                                mb: '4px',
-                                                borderRadius: '8px',
+                                                mb: '6px',
+                                                border: '1px solid',
+                                                borderColor: currentVideo === index ? 'primary.main' : '#cfcfcf',
+                                                borderRadius: '6px',
+                                                bgcolor: currentVideo === index ? '#E3F2FD' : 'transparent',
+                                                boxShadow: 'none',
+
                                                 '&.Mui-selected': {
-                                                    bgcolor: '#003c8f',
-                                                    color: 'primary.contrastText',
+                                                    bgcolor: '#E3F2FD',
+                                                    borderColor: 'primary.main',
+                                                    color: 'primary.main',
                                                 },
+
                                                 '&.Mui-selected:hover': {
-                                                    bgcolor: 'primary.main',
-                                                    color: 'white',
+                                                    bgcolor: '#BBDEFB',
                                                 },
+
                                                 '&:hover': {
-                                                    bgcolor: 'grey.100',
+                                                    bgcolor: '#f5f5f5',
                                                 },
                                             }}
                                         >
                                             <ListItemIcon
                                                 sx={{
-                                                    color: currentVideo === index ? 'primary.contrastText' : 'black',
+                                                    color: currentVideo === index ? 'primary.main' : 'text.secondary',
+                                                    minWidth: '32px',
                                                 }}
                                             >
                                                 {status === 'completed' ? (
-                                                    <CheckCircleIcon color="success" />
+                                                    <CircleCheckBig strokeWidth={2} color="#1976d2" />
                                                 ) : (
-                                                    <PlayCircleIcon color="action" />
+                                                    <PlayCircle strokeWidth={1} color="#757575" />
                                                 )}
                                             </ListItemIcon>
                                             <Box sx={{ flex: 1, minWidth: 0 }}>
                                                 <Typography
                                                     noWrap
                                                     sx={{
-                                                        color: currentVideo === index ? 'primary.contrastText' : 'black',
+                                                        fontWeight: currentVideo === index ? 600 : 400,
+                                                        color: currentVideo === index ? 'primary.main' : 'text.primary',
                                                     }}
                                                 >
                                                     {video.title}
                                                 </Typography>
-                                                {/* <Typography
-
-                                                    variant="caption"
-                                                    sx={{
-                                                        color: currentVideo === index ? 'primary.contrastText' : 'text.secondary',
-                                                    }}
-                                                >
-                                                    {video.duration}
-                                                </Typography> */}
                                             </Box>
                                         </ListItemButton>
                                     </ListItem>
                                 );
                             })}
-
-
                         </List>
+
                     </Box>
                 ) : (
-                    <NoContentPage title={"Videos"} description='No Videos Found' />
+                    <NoContentPage title={""} description='No Videos Found' />
                 )
             ) : null}
 
-                {currentView === 'articles' ? (
-                    (articles && articles.length > 0) ? (
-                        <Box sx={{ mt: 2 }}>
-                            <Typography variant="overline" color="text.secondary">
-                                Articles
-                            </Typography>
-                            <Box
-                                sx={{
-                                    height: '1px',
-                                    width: '9%',
-                                    mb: 2,
-                                    background: 'gray',
-                                    borderRadius: 1,
-                                    opacity: 0.6,
-                                }}
-                            />
-                            <List>
-                                {(articles || []).map((a, index) => {
-                                    const id = a._id || a.id || `${index}`;
-                                    const completed = completedArticles?.includes(id);
-                                    return (
-                                        <ListItem key={id} disablePadding>
-                                            <ListItemButton
-                                                selected={currentArticle === index}
-                                                onClick={() => setCurrentArticle && setCurrentArticle(index)}
+            {currentView === 'articles' ? (
+                (articles && articles.length > 0) ? (
+                    <Box sx={{ mt: 2 }}>
+                        <Typography variant="overline" color="text.secondary">
+                            Articles
+                        </Typography>
+                        <Box
+                            sx={{
+                                height: '1px',
+                                width: '9%',
+                                mb: 2,
+                                background: 'gray',
+                                borderRadius: 1,
+                                opacity: 0.6,
+                            }}
+                        />
+                        <List>
+                            {(articles || []).map((a, index) => {
+                                const id = a._id || a.id || `${index}`;
+                                const completed = completedArticles?.includes(id);
+                                const isSelected = currentArticle === index;
+
+                                return (
+                                    <ListItem key={id} disablePadding>
+                                        <ListItemButton
+                                            selected={isSelected}
+                                            onClick={() => setCurrentArticle && setCurrentArticle(index)}
+                                            sx={{
+                                                mb: '6px',
+                                                border: '1px solid',
+                                                borderColor: isSelected ? 'primary.main' : '#cfcfcf',
+                                                borderRadius: '6px',
+                                                bgcolor: isSelected ? '#E3F2FD' : 'transparent',
+                                                boxShadow: 'none',
+
+                                                '&.Mui-selected': {
+                                                    bgcolor: '#E3F2FD',
+                                                    borderColor: 'primary.main',
+                                                    color: 'primary.main',
+                                                },
+
+                                                '&.Mui-selected:hover': {
+                                                    bgcolor: '#BBDEFB',
+                                                },
+
+                                                '&:hover': {
+                                                    bgcolor: '#f5f5f5',
+                                                },
+                                            }}
+                                        >
+                                            <ListItemIcon
                                                 sx={{
-                                                    borderLeft: completed ? '4px solid' : 'none',
-                                                    borderColor: 'success.main',
-                                                    border: '1px solid #ccc',
-                                                    mb: '4px',
-                                                    borderRadius: '8px',
-                                                    '&.Mui-selected': {
-                                                        bgcolor: '#003c8f',
-                                                        color: 'primary.contrastText',
-                                                    },
-                                                    '&.Mui-selected:hover': {
-                                                        bgcolor: 'primary.main',
-                                                        color: 'white',
-                                                    },
-                                                    '&:hover': {
-                                                        bgcolor: 'grey.100',
-                                                    },
+                                                    color: isSelected ? 'primary.main' : 'text.secondary',
+                                                    minWidth: '32px',
                                                 }}
                                             >
-                                                <ListItemIcon
+                                                {completed ? (
+                                                    <CircleCheckBig strokeWidth={2} color={isSelected ? '#1976d2' : '#1976d2'} />
+                                                ) : (
+                                                    <Book strokeWidth={isSelected ? 2 : 1} color={isSelected ? '#1976d2' : '#757575'} />
+                                                )}
+                                            </ListItemIcon>
+                                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Typography
+                                                    noWrap
                                                     sx={{
-                                                        color: currentArticle === index ? 'primary.contrastText' : 'black',
+                                                        fontWeight: isSelected ? 600 : 400,
+                                                        color: isSelected ? 'primary.main' : 'text.primary',
                                                     }}
                                                 >
-                                                    {completed ? (
-                                                        <CheckCircleIcon color="success" />
-                                                    ) : (
-                                                        <BookIcon color="action" />
-                                                    )}
-                                                </ListItemIcon>
-                                                <Box sx={{ flex: 1, minWidth: 0 }}>
-                                                    <Typography
-                                                        noWrap
-                                                        sx={{
-                                                            color: currentArticle === index ? 'primary.contrastText' : 'black',
-                                                        }}
-                                                    >
-                                                        {a.title || a.name || 'Document'}
-                                                    </Typography>
-                                                </Box>
-                                            </ListItemButton>
-                                        </ListItem>
-                                    );
-                                })}
-                            </List>
-                        </Box>
-                    ) : (
-                        <NoContentPage title={'Articles'} description={'No Articles Found'} />
-                    )
-                ) : null}
+                                                    {a.title || a.name || 'Document'}
+                                                </Typography>
+                                            </Box>
+                                        </ListItemButton>
+                                    </ListItem>
+                                );
+                            })}
+                        </List>
+
+                    </Box>
+                ) : (
+                    <NoContentPage title={''} description={'No Articles Found'} />
+                )
+            ) : null}
 
 
             {currentView === 'quiz' ? (
@@ -422,46 +514,54 @@ export const Sidebar = ({
                                 <ListItem key={quiz.id} disablePadding>
                                     <ListItemButton
                                         selected={currentTest === index}
-                                        onClick={() => {
-                                            setCurrentTest(index)
-                                            // handleTestProgress(quiz._id, moduleId, courseId,  quiz)
-                                        }}
+                                        onClick={() => setCurrentTest(index)}
                                         sx={{
-
-                                            borderLeft: quiz.completed ? '4px solid' : 'none',
-                                            borderColor: 'success.main',
-                                            border: '1px solid #ccc', // light gray border
-                                            mb: '4px',
-                                            borderRadius: '8px',      // optional: small rounded corners for better aesthetics
+                                            mb: '6px',
+                                            border: '2px solid',
+                                            borderColor: currentTest === index ? 'primary.main' : '#bdbdbd',
+                                            borderRadius: '6px',
+                                            bgcolor: currentTest === index ? '#E3F2FD' : 'transparent',
+                                            boxShadow: 'none',
+                                            alignItems: 'flex-start',
 
                                             '&.Mui-selected': {
-                                                bgcolor: 'primary.main',
-                                                color: 'primary.contrastText',
+                                                bgcolor: '#E3F2FD',
+                                                borderColor: 'primary.main',
+                                                color: 'primary.main',
                                             },
 
-
                                             '&.Mui-selected:hover': {
-                                                bgcolor: '#003c8f', // stronger blue for better contrast
-                                                color: 'white',     // ensures text stays readable
+                                                bgcolor: '#BBDEFB',
+                                            },
+
+                                            '&:hover': {
+                                                bgcolor: '#f5f5f5',
                                             },
                                         }}
                                     >
                                         <ListItemIcon
                                             sx={{
-                                                color: currentTest === index ? 'primary.contrastText' : 'black',
+                                                color: currentTest === index ? 'primary.main' : 'text.secondary',
+                                                minWidth: '32px',
                                             }}
                                         >
                                             {quiz.status === 'completed' ? (
-                                                <CheckCircleIcon color="success" />
+                                                <CircleCheckBig strokeWidth={2} color="#2e7d32" />
                                             ) : (
-                                                <HelpIcon />
+                                                <HelpCircle
+                                                    strokeWidth={currentTest === index ? 2 : 1}
+                                                    color={currentTest === index ? '#1976d2' : '#757575'}
+                                                    style={{ marginTop: '1px' }}
+                                                />
+
                                             )}
                                         </ListItemIcon>
                                         <Box sx={{ flex: 1, minWidth: 0 }}>
                                             <Typography
                                                 noWrap
                                                 sx={{
-                                                    color: currentTest === index ? 'primary.contrastText' : 'black',
+                                                    fontWeight: currentTest === index ? 600 : 400,
+                                                    color: currentTest === index ? 'primary.main' : 'text.primary',
                                                 }}
                                             >
                                                 {quiz.title}
@@ -469,7 +569,8 @@ export const Sidebar = ({
                                             <Typography
                                                 variant="caption"
                                                 sx={{
-                                                    color: currentTest === index ? 'primary.contrastText' : 'text.secondary',
+                                                    color:
+                                                        currentTest === index ? 'primary.main' : 'text.secondary',
                                                 }}
                                             >
                                                 {quiz.questions?.length || 0} questions
@@ -478,9 +579,8 @@ export const Sidebar = ({
                                     </ListItemButton>
                                 </ListItem>
                             ))}
-
-
                         </List>
+
 
                         {tests[currentTest]?.questions?.length > 0 && (
                             <>
@@ -501,33 +601,38 @@ export const Sidebar = ({
                                                 sx={{
                                                     minWidth: 40,
                                                     height: 40,
+                                                    borderRadius: '4px',
+                                                    boxShadow: 'none',
 
 
                                                     ...(currentQuestion === index && {
-                                                        bgcolor: '#1976d2', // blue
-                                                        color: '#ffffff', // white text
+                                                        bgcolor: '#E3F2FD',
+                                                        color: '#1976d2',
+                                                        border: '2px solid #1976d2',
                                                         '&:hover': {
-                                                            bgcolor: '#115293', // darker blue on hover
+                                                            bgcolor: '#BBDEFB',
                                                         },
                                                     }),
-
 
                                                     ...(question.answered !== null && currentQuestion !== index && {
-                                                        bgcolor: '#2e7d32', // green
-                                                        color: '#ffffff',
+                                                        bgcolor: '#E8F5E9',
+                                                        color: '#2e7d32',
+                                                        border: '2px solid #2e7d32',
                                                         '&:hover': {
-                                                            bgcolor: '#1b5e20', // darker green
+                                                            bgcolor: '#C8E6C9',
                                                         },
                                                     }),
 
-                                                    // ⚪ Unanswered + not selected (gray border & text)
+
                                                     ...(question.answered === null && currentQuestion !== index && {
-                                                        border: '1px solid #9e9e9e', // medium gray
-                                                        color: '#424242', // dark gray text
+                                                        border: '1px solid #9e9e9e',
+                                                        color: '#424242',
+                                                        bgcolor: '#f5f5f5',
                                                         '&:hover': {
-                                                            bgcolor: '#e0e0e0', // light gray on hover
+                                                            bgcolor: '#e0e0e0',
                                                         },
                                                     }),
+
                                                 }}
                                             >
                                                 {index + 1}

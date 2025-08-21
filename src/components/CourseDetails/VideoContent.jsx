@@ -31,6 +31,7 @@ import {
     Article as FileTextIcon,
     MenuBook as BookOpenIcon,
 } from '@mui/icons-material';
+import { AlertTriangle } from "lucide-react";
 import ReactPlayer from 'react-player';
 import { useEffect, useRef, useState } from 'react';
 import { updateVideoCompletion, videoProgress, updateVideoLastTimeWatched } from '../../context/Actions/courseActions';
@@ -413,7 +414,7 @@ export const VideoContent = ({
             }}>
                 <Paper sx={{
                     backgroundColor: 'black',
-                    borderRadius: isVideoFullscreen ? 0 : 3,
+                    borderRadius: isVideoFullscreen ? 0 : '4px',
                     overflow: 'hidden',
                     transition: 'all 0.3s',
                     position: isVideoFullscreen ? 'fixed' : 'relative',
@@ -475,7 +476,7 @@ export const VideoContent = ({
                                 color: 'white',
                                 textAlign: 'center',
                                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                                borderRadius: 2,
+                                borderRadius: '4px',
                                 padding: 2,
                             }}>
                                 <CircularProgress color="inherit" />
@@ -594,11 +595,31 @@ export const VideoContent = ({
                                 <Button
                                     onClick={togglePlayPause}
                                     startIcon={isPlaying ? <PauseIcon /> : <PlayIcon />}
-                                    variant="contained"
-                                    sx={{ textTransform: 'none' }}
+                                    variant="outlined"
+                                    sx={{
+                                        textTransform: 'none',
+                                        borderRadius: '4px',
+                                        border: '1.5px solid #1976d2',
+                                        color: '#1976d2',
+                                        bgcolor: '#E3F2FD',
+                                        fontWeight: 500,
+                                        boxShadow: 'none',
+
+                                        '&:hover': {
+                                            bgcolor: '#BBDEFB',
+                                            borderColor: '#1565C0',
+                                        },
+
+                                        '&:disabled': {
+                                            color: '#9e9e9e',
+                                            borderColor: '#bdbdbd',
+                                            bgcolor: '#f5f5f5',
+                                        },
+                                    }}
                                 >
                                     {isPlaying ? 'Pause' : 'Play'}
                                 </Button>
+
                                 <Typography variant="body2" color="rgba(255, 255, 255, 0.7)">
                                     You must watch the entire video for progress
                                 </Typography>
@@ -639,10 +660,30 @@ export const VideoContent = ({
                         disabled={currentVideo === 0}
                         startIcon={<SkipBackIcon />}
                         variant="outlined"
-                        sx={{ textTransform: 'none' }}
+                        sx={{
+                            textTransform: 'none',
+                            borderRadius: '4px',
+                            border: '1.5px solid #1976d2',
+                            color: '#1976d2',
+                            bgcolor: '#E3F2FD',
+                            fontWeight: 500,
+                            boxShadow: 'none',
+
+                            '&:hover': {
+                                bgcolor: '#BBDEFB',
+                                borderColor: '#1565C0',
+                            },
+
+                            '&:disabled': {
+                                color: '#9e9e9e',
+                                borderColor: '#bdbdbd',
+                                bgcolor: '#f5f5f5',
+                            },
+                        }}
                     >
                         Previous Video
                     </Button>
+
 
 
                     <Box textAlign="center">
@@ -658,35 +699,81 @@ export const VideoContent = ({
                         onClick={() => setCurrentVideo(Math.min(videos?.length - 1, currentVideo + 1))}
                         disabled={currentVideo === videos?.length - 1}
                         endIcon={<SkipForwardIcon />}
-                        variant="contained"
-                        sx={{ textTransform: 'none' }}
+                        variant="outlined"
+                        sx={{
+                            textTransform: 'none',
+                            borderRadius: '4px',
+                            border: '1.5px solid #1976d2',
+                            color: '#1976d2',
+                            bgcolor: '#E3F2FD',
+                            fontWeight: 500,
+                            boxShadow: 'none',
+
+                            '&:hover': {
+                                bgcolor: '#BBDEFB',
+                                borderColor: '#1565C0',
+                            },
+
+                            '&:disabled': {
+                                color: '#9e9e9e',
+                                borderColor: '#bdbdbd',
+                                bgcolor: '#f5f5f5',
+                            },
+                        }}
                     >
                         Next Video
                     </Button>
+
                 </Box>
-                <Paper sx={{
-                    backgroundColor: 'gray.200',
-                    border: '1px solid',
-                    // borderColor: 'warning.main',
-                    borderRadius: 2,
-                    p: 2,
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 2
-                }}>
-                    <Avatar sx={{ width: 24, height: 24, bgcolor: 'warning.main', flexShrink: 0 }}>
-                        <Typography variant="body2" fontWeight="bold" color="white">!</Typography>
-                    </Avatar>
-                    <Typography color="black">
+                <Paper
+                    sx={{
+                        backgroundColor: '#FFFDE7',
+                        border: '1px solid #FFCA28',
+                        boxShadow: 'none',
+                        borderRadius: '8px',
+                        p: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1.5,
+                    }}
+                >
+                    <AlertTriangle
+                        size={22}
+                        strokeWidth={2}
+                        style={{
+                            color: '#FFB300',
+                            flexShrink: 0,
+                            marginTop: 2,
+                        }}
+                    />
+                    <Typography
+                        variant="body2"
+                        fontWeight="600"
+                        sx={{ color: '#5D4037' }}
+                    >
                         You must watch the entire video without moving or skipping it for it to count towards your course progress.
                     </Typography>
                 </Paper>
 
-                <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, overflow: 'hidden' }}>
+                <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '4px', overflow: 'hidden' }}>
                     <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
                         <Typography variant="h4" fontWeight="bold" mb={1}>{currentVideoData?.title}</Typography>
                         <Box display="flex" alignItems="center" gap={2}>
-                            <Chip icon={<ClockIcon />} label={readableDuration} size="small" />
+                            <Chip
+                                icon={<ClockIcon color="#1976d2" size={18} />}
+                                label={readableDuration}
+                                size="small"
+                                sx={{
+                                    bgcolor: '#E3F2FD',
+                                    color: '#1976d2',
+                                    border: '1px solid #90CAF9',
+                                    fontWeight: 500,
+                                    borderRadius: '6px',
+                                    '& .MuiChip-icon': {
+                                        color: '#1976d2',
+                                    },
+                                }}
+                            />
                             {/* <Chip icon={<UsersIcon />} label="12,543 students" size="small" /> */}
                             {/* <Chip icon={<AwardIcon />} label="Beginner Level" size="small" /> */}
                         </Box>

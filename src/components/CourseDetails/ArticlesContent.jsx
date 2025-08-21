@@ -86,7 +86,7 @@ export const ArticlesContent = ({ articles = [], currentArticle = 0, setCurrentA
 
         </Paper>
       ) : (
-        <NoContentPage title={'Articles'} description={'No Articles Found'} />
+        <NoContentPage title={'Articles'} description={'No Articles available for this module'} />
       )}
 
       {/* Navigation - only when there are articles */}
@@ -104,7 +104,24 @@ export const ArticlesContent = ({ articles = [], currentArticle = 0, setCurrentA
             disabled={currentArticle === 0}
             startIcon={<SkipPreviousIcon />}
             variant="outlined"
-            sx={{ textTransform: 'none' }}
+            sx={{
+              textTransform: 'none',
+              borderRadius: '4px',
+              border: '1.5px solid #1976d2',
+              color: '#1976d2',
+              bgcolor: '#E3F2FD',
+              fontWeight: 500,
+              boxShadow: 'none',
+              '&:hover': {
+                bgcolor: '#BBDEFB',
+                borderColor: '#1565C0',
+              },
+              '&:disabled': {
+                color: '#9e9e9e',
+                borderColor: '#bdbdbd',
+                bgcolor: '#f5f5f5',
+              },
+            }}
           >
             Previous Article
           </Button>
@@ -119,8 +136,25 @@ export const ArticlesContent = ({ articles = [], currentArticle = 0, setCurrentA
             onClick={() => setCurrentArticle && setCurrentArticle(Math.min(effectiveArticles.length - 1, currentArticle + 1))}
             disabled={currentArticle === (effectiveArticles.length - 1)}
             endIcon={<SkipNextIcon />}
-            variant="contained"
-            sx={{ textTransform: 'none' }}
+            variant="outlined"
+            sx={{
+              textTransform: 'none',
+              borderRadius: '4px',
+              border: '1.5px solid #1976d2',
+              color: '#1976d2',
+              bgcolor: '#E3F2FD',
+              fontWeight: 500,
+              boxShadow: 'none',
+              '&:hover': {
+                bgcolor: '#BBDEFB',
+                borderColor: '#1565C0',
+              },
+              '&:disabled': {
+                color: '#9e9e9e',
+                borderColor: '#bdbdbd',
+                bgcolor: '#f5f5f5',
+              },
+            }}
           >
             Next Article
           </Button>
