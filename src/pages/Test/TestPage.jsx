@@ -15,6 +15,8 @@ import {
 import { useNavigate , useParams} from 'react-router-dom';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
 import { getAllLanguageAction, submitAssessment } from '../../context/Actions/AssignmentActions';
+import { fetchAllAssessment } from '../../context/Actions/courseActions';
+import { useCourseContext } from '../../context/contextFiles/CourseContext';
 
 // Create a custom theme
 const theme = createTheme({
@@ -40,7 +42,7 @@ const TestPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questionStatus, setQuestionStatus] = useState({});
   const [codingAnswers, setCodingAnswers] = useState({});
-  const [timeRemaining, setTimeRemaining] = useState(3600); 
+  const [timeRemaining, setTimeRemaining] = useState(1800); 
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [violationCount, setViolationCount] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -48,6 +50,7 @@ const TestPage = () => {
   const [currentCodingAnswer , setCurrentCodingAnswer] =  useState("");
   const testPageRef = useRef(null);
   const {state: {testData}, dispatch} = useAssignmentContext();
+  const {state: {}, dispatch: courseDispatch} = useCourseContext()
   const [loading, setLoading] = useState(false)
 
   // console.log('the test data from context in test page is: ', contextTestData)
@@ -71,6 +74,12 @@ if(!testData || (testData.assessment !== id)){
   // console.log('the context test data is:', id)
   return <Box sx={{color: 'black'}}> Loading... </Box>
 }
+
+useEffect(() => {
+  const testDuration = testData.duration  
+  console.log('the test duration is: ', testDuration)
+  setTimeRemaining(testDuration * 60)
+}, [testData])
 
 
 useEffect(() => {
@@ -435,14 +444,24 @@ const handleAutoSubmit = () => {
     // Combine all answers
     const allAnswers = [...mcqAnswers, ...codingAnswersArray];
 
-    console.log('Test submitted with answers:', allAnswers);
-    console.log('Test details are:', testData._id);
-    console.log('Total Questions', testData.questions.length)
-    console.log('Total Answered:', totalAnswered);
-
     const assessmentId = testData._id
     
     await submitAssessment(dispatch, {allAnswers, assessmentId})
+    
+    console.log(
+      'console log before fetch all assessment'
+    )
+    
+    await fetchAllAssessment(courseDispatch);
+
+    console.log(
+      'console log before fetch all assessment'
+    )
+    
+
+    //here call the api to fetch the test data again, so that the latest data is there
+
+
 
 
     // Clear localStorage

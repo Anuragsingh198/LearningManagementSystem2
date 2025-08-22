@@ -55,8 +55,8 @@ function TestCard({ test, role }) {
                 <Stack spacing={1} direction="row" alignItems="center">
                     {test.isMandatory && <Chip label="Mandatory" color="error" size="small" />}
                     {role !== 'instructor' ? <Chip
-                        label={test.completed ? "Completed" : "Not Attempted"}
-                        color={test.completed ? "success" : "warning"}
+                        label={test.attempted ? "Attempted" : "Not Attempted"}
+                        color={test.attempted ? "success" : "warning"}
                         size="small"
                     /> : ''}
                 </Stack>
