@@ -163,8 +163,9 @@ const CourseList = () => {
               maxWidth: 520,
               mx: 'auto',
               textAlign: 'center',
-              borderRadius: 4,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+              borderRadius: '4px',
+              border: '1px solid #e0e0e0',
+              boxShadow: 'None',
               backgroundColor: 'background.paper',
             }}
           >
@@ -173,8 +174,8 @@ const CourseList = () => {
                 <PlusCircle size={56} color="#2563eb" />
               </Box>
             )}
-
-            <Typography variant="h5" sx={{ mb: 1.5, fontWeight: 600 }}>
+            <Box component="img" src={noDataImage} alt="No data" sx={{ height: 180, opacity: 0.9, mb: 2 }} />
+            <Typography variant="h5" sx={{ mb: 1.5, fontWeight: 500 }}>
               {role === 'instructor' ? 'No courses yet' : 'No enrolled courses yet'}
             </Typography>
 
