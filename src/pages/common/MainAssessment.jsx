@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography, Button } from '@mui/material';
 import TestCard from '../../components/TestCard';
+import { TestCardSkeleton } from '../../components/skeletons';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { fetchAllAssessment } from '../../context/Actions/courseActions';
@@ -12,24 +13,24 @@ function MainAssessment() {
 
   const { state: { user } } = useAuth();
   const { state: { allAssessments }, dispatch } = useCourseContext();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAssessmentData = async () => {
+      setIsLoading(true);
       await fetchAllAssessment(dispatch);
-      
+      setIsLoading(false);
     };
     if(allAssessments.length === 0){
       fetchAssessmentData();
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
   // console.log('the assessment from the context are: ', allAssessments)
 
   const role = user?.role;
-
-  if (!allAssessments) {
-    return <Box>Loading...</Box>
-  }
 
   return (
     <Box p={2}>
@@ -68,12 +69,21 @@ function MainAssessment() {
       )}
 
       <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
-        {allAssessments.map((test, idx) => (
-
-          <Grid item xs={12} sm={6} md={4} key={idx}>
-            <TestCard test={test} role={role} />
-          </Grid>
-        ))}
+        {isLoading ? (
+          // Show skeleton loading cards
+          [...Array(6)].map((_, idx) => (
+            <Grid item xs={12} sm={6} md={4} key={idx}>
+              <TestCardSkeleton />
+            </Grid>
+          ))
+        ) : (
+          // Show actual test cards
+          allAssessments.map((test, idx) => (
+            <Grid item xs={12} sm={6} md={4} key={idx}>
+              <TestCard test={test} role={role} />
+            </Grid>
+          ))
+        )}
       </Grid>
     </Box>
   );
