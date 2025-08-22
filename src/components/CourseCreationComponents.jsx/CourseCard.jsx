@@ -376,10 +376,10 @@ const CourseCard = ({ course, onViewCourse }) => {
                           ? 'rgba(149, 165, 166, 0.1)'
                           : 'rgba(241, 196, 15, 0.1)',
                     border: `1px solid ${status === 'completed'
-                        ? '#2ecc71'
-                        : status === 'pending'
-                          ? '#95a5a6'
-                          : '#f1c40f'
+                      ? '#2ecc71'
+                      : status === 'pending'
+                        ? '#95a5a6'
+                        : '#f1c40f'
                       }`,
                     color:
                       status === 'completed'
@@ -425,6 +425,66 @@ const CourseCard = ({ course, onViewCourse }) => {
                   />
                 </Tooltip>
               )}
+            </Box>
+            {/* Progress bar with circular indicator */}
+            <Box sx={{ position: 'relative' }}>
+              <LinearProgress
+                variant="determinate"
+                value={overallPercentage || 0}
+                sx={{
+                  height: 6,
+                  borderRadius: 4,
+                  backgroundColor: 'grey.200',
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor:
+                      overallPercentage < 40
+                        ? '#f9e79f' // pastel yellow
+                        : overallPercentage < 80
+                          ? '#aed6f1' // pastel blue
+                          : '#abebc6', // pastel green
+                  },
+                }}
+              />
+
+              {/* Small circular percentage indicator */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: `${overallPercentage}%`,
+                  transform: 'translate(-50%, -50%)',
+                  transition: 'left 0.3s ease',
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '8px',
+                    fontWeight: 600,
+                    backgroundColor: '#fff',
+                    border: `2px solid ${overallPercentage < 40
+                      ? '#f9e79f'
+                      : overallPercentage < 80
+                        ? '#aed6f1'
+                        : '#abebc6'
+                      }`,
+                    color:
+                      overallPercentage < 40
+                        ? '#d4ac0d'
+                        : overallPercentage < 80
+                          ? '#2874a6'
+                          : '#1d8348',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                  }}
+                >
+                  {Math.round(overallPercentage) || 0}%
+                </Box>
+              </Box>
             </Box>
           </Box>
 
