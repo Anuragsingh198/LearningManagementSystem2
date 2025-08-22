@@ -99,7 +99,7 @@ const CourseCard = ({ course, onViewCourse }) => {
   return (
     <Card
       sx={{
-        width: 330,
+        width: 355,
         height: '98%',
         border: '1px solid rgba(218, 217, 217, 0.87)',
         borderRadius: '8px',
@@ -148,8 +148,8 @@ const CourseCard = ({ course, onViewCourse }) => {
               sx: {
                 width: 600,
                 maxHeight: 600,
-                borderRadius: 3,
-                boxShadow: 10,
+                borderRadius: '4px',
+                boxShadow: 'none',
               }
             }
           }}
@@ -181,7 +181,7 @@ const CourseCard = ({ course, onViewCourse }) => {
               disabled={isLoading}
 
               variant="contained"
-              sx={{ width: 205 }}
+              sx={{ width: 205, boxShadow: 'none' }}
             >
               {isLoading ? 'Deleting...' : 'Delete Permanently'}
             </Button>
@@ -194,7 +194,7 @@ const CourseCard = ({ course, onViewCourse }) => {
           alt={course.title}
           sx={{
             width: '100%',
-            maxWidth: '330px',
+            maxWidth: '400px',
             height: '200px',
             maxHeight: '200px',
             objectFit: 'cover',
@@ -263,7 +263,7 @@ const CourseCard = ({ course, onViewCourse }) => {
                 height: 24,
                 fontSize: '12px',
                 minWidth: 80,
-                borderRadius: '12px',
+                borderRadius: '4px',
                 fontWeight: 500,
                 backgroundColor:
                   status === 'completed'
@@ -288,49 +288,114 @@ const CourseCard = ({ course, onViewCourse }) => {
           )}
         </Box>
         
-        {role !== 'instructor' ? <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Typography variant="body2" color="text.secondary" fontSize="13px" fontWeight='700'>
-              Progress: {Math.round(overallPercentage) || 0}%
-            </Typography>
+        {role !== 'instructor' ? (
+          <Box sx={{ mb: 2, position: 'relative' }}>
+            {/* Top row: Progress text + Days left chip */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                mb: 1,
+              }}
+            >
+              {/* <Typography
+                variant="body2"
+                color="text.secondary"
+                fontSize="13px"
+                fontWeight="700"
+              >
+                Progress: {Math.round(overallPercentage) || 0}%
+              </Typography> */}
 
-                                                                                                       {remainingDays !== undefined && status !== 'completed' && (
-                 <Chip
-                   label={remainingDays === 0 ? 'Overdue' : `${remainingDays} days left`}
-                   size="small"
-                   sx={{
-                     height: 20,
-                     fontSize: '12px',
-                     px: 1,
-                     minWidth: 100,
-                     maxWidth: 'fit-content',
-                     borderRadius: '10px',
-                     fontWeight: 500,
-                     mb: 0.5,
-                     backgroundColor:
-                       remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
-                     border: `1px solid ${remainingDays === 0 ? '#e74c3c' : '#3498db'
-                       }`,
-                     color: remainingDays === 0 ? '#ffffff' : '#3498db',
-                   }}
-                 />
-               )}
+              {remainingDays !== undefined && status !== 'completed' && (
+                <Chip
+                  label={remainingDays === 0 ? 'Overdue' : `${remainingDays} days left`}
+                  size="small"
+                  sx={{
+                    height: 20,
+                    fontSize: '12px',
+                    px: 1,
+                    minWidth: 100,
+                    maxWidth: 'fit-content',
+                    borderRadius: '4px',
+                    fontWeight: 500,
+                    mb: 0.5,
+                    backgroundColor:
+                      remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
+                    border: `1px solid ${remainingDays === 0 ? '#e74c3c' : '#3498db'
+                      }`,
+                    color: remainingDays === 0 ? '#ffffff' : '#3498db',
+                  }}
+                />
+              )}
+            </Box>
 
+            {/* Progress bar with circular indicator */}
+            <Box sx={{ position: 'relative' }}>
+              <LinearProgress
+                variant="determinate"
+                value={overallPercentage || 0}
+                sx={{
+                  height: 6,
+                  borderRadius: 4,
+                  backgroundColor: 'grey.200',
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor:
+                      overallPercentage < 40
+                        ? '#f9e79f' // pastel yellow
+                        : overallPercentage < 80
+                          ? '#aed6f1' // pastel blue
+                          : '#abebc6', // pastel green
+                  },
+                }}
+              />
 
+              {/* Small circular percentage indicator */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: `${overallPercentage}%`,
+                  transform: 'translate(-50%, -50%)',
+                  transition: 'left 0.3s ease',
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 20, // smaller circle
+                    height: 20,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '8px', // smaller text
+                    fontWeight: 600,
+                    backgroundColor: '#fff',
+                    border: `2px solid ${overallPercentage < 40
+                        ? '#f9e79f'
+                        : overallPercentage < 80
+                          ? '#aed6f1'
+                          : '#abebc6'
+                      }`,
+                    color:
+                      overallPercentage < 40
+                        ? '#d4ac0d'
+                        : overallPercentage < 80
+                          ? '#2874a6'
+                          : '#1d8348',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                  }}
+                >
+                  {Math.round(overallPercentage) || 0}%
+                </Box>
+              </Box>
+            </Box>
           </Box>
-          <LinearProgress
-            variant="determinate"
-            value={overallPercentage || 0}
-            sx={{
-              height: 6,
-              borderRadius: 4,
-              backgroundColor: 'grey.200',
-              '& .MuiLinearProgress-bar': {
-                backgroundColor: 'success.light'
-              }
-            }}
-          />
-        </Box> : ''}
+        ) : (
+          ''
+        )}
+
 
         {/* Course Metadata */}
         {role !== 'instructor' ? <Box sx={{

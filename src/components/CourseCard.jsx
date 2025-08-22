@@ -15,6 +15,14 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
+import {
+  GraduationCap,
+  User,
+  Folder,
+  Users,
+  CheckCircle,
+  Send
+} from "lucide-react"
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useAuth } from '../context/contextFiles/AuthContext';
@@ -55,7 +63,7 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
 
   }
 
-  const handleEnroll = async() => {
+  const handleEnroll = async () => {
     if (!user || !token) return;
     try {
       setLoading(true);
@@ -85,7 +93,7 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
 
   }
   useEffect(() => {
-  
+
     if (myCourses?.some(c => c._id === course._id)) {
       setEnrolled(true);
     }
@@ -102,7 +110,7 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
         flexDirection: 'column',
         justifyContent: 'space-between',
         boxShadow: 0,
-        pb:1,
+        pb: 1,
         border: '1px solid rgba(218, 217, 217, 0.87)',
       }}
     >
@@ -249,77 +257,131 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
             sx: {
               width: 600,
               maxHeight: 600,
-              borderRadius: 3,
+              borderRadius: "4px",
               p: 2,
-              boxShadow: 10,
-            }
-          }
+              boxShadow: "none",
+            },
+          },
         }}
       >
-        <DialogTitle sx={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#1e40af' }}>
-          🎓 Course Name: {course.title}
+        <DialogTitle
+          sx={{
+            fontSize: "1.8rem",
+            fontWeight: "bold",
+            color: "#1976d2",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <GraduationCap size={24} /> Course Name: {course.title}
         </DialogTitle>
 
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 500, ml: 1 }}>
-            👨‍🏫 Instructor: {course.instructorName || (course.instructor?.name ?? 'Instructor')}
+        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 500, ml: 1, display: "flex", alignItems: "center", gap: 1 }}
+          >
+            <User size={20} /> Instructor:{" "}
+            {course.instructorName || course.instructor?.name || "Instructor"}
           </Typography>
 
-          <Typography variant="subtitle2" sx={{ color: 'text.secondary', ml: 1 }}>
-            📂 Category: {course.category}
+          <Typography
+            variant="subtitle2"
+            sx={{ color: "text.secondary", ml: 1, display: "flex", alignItems: "center", gap: 1 }}
+          >
+            <Folder size={20} /> Category: {course.category}
           </Typography>
 
           <Box
             sx={{
-              backgroundColor: '#f3f4f6',
+              backgroundColor: "#f3f4f6",
               p: 2,
-              borderRadius: 2,
+              borderRadius: "4px",
               maxHeight: 180,
-              overflowY: 'auto',
-              fontSize: '0.95rem',
+              overflowY: "auto",
+              fontSize: "0.95rem",
               lineHeight: 1.6,
-              '&::-webkit-scrollbar': {
-                width: '0px',
-                height: '0px',
+              "&::-webkit-scrollbar": {
+                width: "6px",
               },
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#cbd5e1",
+                borderRadius: "3px",
+              },
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "#f1f5f9",
+              },
             }}
           >
             {course.description}
           </Box>
 
           {Array.isArray(course.students) && (
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              👥 Students enrolled: <strong>{course.students.length.toLocaleString()}</strong>
+            <Typography
+              variant="body2"
+              sx={{ mt: 1, display: "flex", alignItems: "center", gap: 1 }}
+            >
+              <Users size={20} /> Students enrolled:{" "}
+              <strong>{course.students.length.toLocaleString()}</strong>
             </Typography>
           )}
         </DialogContent>
 
-        <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
-          <Button onClick={handleCloseModal} variant="outlined">
+        <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
+          <Button
+            onClick={handleCloseModal}
+            variant="outlined"
+            sx={{
+              borderRadius: "4px",
+              boxShadow: "none",
+              textTransform: "none",
+            }}
+          >
             Cancel
           </Button>
-          {user ? <Button
-            onClick={handleEnroll}
-            variant="contained"
-            disabled={loading || enrolled}
-          >
-            {loading ? (
-              <CircularProgress size={24} sx={{ color: 'white' }} />
-            ) : enrolled ? (
-              '✅ Enrolled'
-            ) : (
-              '🚀 Enroll'
-            )}
-          </Button> :
+
+          {user ? (
+            <Button
+              onClick={handleEnroll}
+              variant="contained"
+              disabled={loading || enrolled}
+              sx={{
+                backgroundColor: "#1976d2",
+                borderRadius: "4px",
+                boxShadow: "none",
+                textTransform: "none",
+                "&:hover": { backgroundColor: "#1565c0" },
+              }}
+              endIcon={
+                !loading && !enrolled ? <Send size={18} /> : undefined
+              }
+            >
+              {loading ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : enrolled ? (
+                <>
+                  <CheckCircle size={18} style={{ marginRight: 6 }} /> Enrolled
+                </>
+              ) : (
+                "Enroll"
+              )}
+            </Button>
+          ) : (
             <Button
               variant="contained"
               onClick={handleNavigateToLogin}
+              sx={{
+                backgroundColor: "#1976d2",
+                borderRadius: "4px",
+                boxShadow: "none",
+                textTransform: "none",
+                "&:hover": { backgroundColor: "#1565c0" },
+              }}
             >
               Login to Enroll
             </Button>
-          }
+          )}
         </DialogActions>
       </Dialog>
     </Card>
