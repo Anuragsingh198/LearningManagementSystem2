@@ -6,74 +6,97 @@ import { useCourseContext } from '../context/contextFiles/CourseContext';
 import { useAssignmentContext } from '../context/contextFiles/assignmentContext';
 import { reviewAssignment } from '../context/Actions/AssignmentActions';
 
-
 function formatDuration(mins) {
     const hrs = String(Math.floor(mins / 60)).padStart(2, '0');
     const minutes = String(mins % 60).padStart(2, '0');
     return `${hrs}:${minutes}:00`;
 }
 
-
-
 function TestCard({ test, role }) {
     const navigate = useNavigate();
-    const { id } = useParams()
-    const assessmentId = id
+    const { id } = useParams();
+    const assessmentId = id;
 
-    const {state: {}, dispatch} = useAssignmentContext(); 
+    const { state: { }, dispatch } = useAssignmentContext();
     // console.log('the test is: ', test)
     // console.log('the partial test data from context is in testcard: ', currentAssessment)
 
-    const handleOnClick = async () => {        
+    const handleOnClick = async () => {
         if (test.attempted) {
             // fetch attempted test details
-            await reviewAssignment(dispatch, {assessmentId: test._id});
+            await reviewAssignment(dispatch, { assessmentId: test._id });
             navigate(`/assessments/review/${test._id}`)
         } else {
-             dispatch({
-        type: "SET_CURRENT_ASSESSMENT",
-        payload: test
-      });
-            navigate(`/assessments/start-test/${test._id}`) // it will go to <TestStartPage/>
+            dispatch({
+                type: "SET_CURRENT_ASSESSMENT",
+                payload: test,
+            });
+            navigate(`/assessments/start-test/${test._id}`);
         }
-
-    }
+    };
 
     const handleOnAdminClick = () => {
-
-        navigate(`/assessments/review-admin`)
-
-    }
-
+        navigate(`/assessments/review-admin`);
+    };
 
     return (
-        <Box border={1} borderColor="grey.300" borderRadius={5} p={2} mb={0} sx={{ color: 'black', width: 550, background: 'white', height: 200 }}>
+        <Box
+            border={1}
+            borderColor="grey.300"
+            borderRadius={1} // 4px
+            p={3}
+            mb={2}
+            sx={{
+                width: 550,
+                background: '#FFFFFF',
+                color: '#222',
+            }}
+        >
             {/* Top section */}
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="h6" fontWeight="bold">{test.title}</Typography>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="h6" fontWeight="bold" sx={{ color: '#1976d2' }}>
+                    {test.title}
+                </Typography>
 
                 <Stack spacing={1} direction="row" alignItems="center">
-                    {test.isMandatory && <Chip label="Mandatory" color="error" size="small" />}
-                    {role !== 'instructor' ? <Chip
-                        label={test.attempted ? "Attempted" : "Not Attempted"}
-                        color={test.attempted ? "success" : "warning"}
-                        size="small"
-                    /> : ''}
+                    {test.isMandatory && (
+                        <Chip
+                            label="Mandatory"
+                            size="small"
+                            sx={{
+                                borderRadius: '4px',
+                                border: '1px solid #E57373',
+                                backgroundColor: 'rgba(229,115,115,0.08)',
+                                color: '#D32F2F',
+                            }}
+                        />
+                    )}
+                    {role !== 'instructor' && (
+                        <Chip
+                            label={test.attempted ? "Attempted" : "Not Attempted"}
+                            size="small"
+                            sx={{
+                                borderRadius: '4px',
+                                border: test.attempted ? '1px solid #81C784' : '1px solid #FFB74D',
+                                backgroundColor: test.attempted
+                                    ? 'rgba(129,199,132,0.1)'
+                                    : 'rgba(255,183,77,0.1)',
+                                color: test.attempted ? '#2E7D32' : '#EF6C00',
+                            }}
+                        />
+                    )}
                 </Stack>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+
+            {/* Duration and Topics */}
+            <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
                 <Box>
-                    {/* Duration and Due Date */}
-                    <Typography variant="body2" mt={1}>
+                    <Typography variant="body2" mb={1}>
                         Duration: <strong>{formatDuration(test.duration)}</strong>
                     </Typography>
-                    {/* <Typography variant="body2" mb={1}>
-                        Complete test by: <strong>{test.dueDate}</strong>
-                    </Typography> */}
-
                 </Box>
 
-                <Box mt={1}>
+                <Box>
                     <Stack direction="row" spacing={1} flexWrap="wrap">
                         {test.topics.map((topic, idx) => (
                             <Chip
@@ -81,17 +104,18 @@ function TestCard({ test, role }) {
                                 label={topic}
                                 size="small"
                                 variant="outlined"
-                                sx={{ fontSize: '0.75rem', color: 'gray' }}
+                                sx={{
+                                    fontSize: '0.75rem',
+                                    borderRadius: '4px',
+                                    borderColor: '#90A4AE',
+                                    color: '#455A64',
+                                    background: 'transparent',
+                                }}
                             />
                         ))}
                     </Stack>
                 </Box>
             </Box>
-
-
-
-            {/* Topics */}
-
 
             {/* Type and Questions */}
             <Typography variant="body2" mb={1}>
@@ -105,78 +129,107 @@ function TestCard({ test, role }) {
                 </Box>
             </Typography>
 
-
             {/* Description */}
-            <Typography variant="body2" sx={{
-                display: '-webkit-box',
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-            }}>
+            <Typography
+                variant="body2"
+                sx={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    mb: 2,
+                }}
+            >
                 {test.description}
             </Typography>
 
+            {/* Buttons */}
+            {role === 'employee' && (
+                <Button
+                    variant={test.attempted ? 'outlined' : 'contained'}
+                    fullWidth
+                    disableElevation
+                    onClick={handleOnClick}
+                    sx={{
+                        borderRadius: '4px',
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        ...(test.attempted
+                            ? {
+                                // Review Test → outlined green + soft background
+                                border: '1.5px solid #2ecc71',
+                                color: '#2ecc71',
+                                backgroundColor: 'rgba(46, 204, 113, 0.08)', // soft green background
+                                '&:hover': {
+                                    backgroundColor: 'rgba(46, 204, 113, 0.15)',
+                                },
+                                '&:active': {
+                                    backgroundColor: 'rgba(46, 204, 113, 0.25)',
+                                },
+                                '&:disabled': {
+                                    border: '1.5px solid #a5d6a7',
+                                    color: '#a5d6a7',
+                                    backgroundColor: 'rgba(165, 214, 167, 0.2)',
+                                },
+                            }
+                            : {
+                                // Start Test → filled blue
+                                backgroundColor: '#1976d2',
+                                color: '#fff',
+                                '&:hover': {
+                                    backgroundColor: '#1565c0',
+                                },
+                                '&:active': {
+                                    backgroundColor: '#0d47a1',
+                                },
+                                '&:disabled': {
+                                    backgroundColor: '#90CAF9',
+                                    color: '#E3F2FD',
+                                },
+                                '&:focus': {
+                                    outline: '2px solid #64B5F6',
+                                    outlineOffset: '2px',
+                                },
+                            }),
+                    }}
+                >
+                    {test.attempted ? 'Review Test' : 'Start Test'}
+                </Button>
 
+            )}
 
-            {role === 'employee' && <Button
-                variant="contained"
-                sx={{
-                    backgroundColor: test.attempted ? '#6c757d' : '#007BFF',
-                    '&:hover': {
-                        backgroundColor: test.attempted ? '#5a6268' : '#0056b3',
-                    },
-                    width: '100%',
-                    color: '#ffffff',
-                    mt: 1,
-                    fontWeight: 'bold',
-                    textTransform: 'none', // keeps text casing natural
-                    borderRadius: 2
-                }}
-                onClick={handleOnClick}
-            >
-                {test.attempted ? 'Review Test' : 'Start Test'}
-            </Button>}
-
-             {/* {role === 'employee' && <Button
-                variant="contained"
-                sx={{
-                    backgroundColor: '#007BFF',
-                    '&:hover': {
-                        backgroundColor: '#0056b3',
-                    },
-                    width: '100%',
-                    color: '#ffffff',
-                    mt: 1,
-                    fontWeight: 'bold',
-                    textTransform: 'none', // keeps text casing natural
-                    borderRadius: 2
-                }}
-                onClick={handleOnClick}
-            >
-                { test.attempted ? 'Review Test' : 'Start Test'}
-            </Button>} */}
-
-
-            {role === 'instructor' && <Button
-                variant="contained"
-                sx={{
-                    backgroundColor: '#007BFF',
-                    '&:hover': {
-                        backgroundColor: '#0056b3',
-                    },
-                    width: '100%',
-                    color: '#ffffff',
-                    mt: 1,
-                    fontWeight: 'bold',
-                    textTransform: 'none', // keeps text casing natural
-                    borderRadius: 2
-                }}
-                onClick={handleOnAdminClick}
-            >
-                View Questions
-            </Button>}
-
+            {role === 'instructor' && (
+                <Button
+                    variant="contained"
+                    fullWidth
+                    disableElevation
+                    onClick={handleOnAdminClick}
+                    sx={{
+                        borderRadius: '4px',
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        backgroundColor: '#1976d2',
+                        color: '#fff',
+                        '&:hover': {
+                            backgroundColor: '#1565c0',
+                        },
+                        '&:active': {
+                            backgroundColor: '#0d47a1',
+                        },
+                        '&:disabled': {
+                            backgroundColor: '#90CAF9',
+                            color: '#E3F2FD',
+                        },
+                        '&:focus': {
+                            outline: '2px solid #64B5F6',
+                            outlineOffset: '2px',
+                        },
+                    }}
+                >
+                    View Questions
+                </Button>
+            )}
         </Box>
     );
 }

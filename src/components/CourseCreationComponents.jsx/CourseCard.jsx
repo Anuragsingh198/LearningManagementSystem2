@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Tooltip } from '@mui/material'
 import { Video, Users, Calendar, Clock, Book, Trash2 } from 'lucide-react';
 import {
   Box,
@@ -104,8 +105,8 @@ const CourseCard = ({ course, onViewCourse }) => {
         border: '1px solid rgba(218, 217, 217, 0.87)',
         borderRadius: '8px',
         overflow: 'hidden',
-        backgroundColor: 'transparent', 
-        boxShadow: 'none', 
+        backgroundColor: 'transparent',
+        boxShadow: 'none',
         transition: 'transform 0.3s ease, border-color 0.3s ease',
         '&:hover': {
           transform: 'translateY(-6px)',
@@ -201,7 +202,7 @@ const CourseCard = ({ course, onViewCourse }) => {
             objectPosition: 'center'
           }}
         />
-        <Box sx={{
+        {/* <Box sx={{
           position: 'absolute',
           bottom: 0,
           left: 0,
@@ -218,20 +219,21 @@ const CourseCard = ({ course, onViewCourse }) => {
                 color: 'white',
                 fontWeight: 500,
                 fontSize: '0.7rem',
+                borderRadius: '4px',
                 height: 22
               }}
             />
           )}
-        </Box>
+        </Box> */}
       </Box>
 
       <CardContent sx={{ p: 1.5 }}>
         {/* Course Title and Status */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          mb: 2 
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2
         }}>
           <Typography
             variant="h6"
@@ -246,6 +248,8 @@ const CourseCard = ({ course, onViewCourse }) => {
           >
             {course.title}
           </Typography>
+          {/* 
+          // Status Chip 
           {role !== 'instructor' && (
             <Chip
               label={
@@ -283,115 +287,148 @@ const CourseCard = ({ course, onViewCourse }) => {
                     : status === 'pending'
                       ? '#95a5a6'
                       : '#f1c40f',
-              }}
-            />
+            }}
           )}
+          */}
         </Box>
-        
+
         {role !== 'instructor' ? (
           <Box sx={{ mb: 2, position: 'relative' }}>
-            {/* Top row: Progress text + Days left chip */}
+            {/* Top row: Category | Status | Days left */}
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: 'flex-end',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                mb: 1,
+                mb: 2,
+                gap: 1,
+                flexWrap: 'nowrap',
               }}
             >
-              {/* <Typography
-                variant="body2"
-                color="text.secondary"
-                fontSize="13px"
-                fontWeight="700"
-              >
-                Progress: {Math.round(overallPercentage) || 0}%
-              </Typography> */}
+              {/* Category Chip - fixed width with tooltip */}
+              {course.category && (
+                <Tooltip title={course.category} arrow placement="top">
+                  <Chip
+                    label={
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          maxWidth: '100%',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          verticalAlign: 'middle',
+                        }}
+                      >
+                        {course.category}
+                      </span>
+                    }
+                    size="small"
+                    sx={{
+                      height: 28,
+                      fontSize: '12px',
+                      px: 1.5,
+                      borderRadius: '4px',
+                      fontWeight: 500,
+                      minWidth: 90,
+                      maxWidth: 120,
+                      backgroundColor: 'rgba(52, 152, 219, 0.05)',
+                      border: '1px solid #3498db',
+                      color: '#3498db',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </Tooltip>
+              )}
 
-              {remainingDays !== undefined && status !== 'completed' && (
+              {/* Status Chip - tooltip */}
+              <Tooltip title={
+                status === 'pending'
+                  ? 'Ongoing'
+                  : status === 'completed'
+                    ? 'Completed'
+                    : status === 'enrolled'
+                      ? 'Pending'
+                      : 'N/A'
+              } arrow placement="top">
                 <Chip
-                  label={remainingDays === 0 ? 'Overdue' : `${remainingDays} days left`}
+                  label={
+                    status === 'pending'
+                      ? 'Ongoing'
+                      : status === 'completed'
+                        ? 'Completed'
+                        : status === 'enrolled'
+                          ? 'Pending'
+                          : 'N/A'
+                  }
                   size="small"
                   sx={{
-                    height: 20,
+                    flex: 1,
+                    height: 28,
                     fontSize: '12px',
-                    px: 1,
-                    minWidth: 100,
-                    maxWidth: 'fit-content',
+                    px: 1.5,
                     borderRadius: '4px',
                     fontWeight: 500,
-                    mb: 0.5,
                     backgroundColor:
-                      remainingDays === 0 ? 'rgb(255, 25, 0)' : 'rgba(52, 152, 219, 0.1)',
-                    border: `1px solid ${remainingDays === 0 ? '#e74c3c' : '#3498db'
-                      }`,
-                    color: remainingDays === 0 ? '#ffffff' : '#3498db',
-                  }}
-                />
-              )}
-            </Box>
-
-            {/* Progress bar with circular indicator */}
-            <Box sx={{ position: 'relative' }}>
-              <LinearProgress
-                variant="determinate"
-                value={overallPercentage || 0}
-                sx={{
-                  height: 6,
-                  borderRadius: 4,
-                  backgroundColor: 'grey.200',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor:
-                      overallPercentage < 40
-                        ? '#f9e79f' // pastel yellow
-                        : overallPercentage < 80
-                          ? '#aed6f1' // pastel blue
-                          : '#abebc6', // pastel green
-                  },
-                }}
-              />
-
-              {/* Small circular percentage indicator */}
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: `${overallPercentage}%`,
-                  transform: 'translate(-50%, -50%)',
-                  transition: 'left 0.3s ease',
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 20, // smaller circle
-                    height: 20,
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '8px', // smaller text
-                    fontWeight: 600,
-                    backgroundColor: '#fff',
-                    border: `2px solid ${overallPercentage < 40
-                        ? '#f9e79f'
-                        : overallPercentage < 80
-                          ? '#aed6f1'
-                          : '#abebc6'
+                      status === 'completed'
+                        ? 'rgba(11, 208, 93, 0.1)'
+                        : status === 'pending'
+                          ? 'rgba(149, 165, 166, 0.1)'
+                          : 'rgba(241, 196, 15, 0.1)',
+                    border: `1px solid ${status === 'completed'
+                        ? '#2ecc71'
+                        : status === 'pending'
+                          ? '#95a5a6'
+                          : '#f1c40f'
                       }`,
                     color:
-                      overallPercentage < 40
-                        ? '#d4ac0d'
-                        : overallPercentage < 80
-                          ? '#2874a6'
-                          : '#1d8348',
-                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                      status === 'completed'
+                        ? '#2ecc71'
+                        : status === 'pending'
+                          ? '#95a5a6'
+                          : '#f1c40f',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
                   }}
+                />
+              </Tooltip>
+
+              {/* Days left Chip - tooltip */}
+              {remainingDays !== undefined && status !== 'completed' && (
+                <Tooltip
+                  title={remainingDays === 0 ? 'Overdue' : `${remainingDays} days left`}
+                  arrow
+                  placement="top"
                 >
-                  {Math.round(overallPercentage) || 0}%
-                </Box>
-              </Box>
+                  <Chip
+                    label={remainingDays === 0 ? 'Overdue' : `${remainingDays} days left`}
+                    size="small"
+                    sx={{
+                      flex: 1,
+                      height: 28,
+                      fontSize: '12px',
+                      px: 1.5,
+                      borderRadius: '4px',
+                      fontWeight: 500,
+                      backgroundColor:
+                        remainingDays === 0
+                          ? 'rgb(255, 25, 0)'
+                          : 'rgba(52, 152, 219, 0.05)',
+                      border: `1px solid ${remainingDays === 0 ? '#e74c3c' : '#3498db'
+                        }`,
+                      color: remainingDays === 0 ? '#ffffff' : '#3498db',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </Tooltip>
+              )}
             </Box>
           </Box>
+
+
         ) : (
           ''
         )}

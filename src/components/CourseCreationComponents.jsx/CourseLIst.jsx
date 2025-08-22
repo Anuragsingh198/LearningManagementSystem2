@@ -126,7 +126,7 @@ const CourseList = () => {
                 variant="contained"
                 startIcon={<PlusCircle size={20} />}
                 sx={{
-                  backgroundColor: '#1976d2', 
+                  backgroundColor: '#1976d2',
                   color: '#fff',
                   borderRadius: '4px',
                   boxShadow: 'none',
@@ -137,7 +137,7 @@ const CourseList = () => {
                     boxShadow: 'none',
                   },
                   '&:active': {
-                    backgroundColor: '#0d47a1', 
+                    backgroundColor: '#0d47a1',
                     boxShadow: 'none',
                   },
                   '&:disabled': {
@@ -226,6 +226,7 @@ const CourseList = () => {
                 {/* Pending Courses */}
                 <Box
                   sx={{
+                    width: '93%',
                     display: "flex",
                     alignItems: "center",
                     mb: 4,
@@ -248,7 +249,7 @@ const CourseList = () => {
                     Ongoing Courses
                     <SchoolIcon fontSize="small" color="primary" />
                   </Typography>
-                  <Box sx={{ flex: 1, borderBottom: "2px dashed #ccc" }} />
+                  <Box sx={{width: '50%', flex: 1, borderBottom: "2px dashed #ccc" }} />
                 </Box>
                 {filteredCoursesPending && filteredCoursesPending.length > 0 ? (
                   <Grid container spacing={3} sx={{ mb: 2 }}>
@@ -273,6 +274,7 @@ const CourseList = () => {
                 {/* Completed Courses */}
                 <Box
                   sx={{
+                    width: '93%',
                     display: "flex",
                     alignItems: "center",
                     textAlign: "center",
@@ -301,7 +303,7 @@ const CourseList = () => {
                       ))}
                     </Grid>
                   ) : (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: 6 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: 6, width: '91%' }}>
                       <Box component="img" src={noDataImage} alt="No data" sx={{ height: 200, opacity: 0.9, mb: 2 }} />
                       <Typography variant="h6" sx={{ color: '#424242', fontWeight: 500 }}>
                         No Courses Completed

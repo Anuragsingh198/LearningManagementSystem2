@@ -386,7 +386,7 @@ const RegisterPage = () => {
                     onCancel={handleCancel}
                     onConfirm={handleConfirm}
                     title="Confirm User Type"
-                    message="Are you sure you want to login as an Admin, you won't be able to chagne your role and get certificates?"
+                    message="Are you sure you want to login as an Admin, you won't be able to Change your role and get certificates?"
                 />
             )}
 
