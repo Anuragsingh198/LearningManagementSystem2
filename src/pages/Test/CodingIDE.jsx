@@ -124,7 +124,7 @@ const CodingIDE = ({
       const payload = {
         sourceCode: value,
         languageId: language,
-        questionId: question?.id,
+        questionId: question._id,
       };
 
       const data = await submitCodeAction(dispatch, payload);
