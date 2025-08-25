@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Box, Typography, Container, CircularProgress, Paper } from '@mui/material';
 import { CourseCard } from '../../components/CourseCard';
-import bgVideo from '../../assets/bg-video.mp4';
-import bgVideo2 from '../../assets/bg-video-2.mp4';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { getCoursesAction, getMyCoursesAction } from '../../context/Actions/courseActions';
 import CourseCardHoverWrapper from '../common/CourseCardHoverWrapper';
 
 const TeacherDashboard = () => {
   const { state: { courses, myCourses, loading }, dispatch } = useCourseContext();
-  const [allCourses, setAllCourses] = useState([])
-  const [selectedVideo, setSelectedVideo] = useState('')
+  const [allCourses, setAllCourses] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState('');
 
   // Randomly select a video on component mount
   useEffect(() => {
-    const videos = [bgVideo, bgVideo2];
+    const videos = ['/bg-video.mp4', '/bg-video-2.mp4'];
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     setSelectedVideo(randomVideo);
   }, []);
@@ -73,15 +71,23 @@ const TeacherDashboard = () => {
         }}
         onClick={scrollToMandatoryCourses}
       >
-        <Box
-          component="video"
-          src={selectedVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-          sx={{ width: '100%', height: '100%', borderRadius: '4px', objectFit: 'cover', objectPosition: 'center' }}
-        />
+        {selectedVideo && (
+          <Box
+            component="video"
+            src={selectedVideo}
+            autoPlay
+            muted
+            loop
+            playsInline
+            sx={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '4px',
+              objectFit: 'cover',
+              objectPosition: 'center'
+            }}
+          />
+        )}
       </Box>
 
       <Box sx={{ px: 2 }}>
