@@ -188,6 +188,7 @@ const QuestionDisplay = ({
               py: 1.5,
               fontWeight: 'medium',
               textTransform: 'none',
+              boxShadow: 'none',
             }}
           >
             Save & Next
