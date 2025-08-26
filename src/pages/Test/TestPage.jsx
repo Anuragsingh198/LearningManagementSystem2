@@ -10,7 +10,7 @@ import {
   Box,
   CssBaseline,
   ThemeProvider,
-  createTheme
+  createTheme, Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import { useNavigate , useParams} from 'react-router-dom';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
@@ -52,6 +52,8 @@ const TestPage = () => {
   const {state: {testData}, dispatch} = useAssignmentContext();
   const {state: {}, dispatch: courseDispatch} = useCourseContext()
   const [loading, setLoading] = useState(false)
+    const [showModal, setShowModal] = useState(false);
+  const [pendingIndex, setPendingIndex] = useState(null);
 
   // console.log('the test data from context in test page is: ', contextTestData)
 

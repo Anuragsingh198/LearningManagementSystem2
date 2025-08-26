@@ -81,16 +81,51 @@ const CodingIDE = ({
         code: value,
         languageId: language,
         testCases: question.run_code_testcases
-
       };
 
       // Call your action to run the code
       const data = await runCodeAction(dispatch, payload);
       console.log("Response from Judge0:", data);
-
       if (!data) {
         throw new Error("Run code request failed: No data returned");
       }
+
+      let compilationSuccess = true;
+      let executionOutput = "";
+      let compilationError = "";
+
+      // Check each test case
+      for (const result of data.results) {
+        const { status, compile_output, stderr, actual_output } = result;
+
+        if (status.includes("Compilation Error")) {
+          compilationSuccess = false;
+          compilationError = compile_output; // For C/C++/Java
+          break; // no need to check others
+        }
+
+        if (status.includes("Runtime Error")) {
+          compilationSuccess = false;
+          // Python errors in stderr, C/Java errors may also show there
+          compilationError = stderr;
+          break;
+        }
+
+        if (status.includes("Accepted")) {
+          // Success → capture actual output
+          executionOutput = actual_output;
+        }
+        if (status.includes("Wrong Answer")) {
+          // Success → capture actual output
+          executionOutput = actual_output;
+        }
+      }
+
+      // Update states
+      setCompilationSuccess(compilationSuccess);
+      setExecutionOutput(executionOutput);
+      setCompilationError(compilationError);
+
 
       // Map Judge0 results to examples format for CodingQuestionViewer
       const mappedResults = (data.results || []).map((result, idx) => ({
@@ -101,10 +136,8 @@ const CodingIDE = ({
         passed: result.status === "Accepted" ? true : false
       }));
       console.log(" this is  the testcase result : ", mappedResults);
-      setCompilationSuccess(data.success || false);
-      setCompilationError(data.error || "");
+
       setTestResults(mappedResults);
-      setExecutionOutput(data.results.output || "");
 
     } catch (error) {
       console.error("Run code failed:", error);
@@ -198,6 +231,7 @@ const CodingIDE = ({
       <Box sx={{ flex: 1 }}>
         <PanelGroup direction="horizontal">
           <Panel defaultSize={40} minSize={25}>
+            {/* <Typography>Hello</Typography> */}
             {showOutput ? (
               <PanelGroup direction="horizontal">
                 <Panel defaultSize={50} minSize={30}>

@@ -11,8 +11,6 @@ import {
   styled
 } from '@mui/material';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
-// const judge0ServerUrl = 'http://172.19.13.158:2358';
-
 
 const EditorHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -20,7 +18,9 @@ const EditorHeader = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   padding: theme.spacing(1),
   backgroundColor: theme.palette.grey[800],
-  borderBottom: `1px solid ${theme.palette.grey[700]}`
+  borderBottom: `1px solid ${theme.palette.grey[700]}`,
+  position: 'relative', // Ensure proper positioning context
+  zIndex: 1300, // Higher z-index to stay above fullscreen content
 }));
 
 const LanguageSelect = styled(Select)(({ theme }) => ({
@@ -64,27 +64,23 @@ const CodeEditor = ({
   const editorRef = useRef(null);
   const theme = useTheme();
   const { state: { codingLanguages }, dispatch } = useAssignmentContext();
-  // const [languages, setLanguages] = useState(codingLanguages.languages);
   const [languages, setLanguages] = useState(codingLanguages.languages);
+  const [container, setContainer] = useState(null);
 
-// useEffect(() => {
-//   if (Array.isArray(codingLanguages.languages)) {
-//     setLanguages(codingLanguages.languages);
-//   }
-// }, [codingLanguages.languages]);
-
-
-// console.log('this is the  langiages  afwyehqgesahbster  extraction: ' ,languages )
-
+  // Get reference to the editor container
+  useEffect(() => {
+    const editorContainer = document.querySelector('.monaco-editor');
+    if (editorContainer) {
+      setContainer(editorContainer);
+    }
+  }, []);
 
   const mapJudge0ToMonaco = (langName = '') => {
     langName = langName.toLowerCase();
     if (langName.includes('python')) return 'python';
     if (langName.includes('c++')) return 'cpp';
-    if (langName.includes('c#')) return 'csharp';
     if (langName.includes('java ')) return 'java';
     if (langName.startsWith('c ')) return 'c';
-    if (langName.includes('javascript')) return 'javascript';
     return 'plaintext';
   };
 
@@ -101,11 +97,19 @@ const CodeEditor = ({
 
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
-  };
+    
+    // Listen for fullscreen changes
+    const handleFullscreenChange = () => {
+      // Force re-render or update state when fullscreen changes
+      setContainer(document.fullscreenElement);
+    };
 
-  // useEffect(() => {
-  //   console.log("this is the coding languages  from the  codeEditor : ", codingLanguages)
-  // }, [codingLanguages])
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  };
 
   const monacoLang = useMemo(() => {
     if (!languages || languages.length === 0) {
@@ -115,18 +119,29 @@ const CodeEditor = ({
     return mapJudge0ToMonaco(langName);
   }, [language, languages]);
 
+  // useEffect(() => {
+  //   if (!value?.trim()) {
+  //     onChange(getInitialCode(monacoLang));
+  //   }
+  // }, [monacoLang]);
+
   useEffect(() => {
-    if (!value?.trim()) {
-      onChange(getInitialCode(monacoLang));
-    }
-  }, [monacoLang]);
+  // Reset the code whenever the language changes
+  onChange(getInitialCode(monacoLang));
+}, [language]); // Trigger only when the language ID changes
+
+const handleLanguageChange = (e) => {
+  
+   onLanguageChange(e.target.value)
+}
 
   return (
     <Box sx={{
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      backgroundColor: theme.palette.grey[900]
+      backgroundColor: theme.palette.grey[900],
+      position: 'relative'
     }}>
 
       <EditorHeader>
@@ -134,11 +149,10 @@ const CodeEditor = ({
           Code Editor
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, position: 'relative', zIndex: 1400 }}>
           <LanguageSelect
             value={languages?.length > 0 ? language : ""}
-            onChange={(e) => onLanguageChange(e.target.value)}
+            onChange={(e) =>{handleLanguageChange(e)}}
             disabled={languages?.length === 0}
             IconComponent={() => (
               <ChevronDown
@@ -146,28 +160,51 @@ const CodeEditor = ({
                   width: 16,
                   height: 16,
                   color: theme.palette.grey[400],
-                  position: 'absolute',
+                  position: "absolute",
                   right: 8,
-                  pointerEvents: 'none'
+                  pointerEvents: "none",
                 }}
               />
             )}
             MenuProps={{
+              // Key fix: Use the Monaco editor container as the anchor for the dropdown
+              container: container,
+              disablePortal: true,
+              modifiers: [
+                {
+                  name: "preventOverflow",
+                  options: {
+                    boundary: "viewport",
+                    rootBoundary: "document",
+                    altBoundary: true,
+                  },
+                },
+                {
+                  name: "flip",
+                  options: {
+                    fallbackPlacements: ["top", "bottom"],
+                  },
+                },
+              ],
               PaperProps: {
                 sx: {
                   backgroundColor: theme.palette.grey[800],
-                  color: theme.palette.common.white
-                }
-              }
+                  color: theme.palette.common.white,
+                  zIndex: 1500, // Ensure dropdown appears above everything
+                },
+              },
+              sx: {
+                zIndex: 1500,
+              },
             }}
           >
-            {languages?.map(option => (
+            {languages?.map((option) => (
               <MenuItem
                 key={option.id}
                 value={option.id}
                 sx={{
                   backgroundColor: theme.palette.grey[800],
-                  '&:hover': { backgroundColor: theme.palette.grey[700] }
+                  "&:hover": { backgroundColor: theme.palette.grey[700] },
                 }}
               >
                 {option.name}
@@ -199,7 +236,7 @@ const CodeEditor = ({
       </EditorHeader>
 
       {/* Monaco Editor */}
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{ flex: 1, position: 'relative' }}>
         <Editor
           height="100%"
           language={monacoLang}
