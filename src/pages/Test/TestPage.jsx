@@ -10,7 +10,7 @@ import {
   Box,
   CssBaseline,
   ThemeProvider,
-  createTheme, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button
+  createTheme, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button,
 } from '@mui/material';
 import { useNavigate , useParams} from 'react-router-dom';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
@@ -35,6 +35,47 @@ const theme = createTheme({
     fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif',
   },
 });
+
+const CustomModal = ({ open, onClose, title, children, actions }) => {
+  if (!open) return null;
+
+  return (
+    <Box
+      sx={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+      }}
+      onClick={onClose}
+    >
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: 3,
+          borderRadius: 2,
+          minWidth: 300,
+          maxWidth: 500,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Typography variant="h6" gutterBottom>
+          {title}
+        </Typography>
+        {children}
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+          {actions}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
 const TestPage = () => {
     const { id } = useParams();
@@ -599,22 +640,25 @@ const handleAutoSubmit = () => {
            isFullScreen={isFullScreen}
            loading={loading}
         />
-              <Dialog open={showModal} onClose={handleCancel}>
-        <DialogTitle>Submit Code First</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Please submit your code before moving to another question.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleContinue} variant="contained" color="primary">
-            I have Submitted Current Question
-          </Button>
-        </DialogActions>
-      </Dialog>
+             <CustomModal
+  open={showModal}
+  onClose={handleCancel}
+  title="Submit Code First"
+  actions={
+    <>
+      <Button onClick={handleCancel} color="secondary">
+        Cancel
+      </Button>
+      <Button onClick={handleContinue} variant="contained" color="primary">
+        I have Submitted Current Question
+      </Button>
+    </>
+  }
+>
+  <Typography>
+    Please submit your code before moving to another question.
+  </Typography>
+</CustomModal>
       </Box>
     </ThemeProvider>
   );
