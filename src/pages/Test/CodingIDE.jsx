@@ -32,8 +32,8 @@ const SubmissionResultBox = styled(Box)(({ theme, success }) => ({
   borderBottom: `1px solid ${success ? theme.palette.success.light : theme.palette.warning.light
     }`,
   backgroundColor: success
-    ? theme.palette.success.lighter
-    : theme.palette.warning.lighter,
+    ? theme.palette.success.light
+    : theme.palette.warning.light,
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1),
@@ -43,7 +43,9 @@ const CodingIDE = ({
   question,
   value,
   onChange,
-  onSubmit
+  onSubmit,
+  showOutput,
+  setShowOutput
 }) => {
 
   const theme = useTheme();
@@ -52,7 +54,7 @@ const CodingIDE = ({
   const [language, setLanguage] = useState(71);
   const [isCompiling, setIsCompiling] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showOutput, setShowOutput] = useState(false);
+  // const [showOutput, setShowOutput] = useState(false);
   const [compilationSuccess, setCompilationSuccess] = useState(true);
   const [compilationError, setCompilationError] = useState('');
   const [testResults, setTestResults] = useState([]);

@@ -10,7 +10,7 @@ import {
   Box,
   CssBaseline,
   ThemeProvider,
-  createTheme, Dialog, DialogTitle, DialogContent, DialogActions,
+  createTheme, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button
 } from '@mui/material';
 import { useNavigate , useParams} from 'react-router-dom';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
@@ -52,8 +52,9 @@ const TestPage = () => {
   const {state: {testData}, dispatch} = useAssignmentContext();
   const {state: {}, dispatch: courseDispatch} = useCourseContext()
   const [loading, setLoading] = useState(false)
-    const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [pendingIndex, setPendingIndex] = useState(null);
+    const [showOutput, setShowOutput] = useState(false);
 
   // console.log('the test data from context in test page is: ', contextTestData)
 
@@ -349,14 +350,43 @@ const handleAutoSubmit = () => {
 
   // Handle question selection
   const handleQuestionSelect = (index) => {
-    setCurrentQuestionIndex(index);
-    const question = testData.questions[index];
+    const currentQuestion = testData.questions[currentQuestionIndex];
+    const isCoding = currentQuestion.type === "coding";
 
-    // Mark as visited
-    setQuestionStatus(prev => ({
-      ...prev,
-      [question._id]: prev[question._id] === 'answered' ? 'answered' : 'visited'
-    }));
+    if (isCoding && index !== currentQuestionIndex) {
+      // Block navigation and show modal
+      setPendingIndex(index);
+      setShowModal(true);
+    } else {
+      // Allow navigation
+      setCurrentQuestionIndex(index);
+      const question = testData.questions[index];
+      setQuestionStatus((prev) => ({
+        ...prev,
+        [question._id]: prev[question._id] === "answered" ? "answered" : "visited",
+      }));
+    }
+
+     setShowOutput(false);
+  };
+
+   // modal action
+    const handleContinue = () => {
+    if (pendingIndex !== null) {
+      setCurrentQuestionIndex(pendingIndex);
+      const question = testData.questions[pendingIndex];
+      setQuestionStatus((prev) => ({
+        ...prev,
+        [question._id]: prev[question._id] === "answered" ? "answered" : "visited",
+      }));
+    }
+    setPendingIndex(null);
+    setShowModal(false);
+  };
+
+  const handleCancel = () => {
+    setPendingIndex(null);
+    setShowModal(false);
   };
 
   // Handle MCQ option selection
@@ -554,6 +584,8 @@ const handleAutoSubmit = () => {
               onCodingAnswerChange={handleCodingAnswerChange}
               onSaveAndNext={handleSaveAndNext}
               onCodingSubmit={handleCodingSubmit}
+              showOutput={showOutput}
+              setShowOutput={setShowOutput}
             />
           </Box>
         </Box>
@@ -567,6 +599,22 @@ const handleAutoSubmit = () => {
            isFullScreen={isFullScreen}
            loading={loading}
         />
+              <Dialog open={showModal} onClose={handleCancel}>
+        <DialogTitle>Submit Code First</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Please submit your code before moving to another question.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleContinue} variant="contained" color="primary">
+            I have Submitted Current Question
+          </Button>
+        </DialogActions>
+      </Dialog>
       </Box>
     </ThemeProvider>
   );
