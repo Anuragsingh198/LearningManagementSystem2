@@ -627,6 +627,7 @@ const handleAutoSubmit = () => {
               onCodingSubmit={handleCodingSubmit}
               showOutput={showOutput}
               setShowOutput={setShowOutput}
+              id={id}
             />
           </Box>
         </Box>

@@ -45,7 +45,8 @@ const CodingIDE = ({
   onChange,
   onSubmit,
   showOutput,
-  setShowOutput
+  setShowOutput,
+  id
 }) => {
 
   const theme = useTheme();
@@ -160,6 +161,7 @@ const CodingIDE = ({
         sourceCode: value,
         languageId: language,
         questionId: question._id,
+        assessmentId: id
       };
 
       const data = await submitCodeAction(dispatch, payload);

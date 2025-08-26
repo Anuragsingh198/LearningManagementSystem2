@@ -72,7 +72,8 @@ const QuestionDisplay = ({
   onSaveAndNext,
   onCodingSubmit,
   showOutput,
-        setShowOutput
+        setShowOutput,
+        id
 }) => {
   const theme = useTheme();
 
@@ -86,6 +87,7 @@ const QuestionDisplay = ({
           onSubmit={onCodingSubmit}
            showOutput={showOutput}
         setShowOutput={setShowOutput}
+        id={id}
         />
       </Box>
     );
