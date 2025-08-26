@@ -62,6 +62,38 @@ function MainAssessment() {
             to="/assessments/create"
             variant="contained"
             color="primary"
+            sx={{
+              boxShadow: 'none',
+              borderRadius: '4px',
+              fontWeight: 500,
+              textTransform: 'uppercase', 
+
+              backgroundColor: '#1976d2',
+              color: '#fff',
+
+              '&:hover': {
+                backgroundColor: '#1565c0',
+                color: '#fff',
+                boxShadow: 'none',
+              },
+
+              '&:active': {
+                backgroundColor: '#0d47a1',
+                color: '#fff',
+                boxShadow: 'none',
+              },
+
+              '&:focus': {
+                outline: '2px solid #90caf9',
+                outlineOffset: '2px',
+                color: '#fff',
+              },
+
+              '&.Mui-disabled': {
+                backgroundColor: '#e0e0e0',
+                color: '#9e9e9e',
+              },
+            }}
           >
             Create Assessment
           </Button>

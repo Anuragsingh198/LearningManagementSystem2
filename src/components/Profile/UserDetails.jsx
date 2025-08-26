@@ -71,9 +71,9 @@ const UserDetails = () => {
   };
 
   const user = {
-    name: "Adi Jain",
-    status: "Student",
-    bio: "What Not , He is Everything",
+    // name: "Adi Jain",
+    // status: "Student",
+    // bio: "What Not , He is Everything",
     avatar: profileImg,
     cover: coverImg,
   };
