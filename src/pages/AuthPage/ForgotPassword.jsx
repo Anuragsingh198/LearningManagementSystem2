@@ -281,7 +281,7 @@ const handleChange = (e) => {
             return;
         }
 
-        console.log("Form Data for reset password is:", formData);
+        // console.log("Form Data for reset password is:", formData);
 
         try {
 

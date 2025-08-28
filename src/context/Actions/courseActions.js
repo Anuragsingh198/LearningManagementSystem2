@@ -70,7 +70,7 @@ export const createCourseAction = async (formDataToSend, myCourses, dispatch) =>
 };
 
 export const createModuleAction = async (module, dispatch) => {
-  console.log('this is  the  module  action ', module);
+  // console.log('this is  the  module  action ', module);
   const user = JSON.parse(localStorage.getItem('user'));
 
   if (!user || !user._id) {
@@ -94,7 +94,7 @@ export const createModuleAction = async (module, dispatch) => {
     const data = response.data;
     if (data.success) {
       dispatch({ type: 'ADD_MODULE', payload: data.module });
-      console.log('Module created successfully:', data.module);
+      // console.log('Module created successfully:', data.module);
       return data.module;
     } else {
       throw new Error(data.message || 'Failed to create module');
@@ -199,7 +199,7 @@ export const getCoursesAction = async (dispatch) => {
     if (data.success) {
       if (!data.courses || data.courses.length === 0) {
         dispatch({ type: 'SET_COURSES', payload: [] });
-        console.log('No courses found');
+        // console.log('No courses found');
         return [];
       }
       dispatch({ type: 'SET_COURSES', payload: data.courses });
@@ -242,7 +242,7 @@ export const getMyCoursesAction = async (dispatch) => {
 
       if (myCourses.length === 0) {
         dispatch({ type: 'SET_MY_COURSES', payload: [] });
-        console.log('No courses found');
+        // console.log('No courses found');
         return [];
       }
 
@@ -278,10 +278,10 @@ export const getModulesByCourseId = async (courseId, dispatch) => {
     const data = response.data;
     if (data.success) {
       if (!data.modules || data.modules.length === 0) {
-        console.log('No modules found');
+        // console.log('No modules found');
         return [];
       }
-      console.log('Modules fetched successfully:', data.modules);
+      // console.log('Modules fetched successfully:', data.modules);
       dispatch({type: 'SET_MY_MODULES', payload: data.modules})
       return data.modules;
     } else {
@@ -307,7 +307,7 @@ export const getCourseById = async (courseId, dispatch) => {
     const data = response.data;
     if (data.success) {
       if (!data.course) {
-        console.log('Course not found');
+        // console.log('Course not found');
         return null;
       }
       // console.log('Course fetched successfully:', data.course);
@@ -377,7 +377,7 @@ export const getModulebyModuleId = async (moduleId, dispatch) => {
     const data = response.data;
     if (data.success) {
       if (!data.module || data.module.length === 0) {
-        console.log('No videos found');
+        // console.log('No videos found');
         return [];
       }
       // console.log('module fetched successfully:', data.module);
@@ -477,9 +477,9 @@ export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatc
     );
 
     const data = response.data;
-    console.log('the data after complition is: ', data)
-    console.log('the data video progress is: ', data.videoProgress)
-    console.log('the data after complition is: ', data.moduleProgress)
+    // console.log('the data after complition is: ', data)
+    // console.log('the data video progress is: ', data.videoProgress)
+    // console.log('the data after complition is: ', data.moduleProgress)
 
 
     if (data.success) {
@@ -574,7 +574,7 @@ export const deleteCourse = async (courseToDelete, dispatch) => {
 
   try {
     dispatch({ type: 'SET_LOADING', payload: true });
-    console.log('the course id is: ', courseToDelete)
+    // console.log('the course id is: ', courseToDelete)
     const response = await axios.delete(`${serverurl}/api/courses/delete-course/${courseToDelete}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -585,7 +585,7 @@ export const deleteCourse = async (courseToDelete, dispatch) => {
 
     if (data.success) {
 
-      console.log('course deleted, message from backend: ', data.message)
+      // console.log('course deleted, message from backend: ', data.message)
 
     } else {
       throw new Error(data.message);
@@ -620,7 +620,7 @@ export const courseProgress = async (courseId, userId, dispatch) => {
     if (data.success) {
       dispatch({ type: 'SET_COURSE_PROGRESS_ALL', payload: data.data });
 
-      console.log(" Course Progress Fetched:", data.data);
+      // console.log(" Course Progress Fetched:", data.data);
 
       return data.data;
     } else {
@@ -637,7 +637,7 @@ export const courseProgress = async (courseId, userId, dispatch) => {
 
 export const videoProgress = async (courseId, video, videoId, moduleId, dispatch) => {
   const token = getAuthToken();
-  console.log(" this is  the data from  video progress : ", courseId , videoId);
+  // console.log(" this is  the data from  video progress : ", courseId , videoId);
 
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
@@ -682,7 +682,7 @@ export const videoProgress = async (courseId, video, videoId, moduleId, dispatch
 
 export const testProgress = async (courseId, currentTestProgress, moduleId, testId, dispatch) => {
   const token = getAuthToken();
-  console.log('the test from test progress action is: ', currentTestProgress)
+  // console.log('the test from test progress action is: ', currentTestProgress)
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
@@ -779,7 +779,7 @@ export const deleteModule = async (chapterId, dispatch) => {
 
   try {
     dispatch({ type: 'SET_LOADING', payload: true });
-    console.log('the course id is: ', chapterId)
+    // console.log('the course id is: ', chapterId)
     const response = await axios.delete(`${serverurl}/api/courses/delete-module/${chapterId}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -790,7 +790,7 @@ export const deleteModule = async (chapterId, dispatch) => {
 
     if (data.success) {
 
-      console.log('Module deleted, message from backend: ', data.message)
+      // console.log('Module deleted, message from backend: ', data.message)
 
     } else {
       throw new Error(data.message);
@@ -861,7 +861,7 @@ export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
   try {
     dispatch({type: 'SET_LOADING', payload: true});
 
-    console.log('timer save req started');
+    // console.log('timer save req started');
     const response = await axios.post(`${serverurl}/api/courses/module/video-update`,
       payloadData
     ,  {

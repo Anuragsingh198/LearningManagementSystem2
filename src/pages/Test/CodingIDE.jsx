@@ -88,7 +88,7 @@ const CodingIDE = ({
 
       // Call your action to run the code
       const data = await runCodeAction(dispatch, payload);
-      console.log("Response from Judge0:", data);
+      // console.log("Response from Judge0:", data);
       if (!data) {
         throw new Error("Run code request failed: No data returned");
       }
@@ -138,7 +138,7 @@ const CodingIDE = ({
         status: result.status || "Unknown",
         passed: result.status === "Accepted" ? true : false
       }));
-      console.log(" this is  the testcase result : ", mappedResults);
+      // console.log(" this is  the testcase result : ", mappedResults);
 
       setTestResults(mappedResults);
 

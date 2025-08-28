@@ -36,7 +36,7 @@ export const courseReducer = (state, action) => {
       };
 
     case "ADD_COURSE":
-      console.log("Adding course: course  reducer", action.payload);
+      // console.log("Adding course: course  reducer", action.payload);
       return {
         ...state,
 

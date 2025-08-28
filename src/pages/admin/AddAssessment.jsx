@@ -132,7 +132,7 @@ function AddAssessment({courseId}) {
                 questions: questions,
 
             };
-            console.log("Quiz Submission Data:", submissionData);
+            // console.log("Quiz Submission Data:", submissionData);
             alert("Quiz submitted successfully!");
             // Here you would typically send the data to your backend
         } else {
