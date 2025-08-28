@@ -142,25 +142,48 @@ export const VideoContent = ({
     }, [currentVideoData, oneCourseProgress, oneModuleProgress]);
 
 
+    // useEffect(() => {
+    //     // console.log("this is the current video data: ", currentVideoData);
+    //     const fetchSasUrl = async () => {
+    //         try {
+    //             const res = await axios.get(
+    //                 `${serverURL}/api/courses/videos/${currentVideoData?.videoBlobName}/expires?hours=${hoursToExpire}`,
+    //                 {
+    //                     headers: {
+    //                         Authorization: `Bearer ${userToken}`
+    //                     }
+    //                 }
+    //             );
+    //             setVideoUrl(res.data.sasToken);
+    //         } catch (error) {
+    //             console.error('Failed to fetch SAS URL:', error);
+    //         }
+    //     };
+    //     fetchSasUrl();
+    // }, [currentVideoData]);
+
     useEffect(() => {
-        // console.log("this is the current video data: ", currentVideoData);
-        const fetchSasUrl = async () => {
-            try {
-                const res = await axios.get(
-                    `${serverURL}/api/courses/videos/${currentVideoData?.videoBlobName}/expires?hours=${hoursToExpire}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${userToken}`
-                        }
+    const fetchSasUrl = async () => {
+        try {
+            const res = await axios.get(
+                `${serverURL}/api/courses/videos/expires`, // endpoint without blobName in path
+                {
+                    params: { 
+                        blobName: currentVideoData?.videoBlobName, // send blobName as query param
+                        hours: hoursToExpire
+                    },
+                    headers: {
+                        Authorization: `Bearer ${userToken}`
                     }
-                );
-                setVideoUrl(res.data.sasToken);
-            } catch (error) {
-                console.error('Failed to fetch SAS URL:', error);
-            }
-        };
-        fetchSasUrl();
-    }, [currentVideoData]);
+                }
+            );
+            setVideoUrl(res.data.sasToken);
+        } catch (error) {
+            console.error('Failed to fetch SAS URL:', error);
+        }
+    };
+    fetchSasUrl();
+}, [currentVideoData]);
 
 
     useEffect(() => {

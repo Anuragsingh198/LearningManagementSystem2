@@ -74,7 +74,7 @@ export const Sidebar = ({
         videoStatusMap[vp.videoId] = vp.status;
     });
 
-    console.log("all video progress videoStatusMap from   side bar is : ", videoStatusMap)
+    // console.log("all video progress videoStatusMap from   side bar is : ", videoStatusMap)
 
     useEffect(() => {
         // console.log("this is sidebar", currentVideoProgress, allModuleProgress, allVideoProgress);
@@ -93,7 +93,6 @@ export const Sidebar = ({
 
     }
 
-    console.log('the articles in sidebar are ', articles)
 
     useEffect(() => {
         // console.log('the tests are: ', tests)
@@ -348,7 +347,9 @@ export const Sidebar = ({
                                     <ListItem key={video._id} disablePadding>
                                         <ListItemButton
                                             selected={currentVideo === index}
-                                            onClick={() => setCurrentVideo(index)}
+                                            onClick={() => {setCurrentVideo(index)
+                                                console.log('Change video index clicked', index)
+                                            }}
                                             sx={{
                                                 mb: '6px',
                                                 border: '1px solid',

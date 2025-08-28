@@ -10,31 +10,28 @@ const MarkdownRenderer = ({ text }) => (
     remarkPlugins={[remarkGfm]}
     rehypePlugins={[rehypeHighlight]}
     components={{
-      code({ node, inline, className, children, ...props }) {
+      code({ inline, className, children, ...props }) {
         const match = /language-(\w+)/.exec(className || '');
         return !inline && match ? (
-          <div
+          <pre
             style={{
               backgroundColor: '#f6f8fa',
-              padding: '0.5em',
-              borderRadius: '3px',
-              margin: '0.5em 0',
+              padding: '0.2em',
+              borderRadius: '4px',
+              margin: '0.1em 0',
+              fontSize: '0.85em',
               overflowX: 'auto',
             }}
           >
-            <pre style={{ margin: 0 }}>
-              <code className={className} {...props}>
-                {children}
-              </code>
-            </pre>
-          </div>
+            <code className={className} {...props}>{children}</code>
+          </pre>
         ) : (
           <code
             style={{
               backgroundColor: '#f0f0f0',
-              padding: '2px 4px',
-              borderRadius: '4px',
-              fontSize: '0.9em',
+              padding: '1px 2px',
+              borderRadius: '3px',
+              fontSize: '0.85em',
             }}
             className={className}
             {...props}
@@ -51,165 +48,117 @@ const MarkdownRenderer = ({ text }) => (
 
 const QuestionAnswerViewer = ({ question, index, role }) => {
   const isMCQ = question.type === 'mcq';
-  const isCorrect = question.yourAnswer && question.yourAnswer === question.correctAnswer;
-  console.log('the question is: ', question)
-  const getOptionBorder = (optionId) => {
-    if (question.yourAnswer === optionId && isCorrect) return '2px solid green';
-    if (question.yourAnswer === optionId && !isCorrect) return '2px solid red';
-    if (question.correctAnswer === optionId && question.yourAnswer !== optionId)
-      return '2px solid green';
-    return '1px solid #ccc';
-  };
+  const isCoding = question.type === 'coding';
+  const yourAnswer = isMCQ ? question.yourAnswer : isCoding ? question.yourCodingAnswer : question.yourAnswer;
+  const isCorrect = isMCQ ? yourAnswer === question.correctAnswer : question.isCorrect;
 
   const getBorderColor = () => {
-    if (!question.yourAnswer) return '#1976d2'; // Blue for "Not Answered"
+    if (!yourAnswer) return '#1976d2';
     return isCorrect ? 'green' : 'red';
   };
 
-  const languageMap = {
-    71: 'python',  // Python 3
-    50: 'c',
-    54: 'cpp',
-    62: 'java'
-  };
-
+  const languageMap = { 71: 'python', 50: 'c', 54: 'cpp', 62: 'java' };
 
   return (
     <Paper
       sx={{
-        mb: 3,
-        p: 2,
+        mb: 2,
+        p: 1.5,
         backgroundColor: 'white',
-        borderLeft: `10px solid ${getBorderColor()}`,
+        borderLeft: `6px solid ${getBorderColor()}`,
+        borderRadius: 2,
       }}
     >
-      <Stack spacing={2}>
-        {/* Question text with Markdown */}
-        <Typography variant="h6">Q{index + 1}.</Typography>
-        <MarkdownRenderer text={question.questionText} />
+      <Stack spacing={1}>
+        {/* Question heading */}
+        <Typography variant="subtitle1" fontWeight="bold">
+          Q{index + 1}.
+        </Typography>
 
-        {/* Correct/Incorrect/Not Answered badge */}
-    {role === 'employee' && (
-  isMCQ ? (
-    <Chip
-      label={
-        !question.yourAnswer
-          ? 'Not Answered'
-          : isCorrect
-            ? 'Correct'
-            : 'Incorrect'
-      }
-      sx={{
-        fontWeight: 'bold',
-        backgroundColor: !question.yourAnswer ? '#e3f2fd' : '#f5f5f5',
-        border: `2px solid ${
-          !question.yourAnswer ? '#1976d2' : isCorrect ? 'green' : 'red'
-        }`,
-        color: !question.yourAnswer ? '#1976d2' : isCorrect ? 'green' : 'red',
-        width: 'fit-content',
-      }}
-    />
-  ) : (
-    <Chip
-      label={
-        !question.yourAnswer
-          ? 'Not Answered'
-          : question.isCorrect
-            ? 'Correct'
-            : 'Incorrect'
-      }
-      sx={{
-        fontWeight: 'bold',
-        backgroundColor: !question.yourAnswer ? '#e3f2fd' : '#f5f5f5',
-        border: `2px solid ${
-          !question.yourAnswer ? '#1976d2' : question.isCorrect ? 'green' : 'red'
-        }`,
-        color: !question.yourAnswer ? '#1976d2' : question.isCorrect ? 'green' : 'red',
-        width: 'fit-content',
-      }}
-    />
-  )
-)}
-
-        {/* MCQ options with Markdown */}
-        {isMCQ && (
-          <Stack spacing={1}>
-            {question.options.map((opt) => {
-              const isYourAnswer = question.yourAnswer === opt._id;
-              const isCorrectAnswer = question.correctAnswer === opt._id;
-
-              return (
-                <Box
-                  key={opt._id}
-                  sx={{
-                    border: getOptionBorder(opt._id),
-                    borderRadius: 2,
-                    p: 1.5,
-                    backgroundColor: '#f9f9f9',
-                  }}
-                >
-                  <MarkdownRenderer text={opt.optionText} />
-
-                  <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-                    {role === 'employee' && isYourAnswer && (
-                      <Chip
-                        label="Your Answer"
-                        size="small"
-                        sx={{
-                          backgroundColor: '#e3f2fd',
-                          color: '#1976d2',
-                          fontWeight: 'bold',
-                        }}
-                      />
-                    )}
-                    {isCorrectAnswer && (
-                      <Chip
-                        label="Correct Answer"
-                        size="small"
-                        sx={{
-                          backgroundColor: '#e8f5e9',
-                          color: 'green',
-                          fontWeight: 'bold',
-                        }}
-                      />
-                    )}
-                  </Box>
-                </Box>
-              );
-            })}
-          </Stack>
-        )}
-
-        {/* Coding/Written answers */}
-        {!isMCQ && (
+        {/* Question content */}
+        {isMCQ ? (
+          <MarkdownRenderer text={question.questionText} />
+        ) : (
           <>
-            <Typography variant="subtitle2">Your Code:</Typography>
-            <Box sx={{ border: '2px solid #ccc', borderRadius: 2, p: 2, backgroundColor: '#f4f4f4' }}>
-              {question.type === 'coding' ? (
-                <MarkdownRenderer
-                  text={`\`\`\`${languageMap[question.language_id]}\n${question.yourAnswer || 'Not Answered'}\n\`\`\``}
-                />
-              ) : (
-                <MarkdownRenderer text={question.yourAnswer || 'Not Answered'} />
-              )}
-
-            </Box>
-
-            <Typography variant="subtitle2" sx={{ mt: 1 }}>
-              Result:
-            </Typography>
-            <Chip
-              label={question.correctAnswer}
-              sx={{
-                backgroundColor: question.isCorrect ? '#e8f5e9' : '#ffebee',
-                color: question.isCorrect ? 'green' : 'red',
-                fontWeight: 'bold',
-                width: 'fit-content',
-              }}
-            />
+            <Typography variant="subtitle1" fontWeight="bold">{question.title}</Typography>
+            <MarkdownRenderer text={question.description} />
+            {question.constraints && (
+              <Typography variant="caption" sx={{ fontStyle: 'italic', color: 'gray' }}>
+                Constraints: {question.constraints}
+              </Typography>
+            )}
           </>
         )}
 
+        {/* Badge */}
+        {role === 'employee' && (
+          <Chip
+            label={!yourAnswer ? 'Not Answered' : isCorrect ? 'Correct' : 'Incorrect'}
+            size="small"
+            sx={{
+              fontSize: '0.75rem',
+              height: 22,
+              fontWeight: 500,
+              backgroundColor: !yourAnswer ? '#e3f2fd' : '#fafafa',
+              border: `1px solid ${!yourAnswer ? '#1976d2' : isCorrect ? 'green' : 'red'}`,
+              color: !yourAnswer ? '#1976d2' : isCorrect ? 'green' : 'red',
+              width: 'fit-content',
+            }}
+          />
+        )}
+
+        {/* MCQ Answer */}
+        {isMCQ && (
+          <Stack spacing={1}>
+            <Box>
+              <Typography variant="caption" fontWeight="bold">Your Answer:</Typography>
+              <Box
+                sx={{
+                  border: yourAnswer ? (isCorrect ? '1px solid green' : '1px solid red') : '1px solid #ccc',
+                  borderRadius: 1,
+                  p: 1,
+                  backgroundColor: yourAnswer ? (isCorrect ? '#e8f5e9' : '#ffebee') : '#f9f9f9',
+                }}
+              >
+                <MarkdownRenderer text={yourAnswer || 'Not answered'} />
+              </Box>
+            </Box>
+
+            {yourAnswer && !isCorrect && (
+              <Box>
+                <Typography variant="caption" fontWeight="bold">Correct Answer:</Typography>
+                <Box sx={{ border: '1px solid green', borderRadius: 1, p: 1, backgroundColor: '#e8f5e9' }}>
+                  <MarkdownRenderer text={question.correctAnswer} />
+                </Box>
+              </Box>
+            )}
+          </Stack>
+        )}
+
+        {/* Coding Answer */}
+        {isCoding && (
+          <>
+            <Typography variant="caption" fontWeight="bold">Your Code:</Typography>
+            <Box sx={{ border: '1px solid #ddd', borderRadius: 1, p: 1, backgroundColor: '#f9f9f9' }}>
+              <MarkdownRenderer
+                text={`\`\`\`${languageMap[question.language_id] || 'text'}\n${yourAnswer || 'Not Answered'}\n\`\`\``}
+              />
+            </Box>
+            <Typography variant="caption" fontWeight="bold">
+              Test Results: {question.total_test_cases_passed || 0} / {question.total_test_cases || 0}
+            </Typography>
+          </>
+        )}
+
+        {/* Written Answers */}
+        {!isMCQ && !isCoding && yourAnswer && (
+          <>
+            <Typography variant="caption" fontWeight="bold">Your Answer:</Typography>
+            <Box sx={{ border: '1px solid #ddd', borderRadius: 1, p: 1, backgroundColor: '#f9f9f9' }}>
+              <MarkdownRenderer text={yourAnswer} />
+            </Box>
+          </>
+        )}
       </Stack>
     </Paper>
   );

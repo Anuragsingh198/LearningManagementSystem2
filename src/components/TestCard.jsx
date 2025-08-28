@@ -17,9 +17,9 @@ function TestCard({ test, role }) {
     const { id } = useParams();
     const assessmentId = id;
 
-    const { state: { }, dispatch } = useAssignmentContext();
+    const { state: { currentAssessment }, dispatch } = useCourseContext();
     // console.log('the test is: ', test)
-    // console.log('the partial test data from context is in testcard: ', currentAssessment)
+    console.log('the partial test data from context is in testcard: ', test)
 
     const handleOnClick = async () => {
         if (test.attempted) {
