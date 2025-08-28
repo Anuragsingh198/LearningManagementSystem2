@@ -89,7 +89,7 @@ export const runCodeAction = async (dispatch, { code, languageId, testCases }) =
 };
 
 
-export const submitCodeAction = async (dispatch, { sourceCode, languageId, questionId }) => {
+export const submitCodeAction = async (dispatch, { sourceCode, languageId, questionId, assessmentId }) => {
   try {
     dispatch({ type: "SET_LOADING", payload: true });
 
@@ -100,7 +100,8 @@ export const submitCodeAction = async (dispatch, { sourceCode, languageId, quest
       { 
         code: sourceCode, 
         languageId: languageId, 
-        questionId: questionId
+        questionId: questionId,
+        assessmentId: assessmentId
       },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -119,6 +120,8 @@ export const submitCodeAction = async (dispatch, { sourceCode, languageId, quest
 
 export const submitAssessment = async (dispatch, { allAnswers, assessmentId }) => {
   try {
+
+    console.log('the assessment id is: ', assessmentId)
 
     dispatch({ type: "SET_LOADING", payload: true });
 

@@ -17,6 +17,22 @@ const infoItemStyle = {
   justifyContent: 'center',
 };
 
+const normalizeQuestions = (questions) => {
+  return questions.map((q) => {
+    if (q.type === 'coding') {
+      return {
+        ...q,
+        questionText: `**${q.title}**\n\n${q.description}`,
+        yourAnswer: q.yourCodingAnswer,
+        correctAnswer: `Passed ${q.total_test_cases_passed}/${q.total_test_cases} test cases`,
+        isCorrect: q.isCorrect,
+      };
+    }
+    // MCQ already has right fields
+    return q;
+  });
+};
+
 const TestResultPage = () => {
   const [testAnswerData, setTestAnswerData] = useState(null);
 
@@ -83,9 +99,14 @@ const TestResultPage = () => {
 
       {/* Questions Breakdown */}
       <Box>
-        {testAnswerData?.questions.map((question, index) => (
-          <QuestionAnswerViewer key={question.questionId} question={question} index={index} role={role} />
-        ))}
+        {normalizeQuestions(testAnswerData?.questions).map((question, index) => (
+    <QuestionAnswerViewer
+      key={question._id || question.questionId}
+      question={question}
+      index={index}
+      role={role}
+    />
+  ))}
       </Box>
 
       <Box textAlign="center" mt={4}>
