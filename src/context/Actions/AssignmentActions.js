@@ -169,14 +169,14 @@ export const reviewAssignment = async (dispatch, { assessmentId }) => {
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const questionsAndAnswers = data.data
-    console.log("This is the output after test submission:", data);
+    console.log("This is the output to get the test review data:", questionsAndAnswers);
 
     dispatch({type: "SET_QUES_AND_ANS", payload: questionsAndAnswers })
     if (data) return data; 
     
   } catch (error) {
 
-    console.error('Could not submit the assessment')
+    console.error('Could not get the assessment review')
     dispatch({ type: "SET_ERRORS", payload: error?.response?.data || error.message });
 
   } finally {

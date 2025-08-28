@@ -51,8 +51,10 @@ const TestResultPage = () => {
 
   // Debugging
   useEffect(() => {
-    console.log('the use state data is: ', testAnswerData);
-  }, [testAnswerData]);
+    console.log('the useState data in test exit page is: ', testAnswerData);
+    console.log('the overall reslut data from context in test exit page is: ', testAnswerData);
+
+  }, [testAnswerData, overAllResult]);
 
   // handle re-fetch if needed
   useEffect(() => {
