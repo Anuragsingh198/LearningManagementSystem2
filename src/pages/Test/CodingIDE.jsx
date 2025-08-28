@@ -32,8 +32,8 @@ const SubmissionResultBox = styled(Box)(({ theme, success }) => ({
   borderBottom: `1px solid ${success ? theme.palette.success.light : theme.palette.warning.light
     }`,
   backgroundColor: success
-    ? theme.palette.success.lighter
-    : theme.palette.warning.lighter,
+    ? theme.palette.success.light
+    : theme.palette.warning.light,
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1),
@@ -43,7 +43,10 @@ const CodingIDE = ({
   question,
   value,
   onChange,
-  onSubmit
+  onSubmit,
+  showOutput,
+  setShowOutput,
+  id
 }) => {
 
   const theme = useTheme();
@@ -52,7 +55,7 @@ const CodingIDE = ({
   const [language, setLanguage] = useState(71);
   const [isCompiling, setIsCompiling] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showOutput, setShowOutput] = useState(false);
+  // const [showOutput, setShowOutput] = useState(false);
   const [compilationSuccess, setCompilationSuccess] = useState(true);
   const [compilationError, setCompilationError] = useState('');
   const [testResults, setTestResults] = useState([]);
@@ -81,16 +84,51 @@ const CodingIDE = ({
         code: value,
         languageId: language,
         testCases: question.run_code_testcases
-
       };
 
       // Call your action to run the code
       const data = await runCodeAction(dispatch, payload);
       console.log("Response from Judge0:", data);
-
       if (!data) {
         throw new Error("Run code request failed: No data returned");
       }
+
+      let compilationSuccess = true;
+      let executionOutput = "";
+      let compilationError = "";
+
+      // Check each test case
+      for (const result of data.results) {
+        const { status, compile_output, stderr, actual_output } = result;
+
+        if (status.includes("Compilation Error")) {
+          compilationSuccess = false;
+          compilationError = compile_output; // For C/C++/Java
+          break; // no need to check others
+        }
+
+        if (status.includes("Runtime Error")) {
+          compilationSuccess = false;
+          // Python errors in stderr, C/Java errors may also show there
+          compilationError = stderr;
+          break;
+        }
+
+        if (status.includes("Accepted")) {
+          // Success → capture actual output
+          executionOutput = actual_output;
+        }
+        if (status.includes("Wrong Answer")) {
+          // Success → capture actual output
+          executionOutput = actual_output;
+        }
+      }
+
+      // Update states
+      setCompilationSuccess(compilationSuccess);
+      setExecutionOutput(executionOutput);
+      setCompilationError(compilationError);
+
 
       // Map Judge0 results to examples format for CodingQuestionViewer
       const mappedResults = (data.results || []).map((result, idx) => ({
@@ -101,10 +139,8 @@ const CodingIDE = ({
         passed: result.status === "Accepted" ? true : false
       }));
       console.log(" this is  the testcase result : ", mappedResults);
-      setCompilationSuccess(data.success || false);
-      setCompilationError(data.error || "");
+
       setTestResults(mappedResults);
-      setExecutionOutput(data.results.output || "");
 
     } catch (error) {
       console.error("Run code failed:", error);
@@ -124,7 +160,8 @@ const CodingIDE = ({
       const payload = {
         sourceCode: value,
         languageId: language,
-        questionId: question?.id,
+        questionId: question._id,
+        assessmentId: id
       };
 
       const data = await submitCodeAction(dispatch, payload);
@@ -198,6 +235,7 @@ const CodingIDE = ({
       <Box sx={{ flex: 1 }}>
         <PanelGroup direction="horizontal">
           <Panel defaultSize={40} minSize={25}>
+            {/* <Typography>Hello</Typography> */}
             {showOutput ? (
               <PanelGroup direction="horizontal">
                 <Panel defaultSize={50} minSize={30}>

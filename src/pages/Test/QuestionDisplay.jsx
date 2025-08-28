@@ -71,6 +71,9 @@ const QuestionDisplay = ({
   onCodingAnswerChange, 
   onSaveAndNext,
   onCodingSubmit,
+  showOutput,
+        setShowOutput,
+        id
 }) => {
   const theme = useTheme();
 
@@ -82,120 +85,127 @@ const QuestionDisplay = ({
           value={codingAnswer}
           onChange={onCodingAnswerChange}
           onSubmit={onCodingSubmit}
+           showOutput={showOutput}
+        setShowOutput={setShowOutput}
+        id={id}
         />
       </Box>
     );
   }
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        width: '93vw',
-        [theme.breakpoints.up('md')]: { p: 6 },
-      }}
-    >
-      <Box sx={{ maxWidth: '100%', mx: 'auto' }}>
-        {/* Question Header */}
-        <Box sx={{ mb: 3 }}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ mb: 2 }}
-          >
-            <Stack direction="row" spacing={1} alignItems="center">
-              <HelpOutline color="primary" />
-              <Typography variant="body2" color="text.secondary">
-                Question {questionNumber} of {totalQuestions}
-              </Typography>
-            </Stack>
-            <Typography variant="body2" color="text.secondary">
-              Multiple Choice
-            </Typography>
-          </Stack>
+<Box
+  sx={{
+    flex: 1,
+    width: '90vw', // slightly smaller
+    [theme.breakpoints.up('md')]: { p: 3 },
+  }}
+>
+  <Box sx={{ maxWidth: '100%', mx: 'auto' }}>
+    {/* Question Header */}
+    <Box sx={{ mb: 2 }}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mb: 1 }}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <HelpOutline color="primary" fontSize="small" />
+          <Typography variant="caption" color="text.secondary">
+            Question {questionNumber} of {totalQuestions}
+          </Typography>
+        </Stack>
+        <Typography variant="caption" color="text.secondary">
+          Multiple Choice
+        </Typography>
+      </Stack>
 
-          {/* Question Text with Markdown */}
+      {/* Question Text with Markdown */}
+      <Paper
+        elevation={0}
+        sx={{
+          p: 2,
+          bgcolor: 'lightGray',
+          borderLeft: 3,
+          borderColor: 'gray',
+          borderRadius: 1,
+        }}
+      >
+        <MarkdownRenderer text={question.questionText} />
+      </Paper>
+    </Box>
+
+    {/* Options with Markdown */}
+    <Box sx={{ mb: 3 }}>
+      <Stack spacing={1}>
+        {question.options?.map((option) => (
           <Paper
+            key={option._id}
             elevation={0}
             sx={{
-              p: 3,
-              bgcolor: 'lightGray',
-              borderLeft: 4,
-              borderColor: 'gray',
+              p: 1.5,
+              border: 1,
+              borderColor: 'divider',
               borderRadius: 1,
+              '&:hover': { bgcolor: 'lightGray' },
+              ...(selectedOption === option._id && {
+                borderColor: 'primary.main',
+                bgcolor: 'lightGray',
+              }),
             }}
           >
-            <MarkdownRenderer text={question.questionText} />
-          </Paper>
-        </Box>
-
-        {/* Options with Markdown */}
-        <Box sx={{ mb: 4 }}>
-          <Stack spacing={2}>
-            {question.options?.map((option) => (
-              <Paper
-                key={option._id}
-                elevation={0}
-                sx={{
-                  p: 2,
-                  border: 1,
-                  borderColor: 'divider',
-                  borderRadius: 1,
-                  '&:hover': { bgcolor: 'lightGray' },
-                  ...(selectedOption === option._id && {
-                    borderColor: 'primary.main',
-                    bgcolor: 'lightGray',
-                  }),
-                }}
-              >
-                <FormControlLabel
-                  value={option._id}
-                  control={
-                    <Radio
-                      checked={selectedOption === option._id}
-                      onChange={() => onOptionSelect(option._id)}
-                      color="primary"
-                    />
-                  }
-                  label={
-                    <Box sx={{ width: '100%' }}>
-                      <MarkdownRenderer text={option.optionText} />
-                    </Box>
-                  }
-                  sx={{
-                    width: '100%',
-                    m: 0,
-                    alignItems: 'flex-start',
-                    '& .MuiFormControlLabel-label': {
-                      flex: 1,
-                    },
-                  }}
+            <FormControlLabel
+              value={option._id}
+              control={
+                <Radio
+                  size="small"
+                  checked={selectedOption === option._id}
+                  onChange={() => onOptionSelect(option._id)}
+                  color="primary"
                 />
-              </Paper>
-            ))}
-          </Stack>
-        </Box>
-
-        {/* Save & Next Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            onClick={onSaveAndNext}
-            variant="contained"
-            endIcon={<ArrowForward />}
-            sx={{
-              px: 4,
-              py: 1.5,
-              fontWeight: 'medium',
-              textTransform: 'none',
-              boxShadow: 'none',
-            }}
-          >
-            Save & Next
-          </Button>
-        </Box>
-      </Box>
+              }
+              label={
+                <Box sx={{ width: '100%' }}>
+                  <MarkdownRenderer text={option.optionText} />
+                </Box>
+              }
+              sx={{
+                width: '100%',
+                m: 0,
+                alignItems: 'center', // center align
+                '& .MuiFormControlLabel-label': {
+                  flex: 1,
+                  fontSize: '0.85rem', // smaller font
+                },
+              }}
+            />
+          </Paper>
+        ))}
+      </Stack>
     </Box>
+
+    {/* Save & Next Button */}
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Button
+        onClick={onSaveAndNext}
+        variant="contained"
+        endIcon={<ArrowForward />}
+        sx={{
+          px: 3,
+          py: 1,
+          fontSize: '0.85rem',
+          fontWeight: 500,
+          textTransform: 'none',
+          borderRadius: 1.5,
+        }}
+      >
+        Save & Next
+      </Button>
+    </Box>
+  </Box>
+</Box>
+
   );
 };
 

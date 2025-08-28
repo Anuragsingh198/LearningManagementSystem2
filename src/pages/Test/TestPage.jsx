@@ -10,7 +10,7 @@ import {
   Box,
   CssBaseline,
   ThemeProvider,
-  createTheme
+  createTheme, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Button,
 } from '@mui/material';
 import { useNavigate , useParams} from 'react-router-dom';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
@@ -36,6 +36,47 @@ const theme = createTheme({
   },
 });
 
+const CustomModal = ({ open, onClose, title, children, actions }) => {
+  if (!open) return null;
+
+  return (
+    <Box
+      sx={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+      }}
+      onClick={onClose}
+    >
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: 3,
+          borderRadius: 2,
+          minWidth: 300,
+          maxWidth: 500,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Typography variant="h6" gutterBottom>
+          {title}
+        </Typography>
+        {children}
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+          {actions}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
 const TestPage = () => {
     const { id } = useParams();
   
@@ -52,6 +93,9 @@ const TestPage = () => {
   const {state: {testData}, dispatch} = useAssignmentContext();
   const {state: {}, dispatch: courseDispatch} = useCourseContext()
   const [loading, setLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const [pendingIndex, setPendingIndex] = useState(null);
+    const [showOutput, setShowOutput] = useState(false);
 
   // console.log('the test data from context in test page is: ', contextTestData)
 
@@ -347,14 +391,43 @@ const handleAutoSubmit = () => {
 
   // Handle question selection
   const handleQuestionSelect = (index) => {
-    setCurrentQuestionIndex(index);
-    const question = testData.questions[index];
+    const currentQuestion = testData.questions[currentQuestionIndex];
+    const isCoding = currentQuestion.type === "coding";
 
-    // Mark as visited
-    setQuestionStatus(prev => ({
-      ...prev,
-      [question._id]: prev[question._id] === 'answered' ? 'answered' : 'visited'
-    }));
+    if (isCoding && index !== currentQuestionIndex) {
+      // Block navigation and show modal
+      setPendingIndex(index);
+      setShowModal(true);
+    } else {
+      // Allow navigation
+      setCurrentQuestionIndex(index);
+      const question = testData.questions[index];
+      setQuestionStatus((prev) => ({
+        ...prev,
+        [question._id]: prev[question._id] === "answered" ? "answered" : "visited",
+      }));
+    }
+
+     setShowOutput(false);
+  };
+
+   // modal action
+    const handleContinue = () => {
+    if (pendingIndex !== null) {
+      setCurrentQuestionIndex(pendingIndex);
+      const question = testData.questions[pendingIndex];
+      setQuestionStatus((prev) => ({
+        ...prev,
+        [question._id]: prev[question._id] === "answered" ? "answered" : "visited",
+      }));
+    }
+    setPendingIndex(null);
+    setShowModal(false);
+  };
+
+  const handleCancel = () => {
+    setPendingIndex(null);
+    setShowModal(false);
   };
 
   // Handle MCQ option selection
@@ -552,6 +625,9 @@ const handleAutoSubmit = () => {
               onCodingAnswerChange={handleCodingAnswerChange}
               onSaveAndNext={handleSaveAndNext}
               onCodingSubmit={handleCodingSubmit}
+              showOutput={showOutput}
+              setShowOutput={setShowOutput}
+              id={id}
             />
           </Box>
         </Box>
@@ -565,6 +641,25 @@ const handleAutoSubmit = () => {
            isFullScreen={isFullScreen}
            loading={loading}
         />
+             <CustomModal
+  open={showModal}
+  onClose={handleCancel}
+  title="Submit Code First"
+  actions={
+    <>
+      <Button onClick={handleCancel} color="secondary">
+        Cancel
+      </Button>
+      <Button onClick={handleContinue} variant="contained" color="primary">
+        I have Submitted Current Question
+      </Button>
+    </>
+  }
+>
+  <Typography>
+    Please submit your code before moving to another question.
+  </Typography>
+</CustomModal>
       </Box>
     </ThemeProvider>
   );

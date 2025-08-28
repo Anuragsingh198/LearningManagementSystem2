@@ -1,16 +1,37 @@
-import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  Button,
-  Chip,
-} from "@mui/material";
-import QuestionAnswerViewer from "./QuestionAnswerViewer";
-import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../context/contextFiles/AuthContext";
-import { useAssignmentContext } from "../../context/contextFiles/assignmentContext";
-import { CheckCircle, XCircle, List } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { Box, Typography, Paper, Grid, Chip, Button } from '@mui/material';
+import QuestionAnswerViewer from './QuestionAnswerViewer';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/contextFiles/AuthContext';
+import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
+
+const infoItemStyle = {
+  padding: '8px 12px',
+  borderRadius: 2,
+  width: 200,
+  backgroundColor: '#e3f2fd',
+  mb: 1,
+  height: 50,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const normalizeQuestions = (questions) => {
+  return questions.map((q) => {
+    if (q.type === 'coding') {
+      return {
+        ...q,
+        questionText: `**${q.title}**\n\n${q.description}`,
+        yourAnswer: q.yourCodingAnswer,
+        correctAnswer: `Passed ${q.total_test_cases_passed}/${q.total_test_cases} test cases`,
+        isCorrect: q.isCorrect,
+      };
+    }
+    // MCQ already has right fields
+    return q;
+  });
+};
 
 const TestResultPage = () => {
   const [testAnswerData, setTestAnswerData] = useState(null);
@@ -31,8 +52,23 @@ const TestResultPage = () => {
     }
   }, [overAllResult]);
 
-  if (!testAnswerData || testAnswerData?.assessment !== id) {
-    return <Box sx={{ color: "black" }}>Loading...</Box>;
+  // Debugging
+  useEffect(() => {
+    console.log('the useState data in test exit page is: ', testAnswerData);
+    console.log('the overall reslut data from context in test exit page is: ', testAnswerData);
+
+  }, [testAnswerData, overAllResult]);
+
+  // handle re-fetch if needed
+  useEffect(() => {
+    if (!overAllResult || (overAllResult?.assessment !== id)) {
+      console.log('now we need to fetch the data again otherwise not');
+      // you could trigger an API call here if needed
+    }
+  }, [id, overAllResult]);
+
+  if (!testAnswerData || (testAnswerData?.assessment !== id)) {
+    return <Box sx={{ color: 'black' }}> Loading...</Box>;
   }
 
   return (
@@ -97,15 +133,15 @@ const TestResultPage = () => {
       </Paper>
 
       {/* Questions Breakdown */}
-      <Box sx={{ backgroundColor: "#fff" }}>
-        {testAnswerData?.questions.map((question, index) => (
-          <QuestionAnswerViewer
-            key={question.questionId}
-            question={question}
-            index={index}
-            role={role}
-          />
-        ))}
+      <Box>
+        {normalizeQuestions(testAnswerData?.questions).map((question, index) => (
+    <QuestionAnswerViewer
+      key={question._id || question.questionId}
+      question={question}
+      index={index}
+      role={role}
+    />
+  ))}
       </Box>
 
       {/* Back button */}

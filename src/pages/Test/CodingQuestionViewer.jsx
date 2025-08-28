@@ -4,6 +4,7 @@ import {
   Box,
   Typography,
   Paper,
+  Stack,
   List,
   ListItem,
   ListItemIcon,
@@ -78,62 +79,63 @@ const CodingQuestionViewer = ({ title, description, examples, constraints }) => 
         </Box>
 
         {/* Examples */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <CheckCircle size={20} color="#16a34a" />
-            <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
-              Examples
-            </Typography>
-          </Box>
+<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+  {/* Header */}
+  <Stack direction="row" alignItems="center" spacing={1}>
+    <CheckCircle size={20} style={{ color: "#16a34a" }} />
+    <Typography variant="h6" fontWeight="600">
+      Examples
+    </Typography>
+  </Stack>
 
-          {examples.map((example, index) => (
-            <Paper
-              key={index}
-              sx={{
-                border: "1px solid",
-                borderColor: "divider",
-                borderRadius: "4px",
-                p: 2,
-                boxShadow: "none",
-                backgroundColor: "#fff",
-              }}
-            >
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                {/* Inline Chip */}
-                <SoftChip label={`Example ${index + 1}`} size="small" />
+  {/* Example Cards */}
+  {examples.map((ex, i) => (
+    <Paper
+      key={i}
+      variant="outlined"
+      sx={{ borderRadius: 1.5, p: 2, display: "flex", flexDirection: "column", gap: 1.5 }}
+    >
+      <Chip
+        label={`Example ${i + 1}`}
+        size="small"
+        sx={{ alignSelf: "flex-start", bgcolor: "primary.light", color: "primary.dark" }}
+      />
 
-                <Typography variant="body2" sx={{ fontWeight: 500, color: "text.secondary" }}>
-                  Input:{" "}
-                  <Typography component="span" variant="body2" sx={{ color: "text.primary" }}>
-                    {example.input}
-                  </Typography>
-                </Typography>
-
-                <Typography variant="body2" sx={{ fontWeight: 500, color: "text.secondary" }}>
-                  Output:{" "}
-                  <Typography component="span" variant="body2" sx={{ color: "text.primary" }}>
-                    {example.output}
-                  </Typography>
-                </Typography>
-
-                {example.explanation && (
-                  <Typography variant="body2" sx={{ fontWeight: 500, color: "text.secondary" }}>
-                    Explanation:{" "}
-                    <Typography component="span" variant="body2" sx={{ color: "text.primary" }}>
-                      {example.explanation}
-                    </Typography>
-                  </Typography>
-                )}
-              </Box>
-            </Paper>
-          ))}
+      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+        <Box flex={1}>
+          <Typography variant="caption" fontWeight="500" color="text.secondary">
+            Input
+          </Typography>
+          <StyledCodeBlock>{ex.input}</StyledCodeBlock>
         </Box>
 
+        <Box flex={1}>
+          <Typography variant="caption" fontWeight="500" color="text.secondary">
+            Output
+          </Typography>
+          <StyledCodeBlock>{ex.output}</StyledCodeBlock>
+        </Box>
+      </Stack>
+
+      {ex.explanation && (
+        <Box>
+          <Typography variant="caption" fontWeight="500" color="text.secondary">
+            Explanation
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {ex.explanation}
+          </Typography>
+        </Box>
+      )}
+    </Paper>
+  ))}
+</Box>
+
         {/* Constraints */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <AlertTriangle size={20} color={YELLOW_MAIN} />
-            <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
+    {  constraints ?  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <AlertCircle style={{ width: 20, height: 20, color: '#ea580c' }} />
+            <Typography variant="h6" component="h3" sx={{ fontWeight: 'semibold' }}>
               Constraints
             </Typography>
           </Box>
@@ -162,7 +164,8 @@ const CodingQuestionViewer = ({ title, description, examples, constraints }) => 
               )}
             </List>
           </StyledConstraintBox>
-        </Box>
+
+        </Box> : ''}
       </Box>
     </Box>
   );
