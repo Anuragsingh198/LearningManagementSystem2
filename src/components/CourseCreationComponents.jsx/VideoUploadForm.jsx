@@ -225,7 +225,7 @@ useEffect(() => {
       
       const createdModule = await createModuleAction(newModule , dispatch);
       setSelectedModule(createdModule._id);
-      console.log("this is   createed module id  from videoUploadform: ", createdModule._id )
+      // console.log("this is   createed module id  from videoUploadform: ", createdModule._id )
       setModuleData({ title: '', description: '' });
 
       getModulesByCourseId(courseId, dispatch)
@@ -262,9 +262,9 @@ const handleUploadVideo = async (e) => {
     formData.append('courseId', courseId);
     formData.append('moduleId', selectedModule);
     formData.append('video', videoFile); 
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
 
     await createVideoAction(formData, dispatch);
     setUploadProgress(100);

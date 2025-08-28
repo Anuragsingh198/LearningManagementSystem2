@@ -44,12 +44,12 @@ export const getAllCodingQuestions = async (dispatch) => {
  * Fetch coding question by ID
  */
 export const getQuestionByIdAction = async (dispatch, currentQuestionId) => {
-    console.log(" getQuestion action is called top: " );
+    // console.log(" getQuestion action is called top: " );
   try {
     dispatch({ type: "SET_LOADING", payload: true });
     const questionId = currentQuestionId
     const token = getAuthToken();
-      console.log(" getQuestion action is called before api call : " );
+      // console.log(" getQuestion action is called before api call : " );
       const { data } = await axios.get(`${backendBaseUrl}/api/assessments/${questionId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -78,7 +78,7 @@ export const runCodeAction = async (dispatch, { code, languageId, testCases }) =
       },
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    console.log( "  this is the  ouput  from the  runode : " , data.results)
+    // console.log( "  this is the  ouput  from the  runode : " , data.results)
     if( data) return data;
     dispatch({ type: "SET_CODING_RESULT", payload: data });
   } catch (error) {
@@ -106,7 +106,7 @@ export const submitCodeAction = async (dispatch, { sourceCode, languageId, quest
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    console.log("This is the output from submit-code:", data.results);
+    // console.log("This is the output from submit-code:", data.results);
 
     if (data) return data; 
 
@@ -121,7 +121,7 @@ export const submitCodeAction = async (dispatch, { sourceCode, languageId, quest
 export const submitAssessment = async (dispatch, { allAnswers, assessmentId }) => {
   try {
 
-    console.log('the assessment id is: ', assessmentId)
+    // console.log('the assessment id is: ', assessmentId)
 
     dispatch({ type: "SET_LOADING", payload: true });
 
@@ -135,7 +135,7 @@ export const submitAssessment = async (dispatch, { allAnswers, assessmentId }) =
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const questionsAndAnswers = data.data
-    console.log("This is the output after test submission:", data);
+    // console.log("This is the output after test submission:", data);
 
     dispatch({type: "SET_QUES_AND_ANS", payload: questionsAndAnswers })
     if (data) return data; 
@@ -159,7 +159,7 @@ export const reviewAssignment = async (dispatch, { assessmentId }) => {
 
     const token = getAuthToken();
 
-    console.log('the token is: ', token)
+    // console.log('the token is: ', token)
 
     const { data } = await axios.post(
       `${serverurl}/api/assessments/review-assessment`,
@@ -169,7 +169,7 @@ export const reviewAssignment = async (dispatch, { assessmentId }) => {
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const questionsAndAnswers = data.data
-    console.log("This is the output to get the test review data:", questionsAndAnswers);
+    // console.log("This is the output to get the test review data:", questionsAndAnswers);
 
     dispatch({type: "SET_QUES_AND_ANS", payload: questionsAndAnswers })
     if (data) return data; 

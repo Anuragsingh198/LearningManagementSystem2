@@ -206,9 +206,9 @@ export const VideoContent = ({
 
     useEffect(() => {
         // console.log("this is the  current  video  data : ", currentVideoData)
-        console.log('progress is: ', progress);
+        // console.log('progress is: ', progress);
         const boolVal = (progress >= 90)
-        console.log('is progress is greater than 90', boolVal)
+        // console.log('is progress is greater than 90', boolVal)
         const markVideoAndFetchProgress = async () => {
             if (progress >= 85 && !hasMarkedComplete && currentVideoData?._id) {
                 setHasMarkedComplete(true);

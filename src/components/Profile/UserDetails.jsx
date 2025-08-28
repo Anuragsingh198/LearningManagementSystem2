@@ -390,7 +390,7 @@ const UserDetails = () => {
         onSave={handleEditSave}
         onChangePassword={(payload) => {
           // placeholder for future API integration
-          console.log("Change password requested", payload);
+          // console.log("Change password requested", payload);
         }}
         initialValues={{
           name: authUser?.name || authUser?.fullName || authUser?.username || "",

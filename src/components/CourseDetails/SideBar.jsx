@@ -348,7 +348,7 @@ export const Sidebar = ({
                                         <ListItemButton
                                             selected={currentVideo === index}
                                             onClick={() => {setCurrentVideo(index)
-                                                console.log('Change video index clicked', index)
+                                                // console.log('Change video index clicked', index)
                                             }}
                                             sx={{
                                                 mb: '6px',

@@ -108,20 +108,20 @@ const TestPage = () => {
 
   // console.log('the id from param is: ', id)
 
-  useEffect(() => {
-  console.log('the show submit modal is: ', showSubmitModal);
-}, [showSubmitModal]);
+//   useEffect(() => {
+//   console.log('the show submit modal is: ', showSubmitModal);
+// }, [showSubmitModal]);
 
 if(!testData || (testData.assessment !== id)){
-  console.log('the context test data is:', testData)
-  console.log('the context test data is:', testData?.assessment)
+  // console.log('the context test data is:', testData)
+  // console.log('the context test data is:', testData?.assessment)
   // console.log('the context test data is:', id)
   return <Box sx={{color: 'black'}}> Loading... </Box>
 }
 
 useEffect(() => {
   const testDuration = testData.duration  
-  console.log('the test duration is: ', testDuration)
+  // console.log('the test duration is: ', testDuration)
   setTimeRemaining(testDuration * 60)
 }, [testData])
 
@@ -135,7 +135,7 @@ useEffect(() => {
     const initialStatus = {};
     const saved = localStorage.getItem(`test_${testData._id}`);
     const savedAnswers = saved ? JSON.parse(saved) : [];
-    console.log('new count:', violationCount)
+    // console.log('new count:', violationCount)
 
     testData.questions.forEach((q, index) => {
       const isAnswered = savedAnswers.some(a => a.question_id === q._id);
@@ -246,7 +246,7 @@ useEffect(() => {
  const handleViolation = () => {
   setViolationCount(prevCount => {
     const newCount = prevCount + 1;
-    console.log('New violation count:', newCount);
+    // console.log('New violation count:', newCount);
 
     if (newCount >= 3) {
       toast.error('Test auto-submitted due to multiple violations!', {
@@ -444,7 +444,7 @@ const handleAutoSubmit = () => {
 
   // Handle coding answer change
   const handleCodingAnswerChange = (answer) => {
-    console.log( 'this is  the  coding  answer : ' ,  answer)
+    // console.log( 'this is  the  coding  answer : ' ,  answer)
     setCurrentCodingAnswer(answer)
     const question = testData.questions[currentQuestionIndex];
     setCodingAnswers(prev => ({
@@ -521,15 +521,15 @@ const handleAutoSubmit = () => {
     
     await submitAssessment(dispatch, {allAnswers, assessmentId})
     
-    console.log(
-      'console log before fetch all assessment'
-    )
+    // console.log(
+    //   'console log before fetch all assessment'
+    // )
     
     await fetchAllAssessment(courseDispatch);
 
-    console.log(
-      'console log before fetch all assessment'
-    )
+    // console.log(
+    //   'console log before fetch all assessment'
+    // )
     
 
     //here call the api to fetch the test data again, so that the latest data is there
