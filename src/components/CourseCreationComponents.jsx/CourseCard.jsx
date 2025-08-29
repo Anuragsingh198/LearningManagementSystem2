@@ -243,11 +243,15 @@ const CourseCard = ({ course, onViewCourse }) => {
               lineHeight: 1.3,
               fontSize: '1.1rem',
               flex: 1,
-              mr: 2
+              mr: 2,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
             }}
           >
             {course.title}
           </Typography>
+
           {/* 
           // Status Chip 
           {role !== 'instructor' && (
