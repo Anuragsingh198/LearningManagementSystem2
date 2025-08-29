@@ -921,3 +921,25 @@ export const fetchAllAssessment = async (dispatch) => {
     console.error('Error fetching the questions: ', error)
   } 
 }
+
+export const getModuleVideoProgress = async (moduleId, courseId, dispatch) => {
+  const token = getAuthToken();
+
+  try {
+    dispatch({ type: 'COURSE_LOADING' });
+
+    const response = await axios.post(`${serverurl}/api/users/module-video-progress`, {
+      courseId,
+      moduleId
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+  } catch (error) {
+    console.error('Error fetching course with progress:', error);
+    dispatch({ type: 'COURSE_ERROR', payload: error.message });
+    return null;
+  } finally {
+    dispatch({ type: 'COURSE_LOADING', payload: false });
+  }
+};

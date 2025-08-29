@@ -44,7 +44,7 @@ import { useNavigate } from 'react-router-dom';
 
 import NoContentPage from './NoContentPage';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
-import { checkVideoOrTestInUserProgressAction, videoProgress } from '../../context/Actions/courseActions';
+import { checkVideoOrTestInUserProgressAction, getModuleVideoProgress, videoProgress } from '../../context/Actions/courseActions';
 
 
 export const Sidebar = ({
@@ -62,6 +62,8 @@ export const Sidebar = ({
     currentArticle = 0,
     setCurrentArticle,
     completedArticles = [],
+    courseId,
+    moduleId,
     sendWatchTime
 }) => {
     const { state: { courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
@@ -69,7 +71,7 @@ export const Sidebar = ({
     const videoStatusMap = {};
     const totalVideos = moduleProgress?.totalVideos || 0;
     const completedVideos = moduleProgress?.completedVideos || 0;
-
+    const [loading, setLoading] = useState(false)
     allVideoProgress.forEach((vp) => {
         videoStatusMap[vp.videoId] = vp.status;
     });
@@ -80,7 +82,7 @@ export const Sidebar = ({
         // console.log("this is sidebar", currentVideoProgress, allModuleProgress, allVideoProgress);
     }, [currentVideoProgress, allModuleProgress, allVideoProgress]);
 
-    const handleAssessmentTabSelection = () => {
+    const handleAssessmentTabSelection = async () => {
         // if()
         // setCurrentView('quiz');
         // sendWatchTime();
@@ -88,7 +90,17 @@ export const Sidebar = ({
         if (completedVideos >= totalVideos) {
             setCurrentView('quiz');
         } else {
+            // here we'll call the api to re compute the module progress again 
+            setLoading(true);
+            const response = await getModuleVideoProgress(moduleId, courseId, dispatch)
+            const responseModuleData = response.moduleProgress
+            const {totalVideos, completedVideos} = responseModuleData;
+            if(totalVideos === completedVideos){
+                setCurrentView('quiz');
+            } else {
             toast.error('Please complete all the Videos')
+            }
+            setLoading(false)
         }
 
     }
@@ -316,7 +328,7 @@ export const Sidebar = ({
                                         color: currentView === 'quiz' ? 'primary.main' : 'text.primary',
                                     }}
                                 >
-                                    {`Assessments (${tests?.length})`}
+                                    {!loading ? `Assessments (${tests?.length})`: 'Loading...'}
                                 </Typography>
                             }
                         />
@@ -348,7 +360,7 @@ export const Sidebar = ({
                                         <ListItemButton
                                             selected={currentVideo === index}
                                             onClick={() => {setCurrentVideo(index)
-                                                console.log('Change video index clicked', index)
+                                                // console.log('Change video index clicked', index)
                                             }}
                                             sx={{
                                                 mb: '6px',
