@@ -28,7 +28,7 @@ function MainAssessment() {
     }
   }, []);
 
-  console.log('the assessment from the context are in All assessment main page: ', allAssessments)
+  // console.log('the assessment from the context are in All assessment main page: ', allAssessments)
 
   const role = user?.role;
 

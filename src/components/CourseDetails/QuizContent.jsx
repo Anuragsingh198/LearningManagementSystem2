@@ -66,7 +66,7 @@ export const QuizContent = ({
 
   useEffect(() => {
     handleTestProgress();
-    console.log("this is the  text progresss from te  useeffect : ", allTestProgress)
+    // console.log("this is the  text progresss from te  useeffect : ", allTestProgress)
   }, []);
 
   const handleSubmit = async () => {
@@ -90,12 +90,12 @@ export const QuizContent = ({
     }
   };
 
-  useEffect(() => {
-    console.log("this is the current test progress : ", currentTestProgress)
-  }, [currentTestProgress])
+  // useEffect(() => {
+  //   console.log("this is the current test progress : ", currentTestProgress)
+  // }, [currentTestProgress])
 
   const handleRetake = () => {
-    console.log('handle retake clicked: ');
+    // console.log('handle retake clicked: ');
     setUserAnswers({});
     setSubmitted(false);
     setIsRetaking(true);  // now in retake mode
@@ -104,7 +104,7 @@ export const QuizContent = ({
 
 
   useEffect(() => {
-    console.log("submitted ", submitted)
+    // console.log("submitted ", submitted)
   }, [submitted])
 
   const handleAnswerClick = (questionIndex, optionText) => {

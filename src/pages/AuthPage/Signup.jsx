@@ -275,13 +275,13 @@ const RegisterPage = () => {
     };
 
     const handleCancel = () => {
-        console.log("User canceled");
+        // console.log("User canceled");
         setConfirmation(false);
     };
 
     const handleUserTypeChange = (e) => {
         const currenSelection = e.target.value;
-        console.log("selected type : ", currenSelection)
+        // console.log("selected type : ", currenSelection)
         if (formData.userType !== "instructor" && currenSelection === "instructor") {
             setNewUserType(currenSelection)
             setConfirmation(true)

@@ -21,7 +21,7 @@ const VideoUploadPage = () => {
         getModulesByCourseId(courseId, dispatch)
             // .then((fetchedModules) => setExistingModules(fetchedModules))
             .catch((err) => console.error(err));
-            console.log('the modules from context are: ', moduleNames)
+            // console.log('the modules from context are: ', moduleNames)
   }, [dispatch])
 
   if (!courseId) {

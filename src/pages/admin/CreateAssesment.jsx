@@ -188,7 +188,7 @@ function CreateAssessment() {
 
                 };
 
-                console.log('submission data is: ', submissionData)
+                // console.log('submission data is: ', submissionData)
                 setisModalOpen(true);
             } else {
                 alert("Please fill all fields and select correct answers for all questions!");
@@ -222,7 +222,7 @@ function CreateAssessment() {
 
                 };
 
-                console.log('submission data is: ', submissionData)
+                // console.log('submission data is: ', submissionData)
                 setisModalOpen(true);
             } else {
                 alert("Please fill all fields and select correct answers for all questions!");
@@ -241,15 +241,15 @@ function CreateAssessment() {
     };
 
     const handleUploadAssessment = async () => {
-        console.log('is Mandatory ', isMandatory)
-        console.log('Title ', testTitle)
-        console.log('Description ', testDescription)
-        console.log('Topics', topics)
-        console.log('Duratrion ', duration)
-        console.log('Questions ', questions)
-        console.log('Coding questions: ', selectedCodingQuestions)
+        // console.log('is Mandatory ', isMandatory)
+        // console.log('Title ', testTitle)
+        // console.log('Description ', testDescription)
+        // console.log('Topics', topics)
+        // console.log('Duratrion ', duration)
+        // console.log('Questions ', questions)
+        // console.log('Coding questions: ', selectedCodingQuestions)
 
-        console.log('Uploading assessment...');
+        // console.log('Uploading assessment...');
 
         try{
             await addAssessmentAction(

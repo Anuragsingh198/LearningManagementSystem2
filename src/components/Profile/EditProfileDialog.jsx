@@ -46,7 +46,7 @@ const EditProfileDialog = ({ open, onClose, initialValues, onSave, onChangePassw
 
   const handleFileChange = async (e) => {
     toast.error("Feature under development")
-    console.log("button clicked")
+    // console.log("button clicked")
     // const file = e.target.files?.[0];
     // if (!file) return;
     // const reader = new FileReader();

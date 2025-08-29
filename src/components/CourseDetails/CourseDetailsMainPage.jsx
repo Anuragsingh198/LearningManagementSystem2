@@ -91,7 +91,7 @@ const CourseDetails = ({ courseId, moduleId }) => {
 
   useEffect(() => {
     const fetchCourseProgress = async () => {
-      console.log('fetch course progress use effect, fetch Course progress')
+      // console.log('fetch course progress use effect, fetch Course progress')
       if (!courseId || !user?._id) return;
       try {
 

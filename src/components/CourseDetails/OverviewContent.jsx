@@ -112,7 +112,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
     const fetchCourseProgress = async () => {
       setLoading(true);
       if (!courseId || !user?._id) return;
-      console.log('we are fetching course')
+      // console.log('we are fetching course')
       try {
 
 
