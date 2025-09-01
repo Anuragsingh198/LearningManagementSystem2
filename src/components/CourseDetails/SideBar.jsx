@@ -67,7 +67,6 @@ export const Sidebar = ({
     sendWatchTime
 }) => {
     const { state: { courseProgress, allModuleProgress, oneModuleProgress: moduleProgress, currentVideoProgress, allVideoProgress }, dispatch } = useCourseContext();
-    // console.log("this is hte  corrent  video data : ", videos[currentVideo])
     const videoStatusMap = {};
     const totalVideos = moduleProgress?.totalVideos || 0;
     const completedVideos = moduleProgress?.completedVideos || 0;
@@ -93,28 +92,16 @@ export const Sidebar = ({
             // here we'll call the api to re compute the module progress again 
             setLoading(true);
             const response = await getModuleVideoProgress(moduleId, courseId, dispatch)
-            console.log('response is: ', response)
             const responseModuleData = response?.data.moduleProgress
-            console.log('the response module data is: ', responseModuleData)
             const { totalVideos, completedVideos } = responseModuleData;
             if (totalVideos === completedVideos) {
-                console.log('the loading state in sidebar before setting current view to quiz is: ', loading)
-                setCurrentView('quiz');
-                console.log('the loading state in sidebar after setting current view to quiz is: ', loading)
-
+                setCurrentView('quiz');                
             } else {
                 toast.error('Please complete all the Videos')
-            }
-            console.log('we are reaching to toggle loading false', loading)
-            setLoading(false)
-            console.log('loading should have been false by now in any condition', loading)
-
+            }            
+            setLoading(false)            
         }
-
     }
-
-
-
 
     useEffect(() => {
         console.log('the loading state in use effect in sidebar is: ', loading)
@@ -127,7 +114,7 @@ export const Sidebar = ({
             width: '100%',
             bgcolor: 'background.paper',
             p: 2,
-            mt: 2,
+            mt: 1,
             border: '1px solid #ccc',
             borderRadius: '4px',
             boxShadow: 'none',
