@@ -160,46 +160,105 @@ const EnrolledEmployees = () => {
           sx={{
             borderRadius: '4px',
             backgroundColor: '#fff',
+            width: '99%'
           }}
         >
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Employee ID</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredEmployees.map((emp, index) => (
-                <TableRow
-                  key={index}
-                  sx={{
-                    '&:hover': { backgroundColor: '#f9f9f9' },
-                    transition: 'background-color 0.2s ease',
-                  }}
-                >
-                  <TableCell>{emp.name}</TableCell>
-                  <TableCell>{emp.empId}</TableCell>
-                  <TableCell>
-                    <div
-                      style={{
-                        ...statusStyles[emp.status] || statusStyles.info,
-                        padding: '6px 12px',
-                        borderRadius: '4px',
-                        display: 'inline-block',
-                        fontSize: '14px',
-                        fontWeight: 500,
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {emp.status}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+         <Table size="small"> {/* ✅ smaller base size */}
+  <TableHead>
+    <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+      {[
+        "Name",
+        "Employee ID",
+        "Status",
+        "Remaining Days",
+        "Enrolled Date",
+        "Completed Modules",
+        "Total Modules",
+        "Completion Date",
+        "Overall %"
+      ].map((header, i) => (
+        <TableCell
+          key={i}
+          sx={{
+            fontWeight: 600,
+            fontSize: "0.8rem", // ✅ smaller font
+            padding: "4px 8px", textAlign: 'center' // ✅ reduced padding
+          }}
+        >
+          {header}
+        </TableCell>
+      ))}
+    </TableRow>
+  </TableHead>
+  <TableBody sx={{textAlign: 'center'}}>
+    {filteredEmployees.map((emp, index) => (
+      <TableRow
+        key={index}
+        sx={{
+          '&:hover': { backgroundColor: '#f9f9f9' },
+          transition: 'background-color 0.2s ease',
+        }}
+      >
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center'}}>
+          {emp.name}
+        </TableCell>
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px" , textAlign: 'center'}}>
+          {emp.empId}
+        </TableCell>
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
+          <div
+            style={{
+              ...statusStyles[emp.status] || statusStyles.info,
+              padding: '3px 6px', // ✅ reduced
+              borderRadius: '4px',
+              display: 'inline-block',
+              fontSize: '0.75rem', // ✅ smaller text
+              fontWeight: 500,
+              textTransform: 'capitalize',
+            }}
+          >
+            {emp.status}
+          </div>
+        </TableCell>
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
+          {emp.remainingDays}
+        </TableCell>
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
+          {new Date(emp.enrolledDate).toLocaleDateString()}
+        </TableCell>
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
+          {emp.completedModules}
+        </TableCell>
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
+          {emp.totalModules}
+        </TableCell>
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
+          {emp.isCompleted ? (
+            new Date(emp.completionDate).toLocaleDateString()
+          ) : (
+            <div
+              style={{
+                ...statusStyles.pending,
+                padding: '2px 6px', // ✅ smaller
+                borderRadius: '8px',
+                display: 'inline-block',
+                fontSize: '0.7rem', // ✅ smaller font
+                fontWeight: 500,
+              }}
+            >
+              Pending
+            </div>
+          )}
+        </TableCell>
+        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
+          {emp.overallPercentage}%
+        </TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+
+
         </TableContainer>
       ) : (
         <Typography mt={2} color="gray" sx={{ fontStyle: 'italic' }}>
