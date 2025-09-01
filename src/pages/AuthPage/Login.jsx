@@ -116,10 +116,10 @@ const LoginPage = () => {
     setLoading(true)
     try {
       await userLogin(formData, dispatch);
-      toast.success("user Logged in successfully ")
+      toast.success("You have successfully logged in.")
       setLoading(false)
     } catch (error) {
-      toast.error("Please enter correct Email and Password")
+      toast.error("Invalid email or password. Please try again.")
       setLoading(false)
     }
   };
