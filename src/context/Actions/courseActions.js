@@ -935,6 +935,8 @@ export const getModuleVideoProgress = async (moduleId, courseId, dispatch) => {
       headers: { Authorization: `Bearer ${token}` }
     });
 
+    return response
+
   } catch (error) {
     console.error('Error fetching course with progress:', error);
     dispatch({ type: 'COURSE_ERROR', payload: error.message });

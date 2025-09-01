@@ -93,22 +93,32 @@ export const Sidebar = ({
             // here we'll call the api to re compute the module progress again 
             setLoading(true);
             const response = await getModuleVideoProgress(moduleId, courseId, dispatch)
-            const responseModuleData = response.moduleProgress
-            const {totalVideos, completedVideos} = responseModuleData;
-            if(totalVideos === completedVideos){
+            console.log('response is: ', response)
+            const responseModuleData = response?.data.moduleProgress
+            console.log('the response module data is: ', responseModuleData)
+            const { totalVideos, completedVideos } = responseModuleData;
+            if (totalVideos === completedVideos) {
+                console.log('the loading state in sidebar before setting current view to quiz is: ', loading)
                 setCurrentView('quiz');
+                console.log('the loading state in sidebar after setting current view to quiz is: ', loading)
+
             } else {
-            toast.error('Please complete all the Videos')
+                toast.error('Please complete all the Videos')
             }
+            console.log('we are reaching to toggle loading false', loading)
             setLoading(false)
+            console.log('loading should have been false by now in any condition', loading)
+
         }
 
     }
 
 
+
+
     useEffect(() => {
-        // console.log('the tests are: ', tests)
-    }, [tests])
+        console.log('the loading state in use effect in sidebar is: ', loading)
+    }, [loading])
 
     const navigate = useNavigate();
 
@@ -328,7 +338,7 @@ export const Sidebar = ({
                                         color: currentView === 'quiz' ? 'primary.main' : 'text.primary',
                                     }}
                                 >
-                                    {!loading ? `Assessments (${tests?.length})`: 'Loading...'}
+                                    {!loading ? `Assessments (${tests?.length})` : 'Loading...'}
                                 </Typography>
                             }
                         />
@@ -359,7 +369,8 @@ export const Sidebar = ({
                                     <ListItem key={video._id} disablePadding>
                                         <ListItemButton
                                             selected={currentVideo === index}
-                                            onClick={() => {setCurrentVideo(index)
+                                            onClick={() => {
+                                                setCurrentVideo(index)
                                                 // console.log('Change video index clicked', index)
                                             }}
                                             sx={{
