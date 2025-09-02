@@ -61,8 +61,18 @@ const EnrolledEmployees = () => {
   }, [courseId, dispatch]);
 
   const filteredEmployees = enrolledEmployees?.students?.filter((emp) => {
-    if (activeTab !== 'all' && emp.status.toLowerCase() !== activeTab) return false;
+    const status = emp.status?.toLowerCase();
 
+    if (activeTab === 'completed') {
+      return status === 'completed';
+    }
+
+    if (activeTab === 'pending') {
+      return status !== 'completed';
+    }
+
+    return true; // all
+  }).filter((emp) => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       return (
@@ -160,106 +170,174 @@ const EnrolledEmployees = () => {
           sx={{
             borderRadius: '4px',
             backgroundColor: '#fff',
-            width: '99%'
+            boxShadow: 'none',
+            width: '99%',
+            overflowX: 'auto',
+            border: '1px solid #e0e0e0',
           }}
         >
-         <Table size="small"> {/* ✅ smaller base size */}
-  <TableHead>
-    <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-      {[
-        "Name",
-        "Employee ID",
-        "Status",
-        "Remaining Days",
-        "Enrolled Date",
-        "Completed Modules",
-        "Total Modules",
-        "Completion Date",
-        "Overall %"
-      ].map((header, i) => (
-        <TableCell
-          key={i}
-          sx={{
-            fontWeight: 600,
-            fontSize: "0.8rem", // ✅ smaller font
-            padding: "4px 8px", textAlign: 'center' // ✅ reduced padding
-          }}
-        >
-          {header}
-        </TableCell>
-      ))}
-    </TableRow>
-  </TableHead>
-  <TableBody sx={{textAlign: 'center'}}>
-    {filteredEmployees.map((emp, index) => (
-      <TableRow
-        key={index}
-        sx={{
-          '&:hover': { backgroundColor: '#f9f9f9' },
-          transition: 'background-color 0.2s ease',
-        }}
-      >
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center'}}>
-          {emp.name}
-        </TableCell>
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px" , textAlign: 'center'}}>
-          {emp.empId}
-        </TableCell>
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
-          <div
-            style={{
-              ...statusStyles[emp.status] || statusStyles.info,
-              padding: '3px 6px', // ✅ reduced
-              borderRadius: '4px',
-              display: 'inline-block',
-              fontSize: '0.75rem', // ✅ smaller text
-              fontWeight: 500,
-              textTransform: 'capitalize',
-            }}
-          >
-            {emp.status}
-          </div>
-        </TableCell>
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
-          {emp.remainingDays}
-        </TableCell>
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
-          {new Date(emp.enrolledDate).toLocaleDateString()}
-        </TableCell>
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
-          {emp.completedModules}
-        </TableCell>
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
-          {emp.totalModules}
-        </TableCell>
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
-          {emp.isCompleted ? (
-            new Date(emp.completionDate).toLocaleDateString()
-          ) : (
-            <div
-              style={{
-                ...statusStyles.pending,
-                padding: '2px 6px', // ✅ smaller
-                borderRadius: '8px',
-                display: 'inline-block',
-                fontSize: '0.7rem', // ✅ smaller font
-                fontWeight: 500,
-              }}
-            >
-              Pending
-            </div>
-          )}
-        </TableCell>
-        <TableCell sx={{ fontSize: "0.8rem", padding: "4px 8px", textAlign: 'center' }}>
-          {emp.overallPercentage}%
-        </TableCell>
-      </TableRow>
-    ))}
-  </TableBody>
-</Table>
+          <Table size="small" sx={{ minWidth: 800, borderCollapse: 'collapse' }}>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: '#f3f4f6' }}>
+                {[
+                  "Name",
+                  "Employee ID",
+                  "Status",
+                  "Remaining Days",
+                  "Enrolled Date",
+                  "Completed Modules",
+                  "Total Modules",
+                  "Completion Date",
+                  "Overall %",
+                ].map((header, i) => (
+                  <TableCell
+                    key={i}
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: "0.85rem",
+                      padding: "8px 12px",
+                      textAlign: 'center',
+                      borderBottom: 'none',
+                      color: "#1f2937",
+                    }}
+                  >
+                    {header}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredEmployees.map((emp, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    backgroundColor: index % 2 === 0 ? '#fff' : '#fafafa',
+                    '&:hover': { backgroundColor: '#f9fafb' },
+                    transition: 'background-color 0.25s ease',
+                  }}
+                >
+                  <TableCell sx={{ fontSize: "0.85rem", padding: "8px 12px", textAlign: 'center', borderBottom: 'none' }}>
+                    {emp.name}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "0.85rem", padding: "8px 12px", textAlign: 'center', borderBottom: 'none' }}>
+                    {emp.empId}
+                  </TableCell>
 
+                  {/* ✅ Status Chip */}
+                  <TableCell sx={{ textAlign: 'center', borderBottom: 'none' }}>
+                    <Box
+                      sx={{
+                        borderRadius: '4px',
+                        border: '1px solid',
+                        minWidth: '110px',
+                        textAlign: 'center',
+                        px: 1.5,
+                        py: 0.5,
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        display: 'inline-block',
+                        textTransform: 'capitalize',
+                        cursor: 'default',
+                        transition: 'background-color 0.2s ease',
+                        ...(emp.status === 'completed'
+                          ? {
+                            background: '#ecfdf5',
+                            borderColor: '#10b981',
+                            color: '#065f46',
+                          }
+                          : emp.status === 'pending'
+                            ? {
+                              background: '#fffbeb',
+                              borderColor: '#f59e0b',
+                              color: '#92400e',
+                            }
+                            : {
+                              background: '#eff6ff',
+                              borderColor: '#3b82f6',
+                              color: '#1e3a8a',
+                            }),
+                      }}
+                    >
+                      {emp.status}
+                    </Box>
+                  </TableCell>
 
+                  <TableCell sx={{ fontSize: "0.85rem", padding: "8px 12px", textAlign: 'center', borderBottom: 'none' }}>
+                    {emp.remainingDays}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "0.85rem", padding: "8px 12px", textAlign: 'center', borderBottom: 'none' }}>
+                    {new Date(emp.enrolledDate).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "0.85rem", padding: "8px 12px", textAlign: 'center', borderBottom: 'none' }}>
+                    {emp.completedModules}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "0.85rem", padding: "8px 12px", textAlign: 'center', borderBottom: 'none' }}>
+                    {emp.totalModules}
+                  </TableCell>
+
+                  {/* ✅ Completion Date Chip */}
+                  <TableCell sx={{ textAlign: 'center', borderBottom: 'none' }}>
+                    {emp.isCompleted ? (
+                      <Box
+                        sx={{
+                          borderRadius: '4px',
+                          border: '1px solid #10b981',
+                          background: '#ecfdf5',
+                          color: '#065f46',
+                          minWidth: '110px',
+                          textAlign: 'center',
+                          px: 1.5,
+                          py: 0.5,
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          display: 'inline-block',
+                          cursor: 'default',
+                          transition: 'background-color 0.2s ease',
+                        }}
+                      >
+                        {new Date(emp.completionDate).toLocaleDateString()}
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          borderRadius: '4px',
+                          border: '1px solid #f59e0b',
+                          background: '#fffbeb',
+                          color: '#92400e',
+                          minWidth: '110px',
+                          textAlign: 'center',
+                          px: 1.5,
+                          py: 0.5,
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          display: 'inline-block',
+                          cursor: 'default',
+                          transition: 'background-color 0.2s ease',
+                        }}
+                      >
+                        Pending
+                      </Box>
+                    )}
+                  </TableCell>
+
+                  <TableCell
+                    sx={{
+                      fontSize: "0.85rem",
+                      padding: "8px 12px",
+                      textAlign: 'center',
+                      borderBottom: 'none',
+                      fontWeight: 600,
+                      color: emp.overallPercentage >= 70 ? "#065f46" : "#92400e",
+                    }}
+                  >
+                    {emp.overallPercentage}%
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </TableContainer>
+
       ) : (
         <Typography mt={2} color="gray" sx={{ fontStyle: 'italic' }}>
           No employees found!
