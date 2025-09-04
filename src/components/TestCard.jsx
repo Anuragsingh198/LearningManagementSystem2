@@ -164,9 +164,11 @@ function TestCard({ test, role }) {
                                 backgroundColor: 'rgba(46, 204, 113, 0.08)', // soft green background
                                 '&:hover': {
                                     backgroundColor: 'rgba(46, 204, 113, 0.15)',
+                                    border: '1.5px solid #2ecc71',
                                 },
                                 '&:active': {
                                     backgroundColor: 'rgba(46, 204, 113, 0.25)',
+                                    border: '1.5px solid #2ecc71',
                                 },
                                 '&:disabled': {
                                     border: '1.5px solid #a5d6a7',

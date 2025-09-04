@@ -4,17 +4,18 @@ import QuestionAnswerViewer from './QuestionAnswerViewer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
- 
-const infoItemStyle = {
-  padding: '8px 12px',
-  borderRadius: 2,
-  width: 200,
-  backgroundColor: '#e3f2fd',
+
+const infoItemBase = {
+  padding: "8px 12px",
+  borderRadius: "4px",
+  width: 220,
   mb: 1,
   height: 50,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  border: "1.5px solid",
+  fontWeight: "bold",
 };
  
 const normalizeQuestions = (questions) => {
@@ -75,23 +76,39 @@ const TestResultPage = () => {
         <Typography variant="h4" sx={{ ml: 1 }} gutterBottom>
           {testAnswerData?.title}
         </Typography>
- 
-        {role === 'employee' && (
+
+        {role === "employee" && (
           <Grid container spacing={3} mt={1}>
-            <Box sx={{ ...infoItemStyle, backgroundColor: '#ede7f6' }}>
-              <Typography component="span" variant="body1" sx={{ fontWeight: 'bold' }} display="flex" alignItems="center">
-                Result:{' '}
-                <Chip
-                  label={testAnswerData?.isPassed ? 'Passed' : 'Failed'}
-                  color={testAnswerData?.isPassed ? 'success' : 'error'}
-                  size="small"
-                  sx={{ fontWeight: 'bold', ml: 1 }}
-                />
+            {/* Result Box */}
+            <Box
+              sx={{
+                ...infoItemBase,
+                borderColor: testAnswerData?.isPassed ? "#2e7d32" : "#c62828",
+                backgroundColor: testAnswerData?.isPassed
+                  ? "#e8f5e9"
+                  : "#ffebee",
+                color: testAnswerData?.isPassed ? "#2e7d32" : "#c62828",
+              }}
+            >
+              <Typography
+                component="span"
+                variant="body1"
+                sx={{ fontWeight: "bold" }}
+              >
+                Result: {testAnswerData?.isPassed ? "Passed" : "Failed"}
               </Typography>
             </Box>
- 
-            <Box sx={infoItemStyle}>
-              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+
+            {/* Total Questions Box */}
+            <Box
+              sx={{
+                ...infoItemBase,
+                borderColor: "#1565c0",
+                backgroundColor: "#e3f2fd",
+                color: "#1565c0",
+              }}
+            >
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                 Total Questions: {testAnswerData.totalQuestions}
               </Typography>
             </Box>
@@ -102,13 +119,13 @@ const TestResultPage = () => {
       {/* Questions Breakdown */}
       <Box>
         {normalizeQuestions(testAnswerData?.questions).map((question, index) => (
-    <QuestionAnswerViewer
-      key={question._id || question.questionId}
-      question={question}
-      index={index}
-      role={role}
-    />
-  ))}
+          <QuestionAnswerViewer
+            key={question._id || question.questionId}
+            question={question}
+            index={index}
+            role={role}
+          />
+        ))}
       </Box>
  
       <Box textAlign="center" mt={4}>
