@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Chip, Stack, Button } from '@mui/material';
+import { Box, Typography, Chip, Stack, Button, Tooltip } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useCourseContext } from '../context/contextFiles/CourseContext';
@@ -18,7 +18,7 @@ function TestCard({ test, role }) {
     const assessmentId = id;
 
     const { state: { currentAssessment }, dispatch } = useCourseContext();
-    const {state: {},  dispatch: assignmentDispatch} = useAssignmentContext();
+    const { state: { }, dispatch: assignmentDispatch } = useAssignmentContext();
     // console.log('the test is: ', test)
     console.log('the partial test data from context is in testcard: ', test)
 
@@ -39,6 +39,14 @@ function TestCard({ test, role }) {
     const handleOnAdminClick = () => {
         navigate(`/assessments/review-admin`);
     };
+
+    // === Description truncation logic ===
+    const WORD_LIMIT = 13;
+    const descriptionWords = test.description?.split(" ") || [];
+    const isLong = descriptionWords.length > WORD_LIMIT;
+    const shortDescription = isLong
+        ? descriptionWords.slice(0, WORD_LIMIT).join(" ") + "..."
+        : test.description;
 
     return (
         <Box
@@ -130,20 +138,49 @@ function TestCard({ test, role }) {
                 </Box>
             </Typography>
 
-            {/* Description */}
-            <Typography
-                variant="body2"
-                sx={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    mb: 2,
+            {/* Description with tooltip */}
+            <Tooltip
+                title={isLong ? test.description : ""}
+                arrow
+                placement="bottom-end"
+                slotProps={{
+                    popper: {
+                        sx: {
+                            "& .MuiTooltip-tooltip": {
+                                background: "linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)",
+                                color: "#fff",
+                                fontSize: "0.9rem",
+                                padding: "10px 14px",
+                                borderRadius: "10px",
+                                maxWidth: 320,
+                                boxShadow: "0px 6px 18px rgba(0,0,0,0.2)",
+                                lineHeight: 1.5,
+                                letterSpacing: "0.3px",
+                                fontWeight: 400,
+                            },
+                            "& .MuiTooltip-arrow": {
+                                color: "#1976d2",
+                            },
+                        },
+                    },
                 }}
             >
-                {test.description}
-            </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        mb: 2,
+                        cursor: isLong ? 'pointer' : 'default',
+                    }}
+                >
+                    {shortDescription}
+                </Typography>
+            </Tooltip>
+
 
             {/* Buttons */}
             {role === 'employee' && (

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Typography, Checkbox, FormControlLabel, Button, Stack, Divider, Chip } from '@mui/material';
+import { Box, Typography, Checkbox, FormControlLabel, Button, Stack, Chip, Divider } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
-import { Square, CheckSquare2 } from 'lucide-react';
+import { Info, Timer, ListChecks } from 'lucide-react';
 
 const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
@@ -66,38 +66,84 @@ function TestStartPage() {
   };
 
   return (
-    <Box sx={{ maxWidth: 700, mx: 'auto', p: 2, color: 'black' }}>
+    <Box
+      sx={{
+        maxWidth: 750,
+        mx: 'auto',
+        p: 3,
+        borderRadius: '4px',
+        background: '#fff',
+      }}
+    >
       {/* Header */}
-      <Typography variant="h5" fontWeight="bold">{currentAssessment?.title}</Typography>
-      <Typography variant="body2" color="text.secondary" mt={0.5}>
+      <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
+        {currentAssessment?.title}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" mb={2}>
         {currentAssessment?.description}
       </Typography>
 
-      {/* Chips */}
-      <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
+      {/* Topics */}
+      <Stack direction="row" spacing={1} flexWrap="wrap" mb={3}>
         {currentAssessment?.topics?.map((topic, idx) => (
-          <Chip key={idx} label={topic} size="small" variant="outlined" />
+          <Chip
+            key={idx}
+            label={topic}
+            size="small"
+            sx={{
+              borderRadius: '4px',
+              fontSize: '0.9rem',
+              border: '1px solid #1976d2',
+              color: '#1976d2',
+              backgroundColor: 'rgba(25, 118, 210, 0.08)',
+              '&:hover': {
+                backgroundColor: 'rgba(25, 118, 210, 0.15)',
+              },
+            }}
+          />
+
         ))}
       </Stack>
-
+      <Divider sx={{ my: 2 }} />
       {/* Meta Info */}
-      <Stack direction="row" justifyContent="space-between" mt={2} mb={2}>
-        <Typography variant="body2"><strong>Type:</strong> {currentAssessment?.testType?.toUpperCase()}</Typography>
-        <Typography variant="body2"><strong>Duration:</strong> {formatDuration(currentAssessment?.duration)}</Typography>
-        <Typography variant="body2"><strong>Questions:</strong> {currentAssessment?.numberOfQuestions}</Typography>
+      <Stack direction="row" justifyContent="space-between" mb={3}>
+        <Stack direction="row" alignItems="center" spacing={0.5}>
+          <ListChecks size={16} />
+          <Typography variant="body2">
+            <strong>Type:</strong> {currentAssessment?.testType?.toUpperCase()}
+          </Typography>
+        </Stack>
+
+        <Stack direction="row" alignItems="center" spacing={0.5}>
+          <Timer size={16} />
+          <Typography variant="body2">
+            <strong>Duration:</strong> {formatDuration(currentAssessment?.duration)}
+          </Typography>
+        </Stack>
+
+        <Typography variant="body2">
+          <strong>Questions:</strong> {currentAssessment?.numberOfQuestions}
+        </Typography>
       </Stack>
 
+      <Divider sx={{ my: 2 }} />
+
       {/* Instructions */}
-      <Box sx={{ border: '1px solid #ddd', borderRadius: 2, p: 2, mb: 2 }}>
-        <Typography variant="subtitle1" fontWeight="bold">Instructions:</Typography>
-        <ul style={{ paddingLeft: 18, margin: 0, fontSize: '0.9rem' }}>
+      <Box sx={{ mb: 3 }}>
+        <Stack direction="row" alignItems="center" spacing={0.5} mb={1}>
+          <Info size={18} color="#1976d2" />
+          <Typography variant="subtitle1" fontWeight="bold">
+            Instructions
+          </Typography>
+        </Stack>
+        <ul style={{ paddingLeft: 20, margin: 0, fontSize: '0.95rem', color: '#424242' }}>
           <li>Do not refresh the page (test will auto-submit).</li>
           <li>Do not open other tabs (test will auto-submit).</li>
           <li>Complete the test in one go.</li>
           <li>Ensure a stable internet connection.</li>
         </ul>
       </Box>
-
+      <Divider sx={{ my: 2 }} />
       {/* Start Button */}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <FormControlLabel
@@ -110,7 +156,24 @@ function TestStartPage() {
             },
           }}
         />
-        <Button variant="contained" disabled={!checked} onClick={handleStart}>
+        <Button
+          variant="contained"
+          disabled={!checked}
+          onClick={handleStart}
+          sx={{
+            px: 4,
+            py: 1,
+            fontWeight: 'bold',
+            textTransform: 'none',
+            borderRadius: '4px',
+            background: checked ? '#1976d2' : '#90caf9',
+            boxShadow: 'none',
+            '&:hover': {
+              background: checked ? '#1565c0' : '#90caf9',
+              boxShadow: 'none',
+            },
+          }}
+        >
           {loading ? 'Starting...' : 'Start Test'}
         </Button>
       </Stack>
