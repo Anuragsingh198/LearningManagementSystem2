@@ -515,6 +515,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
               <Paper
                 key={chapter._id}
                 elevation={0}
+                onClick={() => handleSubmit(chapter._id, chapter)}
                 sx={{
                   border: '1px solid',
                   borderColor: 'divider',
@@ -522,6 +523,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                   height: '55px',
                   py: 1,
                   px: 2,
+                  cursor: 'pointer',
                   '&:hover': {
                     boxShadow: 3
                   },
@@ -590,18 +592,17 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                         {[
                           {
                             icon: <PlayCircle size={20} />,
-                            text: `${chapter.videos?.length || 0} Videos`
+                            text: `${chapter.videos?.length || 0} Videos`,
                           },
                           {
                             icon: <HelpCircle size={20} />,
-                            text: `${chapter.tests?.length || 0} Assessment(s)`
+                            text: `${chapter.tests?.length || 0} Assessment(s)`,
                           },
                           // {
                           //   icon: <AccessTimeIcon fontSize="small" />,
                           //   text: chapter.duration || 'N/A'
                           // },
                         ].map((item, index) => (
-
                           <Box key={index} display="flex" alignItems="center" gap={0.5}>
                             {item.icon}
                             <Typography variant="body2" color="text.secondary">
@@ -620,10 +621,11 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                   <Box display="flex" alignItems="center" gap={1}>
                     <Button
                       variant="outlined"
-                      onClick={() => handleSubmit(chapter._id, chapter)}
-                      endIcon={
-                        loadingChapterId === chapter._id ? null : <ChevronRight size={18} />
-                      }
+                      onClick={(e) => {
+                        e.stopPropagation(); // ✅ prevent double trigger when clicking button
+                        handleSubmit(chapter._id, chapter);
+                      }}
+                      endIcon={loadingChapterId === chapter._id ? null : <ChevronRight size={18} />}
                       sx={{
                         textTransform: 'none',
                         height: '35px',
@@ -631,12 +633,9 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                         backgroundColor: 'transparent',
                         color: 'primary.main',
                         '&:hover': {
-                          // backgroundColor: 'white',
                           color: 'primary.dark',
-                          // boxShadow: '0px 2px 8px rgba(0,0,0,0.1)'
                         },
                         '&:active': {
-                          // backgroundColor: 'primary.main',
                           color: 'primary.main',
                           transform: 'scale(0.98)'
                         },
@@ -652,23 +651,28 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
                         }
                       }}
                     >
-
                       {loadingChapterId === chapter._id
                         ? 'Loading...'
                         : role === 'instructor'
                           ? 'View'
                           : moduleProgressMap[chapter._id] === 'completed'
-                            ? 'Completed'
-                            : 'Start'}
-
+                            ? 'View'
+                            : 'View'}
                     </Button>
-                    {role === 'instructor' ? <IconButton
-                      color="error"
-                      onClick={() => handleDeleteChapter(chapter._id)}
-                      sx={{ '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' } }}
-                    >
-                      <Trash2 />
-                    </IconButton> : ''}
+                    {role === 'instructor' ? (
+                      <IconButton
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteChapter(chapter._id);
+                        }}
+                        sx={{ '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' } }}
+                      >
+                        <Trash2 />
+                      </IconButton>
+                    ) : (
+                      ''
+                    )}
                   </Box>
 
                 </Box>
