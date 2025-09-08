@@ -12,7 +12,6 @@ const getAuthToken = () => {
 export const getAllLanguageAction = async (dispatch) => {
   try {
     dispatch({ type: "SET_LOADING", payload: true });
-
     const { data } = await axios.get(`${backendBaseUrl}/api/assessments/get-languages`);
     // console.log('fetched  languages  from action   are : ' , data) 
     dispatch({ type: "SET_LANGUAGES", payload: data });
@@ -118,6 +117,35 @@ export const submitCodeAction = async (dispatch, { sourceCode, languageId, quest
   }
 };
 
+export const getAllResult = async (dispatch, assessmentId) => {
+  try {
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const token = getAuthToken();
+
+    const  response  = await axios.post(
+      `${backendBaseUrl}/api/assessments/view-all-assessment-result`,
+      { 
+        assessmentId: assessmentId
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    console.log("This is the console.log get all result:", response.data.data.results);
+
+    dispatch({ type: "SET_ALL_RESULTS", payload: response.data.data.results });
+    dispatch({ type: "SET_ASSESSMENT_RESULT_DETAILS", payload: response.data.data.assessment });
+
+
+    if (response.data.success) return response.data.data.results; 
+
+  } catch (error) {
+    dispatch({ type: "SET_ERRORS", payload: error?.response?.data || error.message });
+  } finally {
+    dispatch({ type: "SET_LOADING", payload: false });
+  }
+};
+
 export const submitAssessment = async (dispatch, { allAnswers, assessmentId }) => {
   try {
 
@@ -185,5 +213,41 @@ export const reviewAssignment = async (dispatch, { assessmentId }) => {
 
   }
 };
+
+
+export const reviewAssignmentAdmin = async (dispatch,  assessmentId, userId ) => {
+  try {
+
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const token = getAuthToken();
+
+    // console.log('the token is: ', token)
+
+    const { data } = await axios.post(
+      `${serverurl}/api/assessments/review-assessment-admin`,
+      { 
+        assessmentId, userId
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const questionsAndAnswers = data.data
+    // console.log("This is the output to get the test review data:", questionsAndAnswers);
+
+    dispatch({type: "SET_QUES_AND_ANS", payload: questionsAndAnswers })
+    if (data) return data; 
+    
+  } catch (error) {
+
+    console.error('Could not get the assessment review')
+    dispatch({ type: "SET_ERRORS", payload: error?.response?.data || error.message });
+
+  } finally {
+
+    dispatch({ type: "SET_LOADING", payload: false });
+
+  }
+};
+
 
 

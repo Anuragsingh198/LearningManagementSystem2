@@ -36,6 +36,20 @@ export const assignmentReducer = (state, action) => {
                 results: action.payload 
             };
 
+          case "SET_ALL_RESULTS":
+            return { 
+                ...state, 
+                AllEmployeeResult: action.payload 
+            };
+        
+         case "SET_ASSESSMENT_RESULT_DETAILS":
+            return { 
+                ...state, 
+                AssessmentOverviewDetails: action.payload 
+            };
+
+
+
         case "SET_CODING_RESULT": 
             return { 
                 ...state, 

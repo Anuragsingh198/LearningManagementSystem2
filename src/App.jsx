@@ -22,6 +22,8 @@ import TestPage from './pages/Test/TestPage';
 import TestExitPage from './pages/Test/TestExitPage';
 import CreateAssessment from './pages/admin/CreateAssesment';
 import CourseList from './components/CourseCreationComponents.jsx/CourseLIst';
+import ViewAllResultsAdmin from './pages/admin/ViewAllResultAdmin';
+import DetailedAssessmentResult from './pages/admin/DetailedAssessmentResult';
 
 const theme = createTheme({
   typography: {
@@ -78,6 +80,9 @@ function App() {
                   <Route path="/assessments/review/:id" element={<TestExitPage />} />
                   {/* <Route path="/assessments/test-submitted/:id" element={<TestExitPage />} /> */}
                   <Route path="/assessments/create" element={<CreateAssessment />} />
+                  <Route path="/assessments/view-result" element={<ViewAllResultsAdmin />} />
+                  <Route path="/assessments/view-result/:id" element={<DetailedAssessmentResult />} />
+
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
 
                 </Routes>

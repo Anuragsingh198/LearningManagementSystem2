@@ -13,6 +13,8 @@ const initialState = {
   codingResult: [],
   testData: null,
   overAllResult: null,
+  AllEmployeeResult: null,
+  AssessmentOverviewDetails: null
 };
 
 

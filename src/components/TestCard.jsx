@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Chip, Stack, Button, Tooltip } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useCourseContext } from '../context/contextFiles/CourseContext';
 import { useAssignmentContext } from '../context/contextFiles/assignmentContext';
-import { reviewAssignment } from '../context/Actions/AssignmentActions';
+import { getAllResult, reviewAssignment } from '../context/Actions/AssignmentActions';
 
 function formatDuration(mins) {
     const hrs = String(Math.floor(mins / 60)).padStart(2, '0');
@@ -14,13 +14,12 @@ function formatDuration(mins) {
 
 function TestCard({ test, role }) {
     const navigate = useNavigate();
-    const { id } = useParams();
-    const assessmentId = id;
+    const [loading, setLoading] = useState(false)
 
-    const { state: { currentAssessment }, dispatch } = useCourseContext();
+
+    const { state: {  }, dispatch } = useCourseContext();
     const { state: { }, dispatch: assignmentDispatch } = useAssignmentContext();
     // console.log('the test is: ', test)
-    console.log('the partial test data from context is in testcard: ', test)
 
     const handleOnClick = async () => {
         if (test.attempted) {
@@ -39,6 +38,22 @@ function TestCard({ test, role }) {
     const handleOnAdminClick = () => {
         navigate(`/assessments/review-admin`);
     };
+
+    const handleOnResultsClick = async () => {
+        setLoading(true);
+        dispatch({
+                type: "SET_CURRENT_ASSESSMENT",
+                payload: test,
+            });
+        const assessmentId = test._id;
+        // here call the api , on success nvigate 
+        const response = await getAllResult(assignmentDispatch, assessmentId)
+        console.log('the the response is: ', response)
+        setLoading(false)
+        
+        navigate(`/assessments/view-result`);
+
+    }
 
     // === Description truncation logic ===
     const WORD_LIMIT = 13;
@@ -240,36 +255,69 @@ function TestCard({ test, role }) {
             )}
 
             {role === 'instructor' && (
-                <Button
-                    variant="contained"
-                    fullWidth
-                    disableElevation
-                    onClick={handleOnAdminClick}
-                    sx={{
-                        borderRadius: '4px',
-                        textTransform: 'none',
-                        fontWeight: 'bold',
-                        backgroundColor: '#1976d2',
-                        color: '#fff',
-                        '&:hover': {
-                            backgroundColor: '#1565c0',
-                        },
-                        '&:active': {
-                            backgroundColor: '#0d47a1',
-                        },
-                        '&:disabled': {
-                            backgroundColor: '#90CAF9',
-                            color: '#E3F2FD',
-                        },
-                        '&:focus': {
-                            outline: '2px solid #64B5F6',
-                            outlineOffset: '2px',
-                        },
-                    }}
-                >
-                    View Questions
-                </Button>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Button
+                        variant="contained"
+                        disableElevation
+                        onClick={handleOnAdminClick}
+                        sx={{
+                            flex: 1, // makes both buttons equal width
+                            borderRadius: '4px',
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            backgroundColor: '#1976d2',
+                            color: '#fff',
+                            '&:hover': {
+                                backgroundColor: '#1565c0',
+                            },
+                            '&:active': {
+                                backgroundColor: '#0d47a1',
+                            },
+                            '&:disabled': {
+                                backgroundColor: '#90CAF9',
+                                color: '#E3F2FD',
+                            },
+                            '&:focus': {
+                                outline: '2px solid #64B5F6',
+                                outlineOffset: '2px',
+                            },
+                        }}
+                    >
+                        View Questions
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        disableElevation
+                        onClick={handleOnResultsClick} // create this function
+                        sx={{
+                            flex: 1,
+                            borderRadius: '4px',
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            backgroundColor: '#388e3c',
+                            color: '#fff',
+                            '&:hover': {
+                                backgroundColor: '#2e7d32',
+                            },
+                            '&:active': {
+                                backgroundColor: '#1b5e20',
+                            },
+                            '&:disabled': {
+                                backgroundColor: '#A5D6A7',
+                                color: '#E8F5E9',
+                            },
+                            '&:focus': {
+                                outline: '2px solid #81C784',
+                                outlineOffset: '2px',
+                            },
+                        }}
+                    >
+                        View Results
+                    </Button>
+                </Box>
             )}
+
         </Box>
     );
 }
