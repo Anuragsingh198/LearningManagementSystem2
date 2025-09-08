@@ -469,9 +469,48 @@ function ViewAllResultsAdmin() {
             Assessment Question Paper: {assessment.title}
           </Typography>
           <Divider sx={{ my: 2 }} />
-          <Button onClick={() => setIsQuestionPaperOpen(false)} variant="outlined">
-            Close
-          </Button>
+          {/* Render questions, options, and correct answers */}
+          {assessment.questions && assessment.questions.length > 0 && (
+            <Stack spacing={3}>
+              {assessment.questions.map((q, index) => (
+                <React.Fragment key={index}>
+                  <Paper elevation={0} sx={{ p: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Q{index + 1}.
+                    </Typography>
+                    <Box sx={{ mb: 2 }}>
+                      <MarkdownRenderer>{q.questionText}</MarkdownRenderer>
+                    </Box>
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                      Options:
+                    </Typography>
+                    <ul style={{ marginTop: 0 }}>
+                      {q.options.map((opt, i) => (
+                        <li key={i} style={{ color: opt.optionText === q.correctAnswer ? 'green' : 'inherit', marginBottom: '0.5em' }}>
+                          <Box>
+                            <MarkdownRenderer>{opt.optionText}</MarkdownRenderer>
+                          </Box>
+                        </li>
+                      ))}
+                    </ul>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      Correct Answer: <span style={{ color: 'green' }}>
+                        <MarkdownRenderer>{q.correctAnswer}</MarkdownRenderer>
+                      </span>
+                    </Typography>
+                  </Paper>
+                  {index < assessment.questions.length - 1 && (
+                    <Divider sx={{ my: 1, height: 2, backgroundColor: 'lightgray', border: 'none' }} />
+                  )}
+                </React.Fragment>
+              ))}
+            </Stack>
+          )}
+          <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 4 }}>
+            <Button onClick={() => setIsQuestionPaperOpen(false)} variant="outlined">
+              Close
+            </Button>
+          </Stack>
         </Box>
       </Modal>
     </Box>
