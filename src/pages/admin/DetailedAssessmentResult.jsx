@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { 
+import {
   Box, Typography, Paper, Stack, Chip, Grid, Button,
   Card, CardContent, Divider, Dialog, DialogContent, IconButton
 } from "@mui/material";
@@ -8,7 +8,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
-import { CheckCheck, XCircle, HelpCircle, Printer, X, User, Mail, Badge,  CheckCircle2, Percent, BookOpen, Clock } from "lucide-react";
+import { CheckCheck, XCircle, HelpCircle, Printer, X, User, Mail, Badge, CheckCircle2, Percent, BookOpen, Clock } from "lucide-react";
 
 const MarkdownRenderer = ({ text }) => (
   <ReactMarkdown
@@ -59,19 +59,19 @@ const QuestionAnswerViewer = ({ question, index, assessmentDetails }) => {
   const yourAnswer = isMCQ
     ? question.yourAnswer
     : isCoding
-    ? question.yourCodingAnswer
-    : question.yourAnswer;
-  
+      ? question.yourCodingAnswer
+      : question.yourAnswer;
+
   // For MCQ questions, we need to find the correct answer from assessmentDetails
   let correctAnswer = question.correctAnswer;
   let isCorrect = false;
-  
+
   if (isMCQ && assessmentDetails) {
     // Find the question in assessmentDetails to get the full options
     const originalQuestion = assessmentDetails.questions.find(
       q => q._id === question.questionId
     );
-    
+
     if (originalQuestion) {
       correctAnswer = originalQuestion.correctAnswer;
       isCorrect = yourAnswer === correctAnswer;
@@ -154,8 +154,8 @@ const QuestionAnswerViewer = ({ question, index, assessmentDetails }) => {
             !yourAnswer
               ? "Not Answered"
               : isCorrect
-              ? "Correct"
-              : "Incorrect"
+                ? "Correct"
+                : "Incorrect"
           }
           sx={{
             fontWeight: "600",
@@ -163,18 +163,18 @@ const QuestionAnswerViewer = ({ question, index, assessmentDetails }) => {
             borderColor: !yourAnswer
               ? "#1565c0"
               : isCorrect
-              ? "#2e7d32"
-              : "#c62828",
+                ? "#2e7d32"
+                : "#c62828",
             color: !yourAnswer
               ? "#1565c0"
               : isCorrect
-              ? "#2e7d32"
-              : "#c62828",
+                ? "#2e7d32"
+                : "#c62828",
             backgroundColor: !yourAnswer
               ? "#e3f2fd"
               : isCorrect
-              ? "#e8f5e9"
-              : "#ffebee",
+                ? "#e8f5e9"
+                : "#ffebee",
             width: "fit-content",
           }}
           className="status-chip"
@@ -241,15 +241,15 @@ const QuestionAnswerViewer = ({ question, index, assessmentDetails }) => {
                       sx={{
                         p: 1,
                         borderRadius: 1,
-                        backgroundColor: option.optionText === correctAnswer 
-                          ? "#e8f5e9" 
-                          : option.optionText === yourAnswer 
-                            ? "#ffebee" 
+                        backgroundColor: option.optionText === correctAnswer
+                          ? "#e8f5e9"
+                          : option.optionText === yourAnswer
+                            ? "#ffebee"
                             : "#f9f9f9",
-                        border: option.optionText === correctAnswer 
-                          ? "1px solid green" 
-                          : option.optionText === yourAnswer 
-                            ? "1px solid red" 
+                        border: option.optionText === correctAnswer
+                          ? "1px solid green"
+                          : option.optionText === yourAnswer
+                            ? "1px solid red"
                             : "1px solid #ddd",
                       }}
                     >
@@ -280,9 +280,8 @@ const QuestionAnswerViewer = ({ question, index, assessmentDetails }) => {
               className="code-box"
             >
               <MarkdownRenderer
-                text={`\`\`\`${languageMap[question.language_id] || "text"}\n${
-                  yourAnswer || "Not Answered"
-                }\n\`\`\``}
+                text={`\`\`\`${languageMap[question.language_id] || "text"}\n${yourAnswer || "Not Answered"
+                  }\n\`\`\``}
               />
             </Box>
             <Typography variant="caption" fontWeight="bold">
@@ -319,7 +318,7 @@ function DetailedAssessmentResult() {
   const { state: { overAllResult, AssessmentOverviewDetails } } = useAssignmentContext();
   const [printMode, setPrintMode] = React.useState(false);
   const contentRef = useRef(null);
-  
+
   useEffect(() => {
     console.log('the individual data is: ', overAllResult);
     console.log('the test details are: ', AssessmentOverviewDetails);
@@ -350,98 +349,213 @@ function DetailedAssessmentResult() {
   };
 
   const handlePrintDirectly = () => {
-    const content = contentRef.current;
-    if (!content) return;
-    
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
+    if (!overAllResult || !AssessmentOverviewDetails) return;
+
+    // Helper functions
+    const formatDate = (dateString) => {
+      if (!dateString) return "N/A";
+      const date = new Date(dateString);
+      return date.toLocaleString();
+    };
+    const calculateDuration = (start, end) => {
+      if (!start || !end) return "N/A";
+      const startTime = new Date(start);
+      const endTime = new Date(end);
+      const durationMs = endTime - startTime;
+      return Math.floor(durationMs / 60000);
+    };
+    const languageMap = { 71: "python", 50: "c", 54: "cpp", 62: "java" };
+
+    // Chip HTML
+    function chipHtml(label, color, bg, border) {
+      return `<span style=\"display:inline-block;padding:5px 12px;border-radius:4px;font-weight:600;border:1.5px solid ${border};background:${bg};color:${color};margin-bottom:8px;\">${label}</span>`;
+    }
+
+    // Build Employee Details HTML
+    const employeeDetailsHtml = `
+      <div style=\"margin-bottom:20px;\">
+        <h2 style=\"font-weight:600;\">Employee Details</h2>
+        <table style=\"width:100%;border-collapse:collapse;\">
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Name:</td>
+            <td style=\"padding:8px;font-weight:600;">${overAllResult.user?.name || "—"}</td>
+          </tr>
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Email:</td>
+            <td style=\"padding:8px;font-weight:600;">${overAllResult.user?.email || "—"}</td>
+          </tr>
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Employee ID:</td>
+            <td style=\"padding:8px;font-weight:600;">${overAllResult.user?.employeeId || "—"}</td>
+          </tr>
+        </table>
+      </div>
+    `;
+
+    // Build Metrics HTML
+    const metricsHtml = `
+      <div style=\"margin-bottom:20px;\">
+        <h2 style=\"font-weight:600;\">Test Metrics</h2>
+        <table style=\"width:100%;border-collapse:collapse;\">
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Status:</td>
+            <td style=\"padding:8px;font-weight:600;">${overAllResult.status?.toUpperCase()}</td>
+          </tr>
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Score:</td>
+            <td style=\"padding:8px;font-weight:600;">${overAllResult.PercentageMarksScore}%</td>
+          </tr>
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Marks:</td>
+            <td style=\"padding:8px;font-weight:600;">${overAllResult.TotalMarksScored}/${overAllResult.MaxMarks}</td>
+          </tr>
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Duration:</td>
+            <td style=\"padding:8px;font-weight:600;">${calculateDuration(overAllResult.startedAt, overAllResult.completedAt)} mins</td>
+          </tr>
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Start Time:</td>
+            <td style=\"padding:8px;font-weight:600;">${formatDate(overAllResult.startedAt)}</td>
+          </tr>
+          <tr>
+            <td style=\"padding:8px;font-weight:500;\">Completion Time:</td>
+            <td style=\"padding:8px;font-weight:600;">${formatDate(overAllResult.completedAt)}</td>
+          </tr>
+        </table>
+      </div>
+    `;
+
+    // MCQ & Coding Performance HTML
+    const mcqPerformanceHtml = `
+      <div style=\"margin-bottom:20px;\">
+        <h3 style=\"font-weight:600;\">MCQ Performance</h3>
+        ${chipHtml(`Correct: ${overAllResult.TotalAnsweredAndCorrectMcqQuestions} / ${overAllResult.TotalMcqQuestions}`, '#1565c0', '#e3f2fd', '#90caf9')}
+        ${chipHtml(`Score: ${overAllResult.MarksScoredForMcq} / ${overAllResult.TotalMcqQuestions * overAllResult.MarksForEachMcqQuestion}`, '#1565c0', '#e3f2fd', '#90caf9')}
+      </div>
+    `;
+    const codingPerformanceHtml = `
+      <div style=\"margin-bottom:20px;\">
+        <h3 style=\"font-weight:600;\">Coding Performance</h3>
+        ${chipHtml(`Correct: ${overAllResult.TotalAnsweredAndCorrectCodingQuestions} / ${overAllResult.questions.filter((q) => q.type === "coding").length}`, '#2e7d32', '#e8f5e9', '#81c784')}
+        ${chipHtml(`Score: ${overAllResult.MarksScoredForCoding} / ${overAllResult.questions.filter((q) => q.type === "coding").length * overAllResult.MarksForEachCodingQuestion}`, '#2e7d32', '#e8f5e9', '#81c784')}
+      </div>
+    `;
+
+    // Build Questions HTML (use marked.js for markdown rendering)
+    function renderQuestionHtml(question, index, type) {
+      let html = `<div style='margin-bottom:20px;padding:15px;border-left:6px solid #1565c0;border-radius:5px;'>`;
+      html += `<div style='font-weight:bold;'>Q${index + 1}.</div>`;
+      let statusChip = '';
+      if (!question.yourAnswer && type === 'mcq') {
+        statusChip = chipHtml('Not Answered', '#1565c0', '#e3f2fd', '#1565c0');
+      } else if (question.isCorrect) {
+        statusChip = chipHtml('Correct', '#2e7d32', '#e8f5e9', '#2e7d32');
+      } else {
+        statusChip = chipHtml('Incorrect', '#c62828', '#ffebee', '#c62828');
+      }
+      html += statusChip;
+      if (type === "mcq") {
+        html += `<div style='margin-bottom:8px;' class='markdown'>${question.questionText}</div>`;
+        html += `<div style='font-weight:bold;'>Your Answer:</div>`;
+        html += `<div style='border:1px solid ${question.isCorrect ? "green" : "red"};border-radius:4px;padding:8px;background:${question.isCorrect ? "#e8f5e9" : "#ffebee"};margin-bottom:8px;' class='markdown'>${question.yourAnswer || "Not answered"}</div>`;
+        if (!question.isCorrect) {
+          html += `<div style='font-weight:bold;'>Correct Answer:</div>`;
+          html += `<div style='border:1px solid green;border-radius:4px;padding:8px;background:#e8f5e9;margin-bottom:8px;' class='markdown'>${question.correctAnswer}</div>`;
+        }
+        if (AssessmentOverviewDetails?.questions) {
+          const originalQuestion = AssessmentOverviewDetails.questions.find(q => q._id === question.questionId);
+          if (originalQuestion && originalQuestion.options) {
+            html += `<div style='font-weight:bold;'>All Options:</div>`;
+            html += `<ul style='margin:0;padding-left:20px;'>`;
+            originalQuestion.options.forEach((option, idx) => {
+              let optStyle = '';
+              if (option.optionText === question.correctAnswer) {
+                optStyle = 'background:#e8f5e9;border:1px solid green;';
+              } else if (option.optionText === question.yourAnswer) {
+                optStyle = 'background:#ffebee;border:1px solid red;';
+              } else {
+                optStyle = 'background:#f9f9f9;border:1px solid #ddd;';
+              }
+              html += `<li style='margin-bottom:4px;padding:6px 10px;border-radius:4px;${optStyle}' class='markdown'>${String.fromCharCode(65 + idx)}. ${option.optionText}</li>`;
+            });
+            html += `</ul>`;
+          }
+        }
+      } else if (type === "coding") {
+        html += `<div style='font-weight:bold;' class='markdown'>${question.title}</div>`;
+        html += `<div style='margin-bottom:8px;' class='markdown'>${question.description}</div>`;
+        if (question.constraints) {
+          html += `<div style='font-style:italic;color:gray;' class='markdown'>Constraints: ${question.constraints}</div>`;
+        }
+        html += `<div style='font-weight:bold;'>Your Code:</div>`;
+        html += `<pre style='background:#f6f8fa;padding:10px;border-radius:4px;' class='markdown'><code>${question.yourCodingAnswer || "Not Answered"}</code></pre>`;
+        html += `<div style='font-weight:bold;'>Test Results: ${question.total_test_cases_passed || 0} / ${question.total_test_cases || 0}</div>`;
+      }
+      html += `</div>`;
+      return html;
+    }
+
+    let questionsHtml = "<h2 style='font-weight:600;'>Questions and Answers</h2>";
+    questionsHtml += "<h3 style='margin-top:20px;'>Multiple Choice Questions</h3>";
+    overAllResult.questions.filter(q => q.type === "mcq").forEach((question, idx) => {
+      questionsHtml += renderQuestionHtml(question, idx, "mcq");
+    });
+    questionsHtml += "<h3 style='margin-top:20px;'>Coding Questions</h3>";
+    overAllResult.questions.filter(q => q.type === "coding").forEach((question, idx) => {
+      questionsHtml += renderQuestionHtml(question, idx, "coding");
+    });
+
+    // Final HTML with marked.js for markdown rendering
+    const htmlContent = `
       <!DOCTYPE html>
       <html>
         <head>
           <title>Assessment Results</title>
+          <script src='https://cdn.jsdelivr.net/npm/marked/marked.min.js'></script>
           <style>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 20px;
-              color: #333;
-            }
-            .print-header {
-              text-align: center;
-              margin-bottom: 20px;
-              border-bottom: 2px solid #333;
-              padding-bottom: 10px;
-            }
-            .metrics-grid {
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-              gap: 15px;
-              margin-bottom: 20px;
-            }
-            .metric-item {
-              padding: 10px;
-              background-color: #f5f5f5;
-              border-radius: 5px;
-            }
-            .question-item {
-              margin-bottom: 20px;
-              padding: 15px;
-              border-left: 6px solid;
-              border-radius: 5px;
-              page-break-inside: avoid;
-            }
-            .code-box, .answer-box, .correct-answer-box {
-              border: 1px solid #ddd;
-              border-radius: 4px;
-              padding: 10px;
-              background-color: #f9f9f9;
-              margin: 5px 0;
-            }
-            .correct-answer-box {
-              border-color: green;
-              background-color: #e8f5e9;
-            }
-            .status-chip {
-              padding: 5px 10px;
-              border-radius: 4px;
-              font-weight: bold;
-              display: inline-block;
-              margin: 5px 0;
-            }
-            pre {
-              background-color: #f6f8fa;
-              padding: 10px;
-              border-radius: 4px;
-              overflow-x: auto;
-            }
-            code {
-              background-color: #f0f0f0;
-              padding: 2px 4px;
-              border-radius: 3px;
-            }
-            @media print {
-              .no-print {
-                display: none;
-              }
-              body {
-                padding: 0;
-                margin: 0;
-              }
-            }
+            body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
+            h2, h3 { margin-bottom: 10px; }
+            table { margin-bottom: 10px; }
+            ul { margin:0; padding-left:20px; }
+            li { margin-bottom:4px; }
+            code { background:#f0f0f0; padding:2px 4px; border-radius:3px; }
+            pre { background:#f6f8fa; padding:10px; border-radius:4px; overflow-x:auto; }
+            @media print { .no-print { display: none; } body { padding: 0; margin: 0; } }
           </style>
         </head>
         <body>
-          ${content.innerHTML}
+          <div style='text-align:center;margin-bottom:20px;border-bottom:2px solid #333;padding-bottom:10px;'>
+            <img src='${window.location.origin}/src/assets/logo.png' alt='Logo' style='height:60px;margin-bottom:10px;' />
+            <h1 style='font-weight:bold;'>Assessment Results: ${AssessmentOverviewDetails?.title || overAllResult.title}</h1>
+            <div>${formatDate(overAllResult.completedAt)}</div>
+          </div>
+          ${employeeDetailsHtml}
+          ${metricsHtml}
+          ${mcqPerformanceHtml}
+          ${codingPerformanceHtml}
+          <div id='questions-section'>${questionsHtml}</div>
+          <script>
+            // Convert all markdown blocks to HTML using marked
+            document.querySelectorAll('.markdown').forEach(function(el) {
+              el.innerHTML = marked.parse(el.textContent || el.innerText);
+            });
+          </script>
         </body>
       </html>
-    `);
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(htmlContent);
     printWindow.document.close();
-    
-    // Wait for content to load then print
     setTimeout(() => {
       printWindow.print();
       printWindow.onafterprint = () => printWindow.close();
-    }, 250);
+      printWindow.onfocus = () => {
+        if (printWindow) {
+          printWindow.close();
+        }
+      };
+    }, 350);
   };
 
   if (!overAllResult) {
@@ -463,7 +577,7 @@ function DetailedAssessmentResult() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 3,
+            mb: 1,
             pb: 2,
             borderBottom: "2px solid #333",
           }}
@@ -479,8 +593,8 @@ function DetailedAssessmentResult() {
         </Box>
 
         {/* Employee Details */}
-        <Card sx={{ mb: 3, boxShadow: "none", borderRadius: 0 }}>
-          <CardContent sx={{ p: 4 }}>
+        <Card sx={{ mb: 1, boxShadow: "none", borderRadius: 0 }}>
+          <CardContent >
             <Typography
               variant="h5"
               gutterBottom
@@ -533,13 +647,14 @@ function DetailedAssessmentResult() {
                 </Box>
               </Grid>
             </Grid>
+            <Divider sx={{ my: 2, mb: -3 }} />
           </CardContent>
         </Card>
 
         {/* Test metrics */}
-        <Card sx={{ mb: 3 }}>
+        <Card sx={{ mb: 3, boxShadow: "none", borderRadius: 0 }}>
           <CardContent>
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
               Test Metrics
             </Typography>
 
@@ -670,48 +785,132 @@ function DetailedAssessmentResult() {
             <Divider sx={{ my: 2 }} />
 
             {/* MCQ & Coding Performance */}
-            <Grid container spacing={2}>
+            <Grid container spacing={3} sx={{ mt: 2 }}>
+              {/* MCQ */}
               <Grid item xs={12} sm={6}>
-                <Typography variant="h6">MCQ Performance</Typography>
-                <Typography>
-                  Correct: {overAllResult.TotalAnsweredAndCorrectMcqQuestions} /{" "}
-                  {overAllResult.TotalMcqQuestions}
+                <Typography variant="h6" fontWeight={600} gutterBottom sx={{ mb: 1 }}>
+                  MCQ Performance
                 </Typography>
-                <Typography>
-                  Score: {overAllResult.MarksScoredForMcq} /{" "}
-                  {overAllResult.TotalMcqQuestions *
-                    overAllResult.MarksForEachMcqQuestion}
-                </Typography>
+                <Grid container spacing={1.5}>
+                  <Grid item xs={6}>
+                    <Chip
+                      label={`Correct: ${overAllResult.TotalAnsweredAndCorrectMcqQuestions} / ${overAllResult.TotalMcqQuestions}`}
+                      variant="outlined"
+                      sx={{
+                        width: "100%",
+                        borderRadius: "4px",
+                        fontWeight: 500,
+                        border: "1px solid #90caf9",
+                        backgroundColor: "#f1f8ff",
+                        color: "#1565c0",
+                        fontSize: "0.9rem",
+                        height: "40px",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Chip
+                      label={`Score: ${overAllResult.MarksScoredForMcq} / ${overAllResult.TotalMcqQuestions * overAllResult.MarksForEachMcqQuestion
+                        }`}
+                      variant="outlined"
+                      sx={{
+                        width: "100%",
+                        borderRadius: "4px",
+                        fontWeight: 500,
+                        border: "1px solid #90caf9",
+                        backgroundColor: "#f1f8ff",
+                        color: "#1565c0",
+                        fontSize: "0.9rem",
+                        height: "40px",
+                      }}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
+
+              {/* Coding */}
               <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Coding Performance</Typography>
-                <Typography>
-                  Correct: {overAllResult.TotalAnsweredAndCorrectCodingQuestions} /{" "}
-                  {overAllResult.questions.filter((q) => q.type === "coding").length}
+                <Typography variant="h6" fontWeight={600} gutterBottom sx={{ mb: 1 }}>
+                  Coding Performance
                 </Typography>
-                <Typography>
-                  Score: {overAllResult.MarksScoredForCoding} /{" "}
-                  {overAllResult.questions.filter((q) => q.type === "coding")
-                    .length * overAllResult.MarksForEachCodingQuestion}
-                </Typography>
+                <Grid container spacing={1.5}>
+                  <Grid item xs={6}>
+                    <Chip
+                      label={`Correct: ${overAllResult.TotalAnsweredAndCorrectCodingQuestions} / ${overAllResult.questions.filter((q) => q.type === "coding").length
+                        }`}
+                      variant="outlined"
+                      sx={{
+                        width: "100%",
+                        borderRadius: "4px",
+                        fontWeight: 500,
+                        border: "1px solid #81c784",
+                        backgroundColor: "#f1f8f2",
+                        color: "#2e7d32",
+                        fontSize: "0.9rem",
+                        height: "40px",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Chip
+                      label={`Score: ${overAllResult.MarksScoredForCoding} / ${overAllResult.questions.filter((q) => q.type === "coding").length *
+                        overAllResult.MarksForEachCodingQuestion
+                        }`}
+                      variant="outlined"
+                      sx={{
+                        width: "100%",
+                        borderRadius: "4px",
+                        fontWeight: 500,
+                        border: "1px solid #81c784",
+                        backgroundColor: "#f1f8f2",
+                        color: "#2e7d32",
+                        fontSize: "0.9rem",
+                        height: "40px",
+                      }}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
 
             {/* Start/End Time */}
-            <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid container spacing={2} sx={{ mt: 3 }}>
               <Grid item xs={12} sm={6}>
-                <Typography>
-                  <strong>Start Time:</strong>{" "}
-                  {formatDate(overAllResult.startedAt)}
-                </Typography>
+                <Chip
+                  label={`Start Time: ${formatDate(overAllResult.startedAt)}`}
+                  variant="outlined"
+                  sx={{
+                    width: "100%",
+                    borderRadius: "4px",
+                    fontWeight: 500,
+                    border: "1px solid #b39ddb",
+                    backgroundColor: "#f5f0ff",
+                    color: "#4527a0",
+                    fontSize: "0.9rem",
+                    height: "40px",
+                    justifyContent: "flex-start",
+                  }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography>
-                  <strong>Completion Time:</strong>{" "}
-                  {formatDate(overAllResult.completedAt)}
-                </Typography>
+                <Chip
+                  label={`Completion Time: ${formatDate(overAllResult.completedAt)}`}
+                  variant="outlined"
+                  sx={{
+                    width: "100%",
+                    borderRadius: "4px",
+                    fontWeight: 500,
+                    border: "1px solid #f48fb1",
+                    backgroundColor: "#fff0f5",
+                    color: "#880e4f",
+                    fontSize: "0.9rem",
+                    height: "40px",
+                    justifyContent: "flex-start",
+                  }}
+                />
               </Grid>
             </Grid>
+
           </CardContent>
         </Card>
 
@@ -761,20 +960,20 @@ function DetailedAssessmentResult() {
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, mr: 4, mt: 4 }} className="no-print">
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           startIcon={<Printer size={18} />}
           onClick={handlePrint}
-          sx={{ backgroundColor: '#4CAF50', '&:hover': { backgroundColor: '#45a049' } }}
+          sx={{ backgroundColor: '#4CAF50', boxShadow: 'none', '&:hover': { backgroundColor: '#45a049', boxShadow: 'none' } }}
         >
           Print Results
         </Button>
       </Box>
-      
+
       <ResultContent />
-      
-      <Dialog 
-        open={printMode} 
+
+      <Dialog
+        open={printMode}
         onClose={handleClosePrint}
         maxWidth="lg"
         fullWidth
@@ -788,11 +987,11 @@ function DetailedAssessmentResult() {
           <Box sx={{ p: 3 }}>
             <ResultContent />
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }} className="no-print">
-              <Button 
-                variant="contained" 
+              <Button
+                variant="contained"
                 startIcon={<Printer size={18} />}
                 onClick={handlePrintDirectly}
-                sx={{ backgroundColor: '#4CAF50', '&:hover': { backgroundColor: '#45a049' } }}
+                sx={{ backgroundColor: '#4CAF50', boxShadow: "none", '&:hover': { backgroundColor: '#45a049', boxShadow: "none" } }}
               >
                 Print Now
               </Button>
