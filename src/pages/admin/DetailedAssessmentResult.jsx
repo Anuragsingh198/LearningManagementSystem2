@@ -8,7 +8,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
-import { CheckCheck, XCircle, HelpCircle, Printer, X } from "lucide-react";
+import { CheckCheck, XCircle, HelpCircle, Printer, X, User, Mail, Badge,  CheckCircle2, Percent, BookOpen, Clock } from "lucide-react";
 
 const MarkdownRenderer = ({ text }) => (
   <ReactMarkdown
@@ -448,163 +448,315 @@ function DetailedAssessmentResult() {
     return <div>Loading assessment results...</div>;
   }
 
-  const ResultContent = () => (
-    <Box ref={contentRef} sx={{ p: 3, color: 'black' }} className="assessment-content">
-      {/* Header section */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, pb: 2, borderBottom: '2px solid #333' }} className="print-header">
-        <Typography variant="h4" fontWeight="bold">
-          Assessment Results: {AssessmentOverviewDetails?.title || overAllResult.title}
-        </Typography>
-        <Typography variant="subtitle1">
-          {formatDate(overAllResult.completedAt)}
-        </Typography>
-      </Box>
+  const ResultContent = () => {
+    const isPassed = overAllResult.status === "passed"; // ✅ Fix for undefined variable
 
-      {/* Assessment description */}
-      {/* {AssessmentOverviewDetails?.description && (
-        <Card sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Assessment Description
+    return (
+      <Box
+        ref={contentRef}
+        sx={{ p: 3, color: "black" }}
+        className="assessment-content"
+      >
+        {/* Header section */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+            pb: 2,
+            borderBottom: "2px solid #333",
+          }}
+          className="print-header"
+        >
+          <Typography variant="h4" fontWeight="bold">
+            Assessment Results:{" "}
+            {AssessmentOverviewDetails?.title || overAllResult.title}
+          </Typography>
+          <Typography variant="subtitle1">
+            {formatDate(overAllResult.completedAt)}
+          </Typography>
+        </Box>
+
+        {/* Employee Details */}
+        <Card sx={{ mb: 3, boxShadow: "none", borderRadius: 0 }}>
+          <CardContent sx={{ p: 4 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{
+                fontWeight: 600,
+                mb: 3,
+                color: "text.primary",
+              }}
+            >
+              Employee Details
             </Typography>
-            <Typography>
-              {AssessmentOverviewDetails.description}
-            </Typography>
+
+            <Grid container spacing={4} alignItems="center">
+              {/* Name */}
+              <Grid item xs={12} sm={4}>
+                <Box display="flex" alignItems="center" gap={1.5}>
+                  <User size={20} strokeWidth={1.6} color="#6b7280" />
+                  <Typography variant="body1" color="text.primary" fontWeight={500}>
+                    Name:&nbsp;
+                    <Typography component="span" fontWeight={600}>
+                      {overAllResult.user?.name || "—"}
+                    </Typography>
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Email */}
+              <Grid item xs={12} sm={4}>
+                <Box display="flex" alignItems="center" gap={1.5}>
+                  <Mail size={20} strokeWidth={1.6} color="#6b7280" />
+                  <Typography variant="body1" color="text.primary" fontWeight={500}>
+                    Email:&nbsp;
+                    <Typography component="span" fontWeight={600}>
+                      {overAllResult.user?.email || "—"}
+                    </Typography>
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Employee ID */}
+              <Grid item xs={12} sm={4}>
+                <Box display="flex" alignItems="center" gap={1.5}>
+                  <Badge size={20} strokeWidth={1.6} color="#6b7280" />
+                  <Typography variant="body1" color="text.primary" fontWeight={500}>
+                    Employee ID:&nbsp;
+                    <Typography component="span" fontWeight={600}>
+                      {overAllResult.user?.employeeId || "—"}
+                    </Typography>
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
           </CardContent>
         </Card>
-      )} */}
 
-      {/* User information */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            User Information
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <Typography><strong>Name:</strong> {overAllResult.user?.name}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography><strong>Email:</strong> {overAllResult.user?.email}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Typography><strong>Employee ID:</strong> {overAllResult.user?.employeeId}</Typography>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+        {/* Test metrics */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              Test Metrics
+            </Typography>
 
-      {/* Test metrics */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Test Metrics
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={3}>
-              <Paper sx={{ p: 2, textAlign: 'center', backgroundColor: overAllResult.status === 'passed' ? '#e8f5e9' : '#ffebee' }}>
-                <Typography variant="h6">Status</Typography>
-                <Typography variant="h5" color={overAllResult.status === 'passed' ? 'success.main' : 'error.main'}>
-                  {overAllResult.status?.toUpperCase()}
+            <Grid container spacing={2}>
+              {/* Status */}
+              <Grid item xs={12} sm={6} md={3}>
+                <Chip
+                  icon={
+                    isPassed ? (
+                      <CheckCircle2 size={20} color="#2e7d32" />
+                    ) : (
+                      <XCircle size={20} color="#c62828" />
+                    )
+                  }
+                  label={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography variant="body1" fontWeight={500}>
+                        Status:
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        fontWeight={600}
+                        color={isPassed ? "success.main" : "error.main"}
+                      >
+                        {overAllResult.status?.toUpperCase()}
+                      </Typography>
+                    </Box>
+                  }
+                  variant="outlined"
+                  sx={{
+                    width: "100%",
+                    justifyContent: "flex-start",
+                    borderRadius: "4px",
+                    py: 2,
+                    px: 1,
+                    borderColor: isPassed ? "#a5d6a7" : "#ef9a9a",
+                    backgroundColor: isPassed ? "#f1f8f6" : "#fff5f5",
+                  }}
+                />
+              </Grid>
+
+              {/* Score */}
+              <Grid item xs={12} sm={6} md={3}>
+                <Chip
+                  icon={<Percent size={20} color="#1976d2" />}
+                  label={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography variant="body1" fontWeight={500}>
+                        Score:
+                      </Typography>
+                      <Typography variant="body1" fontWeight={600}>
+                        {overAllResult.PercentageMarksScore}%
+                      </Typography>
+                    </Box>
+                  }
+                  variant="outlined"
+                  sx={{
+                    width: "100%",
+                    justifyContent: "flex-start",
+                    borderRadius: "4px",
+                    py: 2,
+                    px: 1,
+                    borderColor: "#bbdefb",
+                    backgroundColor: "#f5f9ff",
+                  }}
+                />
+              </Grid>
+
+              {/* Marks */}
+              <Grid item xs={12} sm={6} md={3}>
+                <Chip
+                  icon={<BookOpen size={20} color="#6d4c41" />}
+                  label={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography variant="body1" fontWeight={500}>
+                        Marks:
+                      </Typography>
+                      <Typography variant="body1" fontWeight={600}>
+                        {overAllResult.TotalMarksScored}/{overAllResult.MaxMarks}
+                      </Typography>
+                    </Box>
+                  }
+                  variant="outlined"
+                  sx={{
+                    width: "100%",
+                    justifyContent: "flex-start",
+                    borderRadius: "4px",
+                    py: 2,
+                    px: 1,
+                    borderColor: "#d7ccc8",
+                    backgroundColor: "#fdf9f7",
+                  }}
+                />
+              </Grid>
+
+              {/* Duration */}
+              <Grid item xs={12} sm={6} md={3}>
+                <Chip
+                  icon={<Clock size={20} color="#0288d1" />}
+                  label={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography variant="body1" fontWeight={500}>
+                        Duration:
+                      </Typography>
+                      <Typography variant="body1" fontWeight={600}>
+                        {calculateDuration(
+                          overAllResult.startedAt,
+                          overAllResult.completedAt
+                        )}{" "}
+                        mins
+                      </Typography>
+                    </Box>
+                  }
+                  variant="outlined"
+                  sx={{
+                    width: "100%",
+                    justifyContent: "flex-start",
+                    borderRadius: "4px",
+                    py: 2,
+                    px: 1,
+                    borderColor: "#b3e5fc",
+                    backgroundColor: "#f4fbfe",
+                  }}
+                />
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ my: 2 }} />
+
+            {/* MCQ & Coding Performance */}
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6">MCQ Performance</Typography>
+                <Typography>
+                  Correct: {overAllResult.TotalAnsweredAndCorrectMcqQuestions} /{" "}
+                  {overAllResult.TotalMcqQuestions}
                 </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Paper sx={{ p: 2, textAlign: 'center' }}>
-                <Typography variant="h6">Score</Typography>
-                <Typography variant="h5">{overAllResult.PercentageMarksScore}%</Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Paper sx={{ p: 2, textAlign: 'center' }}>
-                <Typography variant="h6">Marks</Typography>
-                <Typography variant="h5">{overAllResult.TotalMarksScored}/{overAllResult.MaxMarks}</Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Paper sx={{ p: 2, textAlign: 'center' }}>
-                <Typography variant="h6">Duration</Typography>
-                <Typography variant="h5">
-                  {calculateDuration(overAllResult.startedAt, overAllResult.completedAt)} mins
+                <Typography>
+                  Score: {overAllResult.MarksScoredForMcq} /{" "}
+                  {overAllResult.TotalMcqQuestions *
+                    overAllResult.MarksForEachMcqQuestion}
                 </Typography>
-              </Paper>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6">Coding Performance</Typography>
+                <Typography>
+                  Correct: {overAllResult.TotalAnsweredAndCorrectCodingQuestions} /{" "}
+                  {overAllResult.questions.filter((q) => q.type === "coding").length}
+                </Typography>
+                <Typography>
+                  Score: {overAllResult.MarksScoredForCoding} /{" "}
+                  {overAllResult.questions.filter((q) => q.type === "coding")
+                    .length * overAllResult.MarksForEachCodingQuestion}
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
 
-          <Divider sx={{ my: 2 }} />
+            {/* Start/End Time */}
+            <Grid container spacing={2} sx={{ mt: 1 }}>
+              <Grid item xs={12} sm={6}>
+                <Typography>
+                  <strong>Start Time:</strong>{" "}
+                  {formatDate(overAllResult.startedAt)}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography>
+                  <strong>Completion Time:</strong>{" "}
+                  {formatDate(overAllResult.completedAt)}
+                </Typography>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
 
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">MCQ Performance</Typography>
-              <Typography>
-                Correct: {overAllResult.TotalAnsweredAndCorrectMcqQuestions} / {overAllResult.TotalMcqQuestions}
-              </Typography>
-              <Typography>
-                Score: {overAllResult.MarksScoredForMcq} / {overAllResult.TotalMcqQuestions * overAllResult.MarksForEachMcqQuestion}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">Coding Performance</Typography>
-              <Typography>
-                Correct: {overAllResult.TotalAnsweredAndCorrectCodingQuestions} / {overAllResult.questions.filter(q => q.type === 'coding').length}
-              </Typography>
-              <Typography>
-                Score: {overAllResult.MarksScoredForCoding} / {overAllResult.questions.filter(q => q.type === 'coding').length * overAllResult.MarksForEachCodingQuestion}
-              </Typography>
-            </Grid>
-          </Grid>
+        {/* Questions section */}
+        <Card>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              Questions and Answers
+            </Typography>
 
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={12} sm={6}>
-              <Typography><strong>Start Time:</strong> {formatDate(overAllResult.startedAt)}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography><strong>Completion Time:</strong> {formatDate(overAllResult.completedAt)}</Typography>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+            {/* MCQ Questions */}
+            <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+              Multiple Choice Questions
+            </Typography>
+            {overAllResult.questions
+              .filter((q) => q.type === "mcq")
+              .map((question, index) => (
+                <QuestionAnswerViewer
+                  key={question.questionId}
+                  question={question}
+                  index={index}
+                  assessmentDetails={AssessmentOverviewDetails}
+                />
+              ))}
 
-      {/* Questions section */}
-      <Card>
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Questions and Answers
-          </Typography>
-          
-          {/* MCQ Questions */}
-          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-            Multiple Choice Questions
-          </Typography>
-          {overAllResult.questions
-            .filter(q => q.type === 'mcq')
-            .map((question, index) => (
-              <QuestionAnswerViewer 
-                key={question.questionId} 
-                question={question} 
-                index={index} 
-                assessmentDetails={AssessmentOverviewDetails}
-              />
-            ))}
-          
-          {/* Coding Questions */}
-          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-            Coding Questions
-          </Typography>
-          {overAllResult.questions
-            .filter(q => q.type === 'coding')
-            .map((question, index) => (
-              <QuestionAnswerViewer 
-                key={question._id} 
-                question={question} 
-                index={index} 
-                assessmentDetails={AssessmentOverviewDetails}
-              />
-            ))}
-        </CardContent>
-      </Card>
-    </Box>
-  );
+            {/* Coding Questions */}
+            <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+              Coding Questions
+            </Typography>
+            {overAllResult.questions
+              .filter((q) => q.type === "coding")
+              .map((question, index) => (
+                <QuestionAnswerViewer
+                  key={question._id}
+                  question={question}
+                  index={index}
+                  assessmentDetails={AssessmentOverviewDetails}
+                />
+              ))}
+          </CardContent>
+        </Card>
+      </Box>
+    );
+  };
+
 
   return (
     <>

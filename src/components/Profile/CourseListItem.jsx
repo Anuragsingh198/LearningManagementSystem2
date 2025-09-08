@@ -167,10 +167,14 @@ const CourseListItem = ({ course, onViewCourse }) => {
             <Chip
               size="small"
               label={course.category}
+              variant="outlined"
               sx={{
                 height: 22,
                 fontWeight: 500,
-                backgroundColor: "#f5f5f5",
+                borderRadius: '4px',
+                color: '#1976d2',
+                borderColor: '#1976d2',
+                backgroundColor: 'rgba(25, 118, 210, 0.1)',
               }}
             />
           )}

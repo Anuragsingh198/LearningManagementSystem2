@@ -245,10 +245,10 @@ const UserDetails = () => {
                 paddingBottom: "2px",
                 borderRadius: "4px",
                 fontSize: "0.75rem",
-                fontWeight: 700,
-                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
-                background: pillStyles.background,
+                fontWeight: 500,
+                backgroundColor: pillStyles.background,
                 color: pillStyles.color,
+                border: `1px solid ${pillStyles.color}`,
               }}
             >
               {roleLabel}
