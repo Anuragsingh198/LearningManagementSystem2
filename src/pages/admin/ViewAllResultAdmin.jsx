@@ -111,7 +111,9 @@ function ViewAllResultsAdmin() {
   
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [showAnswers, setShowAnswers] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [isQuestionPaperOpen, setIsQuestionPaperOpen] = useState(false);
+  const [loadingRow, setLoadingRow] = useState(null);
 
     const navigate = useNavigate();
 
@@ -120,12 +122,13 @@ function ViewAllResultsAdmin() {
   }
 
     const handleRowClick = async (userId) => {
-    console.log("Clicked User ID:", userId);
-    console.log('the rest of the assessment id : ', assessment._id)
+          setLoadingRow(userId);
+        setLoading(true)
     const assessmentId = assessment._id;
 
     await reviewAssignmentAdmin(dispatch, assessmentId , userId)
-
+    setLoading(false)
+      setLoadingRow(null);
     navigate(`/assessments/view-result/${userId}`)
     
   };
@@ -147,6 +150,8 @@ function ViewAllResultsAdmin() {
             <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Score</TableCell>
             <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Percentage</TableCell>
             <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Completed At</TableCell>
+            <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Action(s)</TableCell>
+
           </TableRow>
         </TableHead>
         <TableBody>
@@ -185,6 +190,11 @@ function ViewAllResultsAdmin() {
               </TableCell>
               <TableCell>
                 {result.completedAt ? new Date(result.completedAt).toLocaleString() : 'Incomplete'}
+              </TableCell>
+                  <TableCell>
+                <Button>
+                     {loadingRow === result.user?._id ? 'loading...' : 'View Result'}
+                    </Button>
               </TableCell>
             </TableRow>
           ))}

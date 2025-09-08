@@ -256,35 +256,7 @@ function TestCard({ test, role }) {
 
             {role === 'instructor' && (
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Button
-                        variant="contained"
-                        disableElevation
-                        onClick={handleOnAdminClick}
-                        sx={{
-                            flex: 1, // makes both buttons equal width
-                            borderRadius: '4px',
-                            textTransform: 'none',
-                            fontWeight: 'bold',
-                            backgroundColor: '#1976d2',
-                            color: '#fff',
-                            '&:hover': {
-                                backgroundColor: '#1565c0',
-                            },
-                            '&:active': {
-                                backgroundColor: '#0d47a1',
-                            },
-                            '&:disabled': {
-                                backgroundColor: '#90CAF9',
-                                color: '#E3F2FD',
-                            },
-                            '&:focus': {
-                                outline: '2px solid #64B5F6',
-                                outlineOffset: '2px',
-                            },
-                        }}
-                    >
-                        View Questions
-                    </Button>
+              
 
                     <Button
                         variant="contained"
@@ -313,7 +285,7 @@ function TestCard({ test, role }) {
                             },
                         }}
                     >
-                        View Results
+                        {loading ? 'Loading...' : 'View Results'}
                     </Button>
                 </Box>
             )}
