@@ -6,6 +6,7 @@ const  AuthContext =createContext();
 
 const initialstate = {
   isAuthenticated: false,
+  isPasswordCorrect: false,
   user: null,
   notifications: [],
   courseProgress:null,
@@ -21,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     // console.log('use effect from authcontext.jsx')
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
-      dispatch({ type: 'LOGIN', payload:user});
+      dispatch({ type: 'OTP_LOGIN', payload:user});
     }
      dispatch({ type: 'SET_LOADING', payload: false });
   }, []);
