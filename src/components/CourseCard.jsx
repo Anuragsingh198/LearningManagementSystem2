@@ -147,7 +147,7 @@ export const CourseCard = ({ course, onHoverDisablePopup, onHoverEnablePopup }) 
             {course.instructorName || (course.instructor?.name ?? 'Instructor')}
           </Typography>
           <Chip
-            label={`Duration: ${course.courseDuration} days`}
+            label={`Validity: ${course.courseDuration} days`}
             size="small"
             sx={{
               // ml: 2,

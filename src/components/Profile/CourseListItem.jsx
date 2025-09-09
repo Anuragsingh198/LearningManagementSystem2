@@ -104,9 +104,27 @@ const CourseListItem = ({ course, onViewCourse }) => {
   const hasProgress = typeof course.overallPercentage === "number";
 
   const statusStyles = {
-    completed: { backgroundColor: "#e6f4ea", color: "#1e4620" },
-    pending: { backgroundColor: "#fff4e5", color: "#663c00" },
-    default: { backgroundColor: "#f0f0f0", color: "#333" },
+    completed: {
+      border: '2px solid #81C784',   // soft green outline
+      backgroundColor: '#E6F4EA',    // light green
+      color: '#1E4620',
+      borderRadius: '4px',
+      boxShadow: 'none',
+    },
+    pending: {
+      border: '2px solid #BDBDBD',   // cement/gray outline
+      backgroundColor: '#F0F0F0',    // cement-like background
+      color: '#333',
+      borderRadius: '4px',
+      boxShadow: 'none',
+    },
+    default: {
+      border: '2px solid #FFB74D',   // soft orange outline
+      backgroundColor: '#FFF4E5',    // light orange
+      color: '#663C00',
+      borderRadius: '4px',
+      boxShadow: 'none',
+    },
   };
 
   return (
@@ -186,21 +204,20 @@ const CourseListItem = ({ course, onViewCourse }) => {
                 course.status === "completed"
                   ? "Completed"
                   : course.status === "pending"
-                  ? "Ongoing"
-                  : "Pending"
+                    ? "Ongoing"
+                    : "Pending"
               }
               sx={{
                 height: 22,
                 fontWeight: 500,
-                ...(
-                  course.status === "completed"
-                    ? statusStyles.completed
-                    : course.status === "pending"
+                ...(course.status === "completed"
+                  ? statusStyles.completed
+                  : course.status === "pending"
                     ? statusStyles.pending
-                    : statusStyles.default
-                ),
+                    : statusStyles.default),
               }}
             />
+
           )}
 
           {course.overallPercentage !== undefined && (
@@ -210,10 +227,14 @@ const CourseListItem = ({ course, onViewCourse }) => {
               sx={{
                 height: 22,
                 fontWeight: 500,
-                backgroundColor: "#e9f2ff",
-                color: "#084298",
+                borderRadius: '4px',
+                border: '2px solid #CE93D8', // soft lavender outline
+                backgroundColor: '#F3E5F5',  // soft lavender background
+                color: '#6A1B9A',            // deeper purple text
+                boxShadow: 'none',
               }}
             />
+
           )}
         </Box>
 

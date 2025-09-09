@@ -17,7 +17,7 @@ function TestCard({ test, role }) {
     const [loading, setLoading] = useState(false)
 
 
-    const { state: {  }, dispatch } = useCourseContext();
+    const { state: { }, dispatch } = useCourseContext();
     const { state: { }, dispatch: assignmentDispatch } = useAssignmentContext();
     // console.log('the test is: ', test)
 
@@ -42,15 +42,15 @@ function TestCard({ test, role }) {
     const handleOnResultsClick = async () => {
         setLoading(true);
         dispatch({
-                type: "SET_CURRENT_ASSESSMENT",
-                payload: test,
-            });
+            type: "SET_CURRENT_ASSESSMENT",
+            payload: test,
+        });
         const assessmentId = test._id;
         // here call the api , on success nvigate 
         const response = await getAllResult(assignmentDispatch, assessmentId)
         console.log('the the response is: ', response)
         setLoading(false)
-        
+
         navigate(`/assessments/view-result`);
 
     }
@@ -256,28 +256,33 @@ function TestCard({ test, role }) {
 
             {role === 'instructor' && (
                 <Box sx={{ display: 'flex', gap: 2 }}>
-              
+
 
                     <Button
-                        variant="contained"
+                        variant="outlined"
                         disableElevation
-                        onClick={handleOnResultsClick} // create this function
+                        onClick={handleOnResultsClick} // make sure to define this function
                         sx={{
                             flex: 1,
                             borderRadius: '4px',
                             textTransform: 'none',
                             fontWeight: 'bold',
-                            backgroundColor: '#388e3c',
-                            color: '#fff',
+                            border: '2px solid #81C784', // soft green outline
+                            backgroundColor: '#E8F5E9',  // soft green background
+                            color: '#2e7d32',
+                            boxShadow: 'none', // remove any shadow
                             '&:hover': {
-                                backgroundColor: '#2e7d32',
+                                backgroundColor: '#C8E6C9',
+                                borderColor: '#66BB6A',
                             },
                             '&:active': {
-                                backgroundColor: '#1b5e20',
+                                backgroundColor: '#A5D6A7',
+                                borderColor: '#388e3c',
                             },
                             '&:disabled': {
-                                backgroundColor: '#A5D6A7',
-                                color: '#E8F5E9',
+                                backgroundColor: '#F1F8E9',
+                                borderColor: '#C8E6C9',
+                                color: '#A5D6A7',
                             },
                             '&:focus': {
                                 outline: '2px solid #81C784',

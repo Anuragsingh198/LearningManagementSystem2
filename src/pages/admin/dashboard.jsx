@@ -204,14 +204,15 @@ const TeacherDashboard = () => {
               sx={{ display: "flex", justifyContent: "center", alignItems: "center", py: 6 }}
             >
               <Paper
-                elevation={3}
+                elevation={1}
                 sx={{
-                  padding: 4,
+                  padding: 1,
                   width: "100%",
                   textAlign: "center",
-                  backgroundColor: "#f9f9f9",
-                  borderRadius: 3,
-                  border: "1px solid #e0e0e0",
+                  backgroundColor: "#fff",
+                  borderRadius: "none",
+                  border: "none",
+                  boxShadow: "none",
                 }}
               >
                 <Typography variant="h6" sx={{ color: "#424242", fontWeight: 500 }}>
@@ -264,14 +265,15 @@ const TeacherDashboard = () => {
               sx={{ display: "flex", justifyContent: "center", alignItems: "center", py: 6 }}
             >
               <Paper
-                elevation={3}
+                elevation={1}
                 sx={{
-                  padding: 4,
+                  padding: 1,
                   width: "100%",
                   textAlign: "center",
-                  backgroundColor: "#f9f9f9",
-                  borderRadius: 3,
-                  border: "1px solid #e0e0e0",
+                  backgroundColor: "#fff",
+                  borderRadius: "none",
+                  border: "none",
+                  boxShadow: "none",
                 }}
               >
                 <Typography variant="h6" sx={{ color: "#424242", fontWeight: 500 }}>

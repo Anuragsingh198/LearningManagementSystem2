@@ -550,7 +550,7 @@ const CourseCard = ({ course, onViewCourse }) => {
             {courseDuration && (
               <Box sx={{ display: 'flex', alignItems: 'center', }}>
                 <Clock size={14} style={{ marginRight: 4 }} />
-                <span>Duration: {courseDuration} days</span>
+                <span>Validity: {courseDuration} days</span>
               </Box>
             )}
           </Box>

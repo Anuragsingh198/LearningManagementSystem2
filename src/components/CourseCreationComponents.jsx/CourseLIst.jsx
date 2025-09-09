@@ -164,14 +164,14 @@ const CourseList = () => {
               mx: 'auto',
               textAlign: 'center',
               borderRadius: '4px',
-              border: '1px solid #e0e0e0',
+              // border: '1px solid #e0e0e0',
               boxShadow: 'None',
               backgroundColor: 'background.paper',
             }}
           >
             {role === 'instructor' && (
               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-                <PlusCircle size={56} color="#2563eb" />
+                {/* <PlusCircle size={56} color="#2563eb" /> */}
               </Box>
             )}
             <Box component="img" src={noDataImage} alt="No data" sx={{ height: 180, opacity: 0.9, mb: 2 }} />
@@ -192,16 +192,24 @@ const CourseList = () => {
                   size="large"
                   startIcon={<PlusCircle size={20} />}
                   sx={{
-                    px: 3,
-                    py: 1.5,
-                    fontWeight: 600,
-                    background: 'linear-gradient(to right, #2563eb, #4f46e5)',
-                    borderRadius: 3,
-                    textTransform: 'none',
-                    transition: '0.3s ease',
+                    backgroundColor: '#1976d2',
+                    color: '#fff',
+                    borderRadius: '4px',
+                    boxShadow: 'none',
+                    transition: 'all 0.2s ease',
+
                     '&:hover': {
-                      background: 'linear-gradient(to right, #1d4ed8, #4338ca)',
-                      boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)',
+                      backgroundColor: '#1565c0',
+                      boxShadow: 'none',
+                    },
+                    '&:active': {
+                      backgroundColor: '#0d47a1',
+                      boxShadow: 'none',
+                    },
+                    '&:disabled': {
+                      backgroundColor: '#90caf9',
+                      color: '#e0e0e0',
+                      boxShadow: 'none',
                     },
                   }}
                 >
@@ -249,7 +257,7 @@ const CourseList = () => {
                     Ongoing Courses
                     <SchoolIcon fontSize="small" color="primary" />
                   </Typography>
-                  <Box sx={{width: '50%', flex: 1, borderBottom: "2px dashed #ccc" }} />
+                  <Box sx={{ width: '50%', flex: 1, borderBottom: "2px dashed #ccc" }} />
                 </Box>
                 {filteredCoursesPending && filteredCoursesPending.length > 0 ? (
                   <Grid container spacing={3} sx={{ mb: 2 }}>
