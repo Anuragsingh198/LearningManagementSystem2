@@ -22,9 +22,9 @@ export const userLogin = async (user, dispatch) => {
     const data = response.data;
     if (data.success) {
       // dispatch({ type: 'LOGIN', payload: { user: data.user } });
-      dispatch({ type: 'LOGIN', payload: data.user });
+      dispatch({ type: 'LOGIN' });
       // console.log('this is  the   Login  action  user ' , data.user)
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // localStorage.setItem('user', JSON.stringify(data.user));
     } else {
       throw new Error(data.message || 'Login failed');
     }

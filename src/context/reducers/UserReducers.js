@@ -7,13 +7,21 @@ export const authReducer = (state, action) => {
     case 'LOGIN':
       return {
         ...state,
+        isPasswordCorrect: true,
+        // user: action.payload,
+      };
+      case 'OTP_LOGIN':
+      return {
+        ...state,
         isAuthenticated: true,
+        isPasswordCorrect: false,
         user: action.payload,
       };
     case 'LOGOUT':
       return {
         ...state,
         isAuthenticated: false,
+        isPasswordCorrect: false,
         user: null,
         loading: false,
       };
