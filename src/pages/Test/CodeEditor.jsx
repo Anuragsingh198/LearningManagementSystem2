@@ -75,6 +75,12 @@ const CodeEditor = ({
     }
   }, []);
 
+  useEffect(() => {
+    // console.log('the coding languages are: ', codingLanguages)
+    setLanguages(codingLanguages.languages)
+  }, [codingLanguages])
+
+
   const mapJudge0ToMonaco = (langName = '') => {
     langName = langName.toLowerCase();
     if (langName.includes('python')) return 'python';
@@ -208,6 +214,7 @@ const handleLanguageChange = (e) => {
                 }}
               >
                 {option.name}
+                {console.log('hello the languages are', option)}
               </MenuItem>
             ))}
           </LanguageSelect>
