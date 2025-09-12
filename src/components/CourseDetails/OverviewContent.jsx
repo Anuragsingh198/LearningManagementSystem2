@@ -33,8 +33,8 @@ import NoContentPage from './NoContentPage';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { getCoursesAction, moduleProgress } from '../../context/Actions/courseActions';
-import axios from 'axios';
 import noDataImage from '../../assets/no-data.png';
+import api from '../../utility/api';
 
 const CourseDescription = ({ description }) => {
   return (
@@ -186,7 +186,7 @@ export const OverviewContent = ({ oneCourse, completedChapters, totalChapters, p
       return;
     }
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${serverurl}/api/courses/generate-certificate`,
         { name, courseId, courseTitle, empId, certificateType },
         {

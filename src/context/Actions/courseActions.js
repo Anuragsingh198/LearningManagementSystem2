@@ -1,5 +1,7 @@
 import axios from 'axios';
 const serverurl = import.meta.env.VITE_SERVER_URL;
+import api from '../../utility/api';
+
 
 const getAuthToken = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -38,7 +40,7 @@ export const createCourseAction = async (formDataToSend, myCourses, dispatch) =>
     // formData.append('instructor', course.instructor);
     // formData.append('thumbnail', course.thumbnail);
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/courses/create-course`,
       formDataToSend,  // this is a FormData instance now
       {
@@ -85,7 +87,7 @@ export const createModuleAction = async (module, dispatch) => {
 
   try {
     dispatch({ type: 'COURSE_LOADING' });
-    const response = await axios.post(`${serverurl}/api/courses/course-module`, module, {
+    const response = await api.post(`${serverurl}/api/courses/course-module`, module, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -115,7 +117,7 @@ export const createVideoAction = async (formData, dispatch) => {
   try {
     dispatch({ type: 'COURSE_LOADING' });
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/courses/create-video`,
       formData,
       {
@@ -150,7 +152,7 @@ export const createArticleAction = async (formData, dispatch, onProgress) => {
   // console.log('article details are:', formData)
   try {
     dispatch({ type: 'COURSE_LOADING' });
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/courses/create-article`,
       formData,
       {
@@ -180,21 +182,30 @@ export const createArticleAction = async (formData, dispatch, onProgress) => {
 
 
 export const getCoursesAction = async (dispatch) => {
-  //  const user = JSON.parse(localStorage.getItem('user'));
+   const user = JSON.parse(localStorage.getItem('user'));
 
-  // if (!user || !user._id) {
-  //   throw new Error('User not authenticated');
-  // }
+  if (!user || !user._id) {
+    throw new Error('User not authenticated');
+  }
 
-  // const token = user.token;
+  const token = user.token;
 
-  // if (!token) {
-  //   throw new Error('User token not found');
-  // }
+  if (!token) {
+    throw new Error('User token not found');
+  }
 
   try {
     dispatch({ type: 'COURSE_LOADING' });
-    const response = await axios.get(`${serverurl}/api/courses`);
+    const token = user.token;
+
+      if (!token) {
+        throw new Error('User token not found');
+      }
+    const response = await api.get(`${serverurl}/api/courses`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
     const data = response.data;
     if (data.success) {
       if (!data.courses || data.courses.length === 0) {
@@ -231,7 +242,7 @@ export const getMyCoursesAction = async (dispatch) => {
   // console.log("this is the  user Id : ", userId);
   try {
     dispatch({ type: 'COURSE_LOADING' });
-    const response = await axios.get(`${serverurl}/api/users/${userId}`, {
+    const response = await api.get(`${serverurl}/api/users/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -271,7 +282,7 @@ export const getModulesByCourseId = async (courseId, dispatch) => {
   try {
     dispatch({ type: 'COURSE_LOADING' });
 
-    const response = await axios.get(`${serverurl}/api/courses/modules/${courseId}`, {
+    const response = await api.get(`${serverurl}/api/courses/modules/${courseId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -300,7 +311,7 @@ export const getCourseById = async (courseId, dispatch) => {
   try {
     dispatch({ type: 'COURSE_LOADING' });
 
-    const response = await axios.get(`${serverurl}/api/courses/${courseId}`, {
+    const response = await api.get(`${serverurl}/api/courses/${courseId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -329,7 +340,7 @@ export const getCourseWithProgress = async (courseId, userId, dispatch) => {
   try {
     dispatch({ type: 'COURSE_LOADING' });
 
-    const response = await axios.post(`${serverurl}/api/users/course-progress`, {
+    const response = await api.post(`${serverurl}/api/users/course-progress`, {
       courseId,
       userId
     }, {
@@ -370,7 +381,7 @@ export const getModulebyModuleId = async (moduleId, dispatch) => {
   try {
     dispatch({ type: 'COURSE_LOADING' });
 
-    const response = await axios.get(`${serverurl}/api/courses/module/${moduleId}`, {
+    const response = await api.get(`${serverurl}/api/courses/module/${moduleId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -397,7 +408,7 @@ export const SubmitTest = async ({ testId, userAnswers, courseId, moduleId, disp
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/users/test-submit`,
       { testId, userAnswers, courseId, moduleId },
       {
@@ -436,7 +447,7 @@ export const getCourseProgress = async (courseId, userId, dispatch) => {
   const token = getAuthToken();
   try {
     dispatch({ type: 'SET_LOADING', payload: true });
-    const response = await axios.post(`${serverurl}/api/users/course-progress`, {
+    const response = await api.post(`${serverurl}/api/users/course-progress`, {
       courseId,
       userId
     }, {
@@ -466,7 +477,7 @@ export const updateVideoCompletion = async (courseId, videoId, moduleId, dispatc
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/users/video-progress/complete`,
       { courseId, videoId, moduleId },
       {
@@ -512,7 +523,7 @@ export const checkProgress = async (courseId, chapterId, dispatch) => {
   try {
     dispatch({ type: 'SET_LOADING', payload: true });
 
-    const response = await axios.post(`${serverurl}/api/users/check-progress`, {
+    const response = await api.post(`${serverurl}/api/users/check-progress`, {
       courseId, chapterId,
     }, {
       headers: {
@@ -547,7 +558,7 @@ export const checkVideoOrTestInUserProgressAction = async ({ videoId, testId, mo
     if (videoId) payload.videoId = videoId;
     if (testId) payload.testId = testId;
 
-    const response = await axios.post(`${serverurl}/api/users/check-video-progress`, payload, {
+    const response = await api.post(`${serverurl}/api/users/check-video-progress`, payload, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -575,7 +586,7 @@ export const deleteCourse = async (courseToDelete, dispatch) => {
   try {
     dispatch({ type: 'SET_LOADING', payload: true });
     // console.log('the course id is: ', courseToDelete)
-    const response = await axios.delete(`${serverurl}/api/courses/delete-course/${courseToDelete}`, {
+    const response = await api.delete(`${serverurl}/api/courses/delete-course/${courseToDelete}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -605,7 +616,7 @@ export const courseProgress = async (courseId, userId, dispatch) => {
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/users/course-progress`,
       { courseId, userId },
       {
@@ -642,7 +653,7 @@ export const videoProgress = async (courseId, video, videoId, moduleId, dispatch
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/users/video-progress`,
       { courseId, videoData: video, moduleId, videoId },
       {
@@ -686,7 +697,7 @@ export const testProgress = async (courseId, currentTestProgress, moduleId, test
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/users/test-progress`,
       { courseId, testData: currentTestProgress, moduleId, testId },
       {
@@ -732,7 +743,7 @@ export const moduleProgress = async (courseId, chapterId, clickedModuleProgress,
   try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/users/module-progress`,
       {
         courseId,
@@ -780,7 +791,7 @@ export const deleteModule = async (chapterId, dispatch) => {
   try {
     dispatch({ type: 'SET_LOADING', payload: true });
     // console.log('the course id is: ', chapterId)
-    const response = await axios.delete(`${serverurl}/api/courses/delete-module/${chapterId}`, {
+    const response = await api.delete(`${serverurl}/api/courses/delete-module/${chapterId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -830,7 +841,7 @@ export const addAssessmentAction = async (
       testType,
     };
 
-    const { data } = await axios.post(
+    const { data } = await api.post(
       `${serverurl}/api/assessments/add-assessment`,
       payload,
             {
@@ -862,7 +873,7 @@ export const updateVideoLastTimeWatched = async (payloadData, dispatch) => {
     dispatch({type: 'SET_LOADING', payload: true});
 
     // console.log('timer save req started');
-    const response = await axios.post(`${serverurl}/api/courses/module/video-update`,
+    const response = await api.post(`${serverurl}/api/courses/module/video-update`,
       payloadData
     ,  {
       headers: {
@@ -903,7 +914,7 @@ export const fetchAllAssessment = async (dispatch) => {
   const token = getAuthToken()
   try {
   dispatch({type: 'SET_LOADING', payload: true});
-  const { data } = await axios.get(`${serverurl}/api/assessments/get-all-assessments`,
+  const { data } = await api.get(`${serverurl}/api/assessments/get-all-assessments`,
     {
       headers: {
         Authorization: `Bearer ${token}`
@@ -928,7 +939,7 @@ export const getModuleVideoProgress = async (moduleId, courseId, dispatch) => {
   try {
     dispatch({ type: 'COURSE_LOADING' });
 
-    const response = await axios.post(`${serverurl}/api/users/module-video-progress`, {
+    const response = await api.post(`${serverurl}/api/users/module-video-progress`, {
       courseId,
       moduleId
     }, {

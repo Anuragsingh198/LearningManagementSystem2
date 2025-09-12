@@ -37,6 +37,7 @@ import { useCourseContext } from '../../../context/contextFiles/CourseContext';
 import { createModuleAction, createVideoAction, getCourseById, getModulesByCourseId } from '../../../context/Actions/courseActions';
 import { useAuth } from '../../../context/contextFiles/AuthContext';
 import BlurLoading from '../../common/BlurLoading';
+import api from '../../../utility/api';
 
 
 function QuizCreationForm({ courseId }) {
@@ -174,7 +175,7 @@ function QuizCreationForm({ courseId }) {
 
             try {
                 setIsLoading(true);
-                const response = await axios.post(
+                const response = await api.post(
                     `${serverurl}/api/courses/addtest`,
                     { testData: submissionData },
                     {

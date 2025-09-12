@@ -28,7 +28,10 @@ export default function Layout({ children }) {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
+        console.log('error is here')
         await getCoursesAction(dispatch);
+        console.log('error is not here')
+
         await getMyCoursesAction(dispatch);
       } catch (error) {
         console.error('Failed to fetch courses:', error);

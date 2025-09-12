@@ -39,6 +39,7 @@ import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import api from '../../utility/api';
 const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 export const VideoContent = ({
     currentVideo,
@@ -165,7 +166,7 @@ export const VideoContent = ({
     useEffect(() => {
     const fetchSasUrl = async () => {
         try {
-            const res = await axios.get(
+            const res = await api.get(
                 `${serverURL}/api/courses/videos/expires`, // endpoint without blobName in path
                 {
                     params: { 

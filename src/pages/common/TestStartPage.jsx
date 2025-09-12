@@ -7,6 +7,7 @@ import { useCourseContext } from '../../context/contextFiles/CourseContext';
 import { useAuth } from '../../context/contextFiles/AuthContext';
 import { useAssignmentContext } from '../../context/contextFiles/assignmentContext';
 import { Info, Timer, ListChecks } from 'lucide-react';
+import api from '../../utility/api';
 
 const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
@@ -31,7 +32,7 @@ function TestStartPage() {
 
   const getTestData = async () => {
     try {
-      const res = await axios.post(
+      const res = await api.post(
         `${serverURL}/api/assessments/start-assessment`,
         { assessmentId: id },
         { headers: { Authorization: `Bearer ${userToken}` } }

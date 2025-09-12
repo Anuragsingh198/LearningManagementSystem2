@@ -1,7 +1,7 @@
 import axios from "axios";
+import api from "../../utility/api";
 
 const backendBaseUrl = import.meta.env.VITE_SERVER_URL; // e.g., http://localhost:5000/api
-const serverurl = import.meta.env.VITE_SERVER_URL;
 
 const getAuthToken = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -12,7 +12,7 @@ const getAuthToken = () => {
 export const getAllLanguageAction = async (dispatch) => {
   try {
     dispatch({ type: "SET_LOADING", payload: true });
-    const { data } = await axios.get(`${backendBaseUrl}/api/assessments/get-languages`);
+    const { data } = await api.get(`${backendBaseUrl}/api/assessments/get-languages`);
     // console.log('fetched  languages  from action   are : ' , data) 
     dispatch({ type: "SET_LANGUAGES", payload: data });
     dispatch({ type: "SET_LOADING", payload: false });
@@ -27,7 +27,7 @@ export const getAllCodingQuestions = async (dispatch) => {
   try{
     dispatch({ type: 'SET_LOADING', payload: true })
 
-    const {data} = await axios.get(`${backendBaseUrl}/api/assessments/allQuestions`,
+    const {data} = await api.get(`${backendBaseUrl}/api/assessments/allQuestions`,
       { headers: { Authorization: `Bearer ${token}` },}
     )
     dispatch({ type: "SET_ALL_CODING_QUESTIONS", payload: data.allCodingQuestions})
@@ -49,7 +49,7 @@ export const getQuestionByIdAction = async (dispatch, currentQuestionId) => {
     const questionId = currentQuestionId
     const token = getAuthToken();
       // console.log(" getQuestion action is called before api call : " );
-      const { data } = await axios.get(`${backendBaseUrl}/api/assessments/${questionId}`, {
+      const { data } = await api.get(`${backendBaseUrl}/api/assessments/${questionId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // console.log(" getQuestion action is called after api call : ", data.question );
@@ -68,7 +68,7 @@ export const runCodeAction = async (dispatch, { code, languageId, testCases }) =
 
     const token = getAuthToken();
 
-    const { data } = await axios.post(
+    const { data } = await api.post(
       `${backendBaseUrl}/api/assessments/run-code`,
       { 
         source_code: code, 
@@ -94,7 +94,7 @@ export const submitCodeAction = async (dispatch, { sourceCode, languageId, quest
 
     const token = getAuthToken();
 
-    const { data } = await axios.post(
+    const { data } = await api.post(
       `${backendBaseUrl}/api/assessments/submit-code`,
       { 
         code: sourceCode, 
@@ -123,7 +123,7 @@ export const getAllResult = async (dispatch, assessmentId) => {
 
     const token = getAuthToken();
 
-    const  response  = await axios.post(
+    const  response  = await api.post(
       `${backendBaseUrl}/api/assessments/view-all-assessment-result`,
       { 
         assessmentId: assessmentId
@@ -155,8 +155,8 @@ export const submitAssessment = async (dispatch, { allAnswers, assessmentId }) =
 
     const token = getAuthToken();
 
-    const { data } = await axios.post(
-      `${serverurl}/api/assessments/submit-assessment`,
+    const { data } = await api.post(
+      `${backendBaseUrl}/api/assessments/submit-assessment`,
       { 
        allAnswers, assessmentId
       },
@@ -189,8 +189,8 @@ export const reviewAssignment = async (dispatch, { assessmentId }) => {
 
     // console.log('the token is: ', token)
 
-    const { data } = await axios.post(
-      `${serverurl}/api/assessments/review-assessment`,
+    const { data } = await api.post(
+      `${backendBaseUrl}/api/assessments/review-assessment`,
       { 
         assessmentId
       },
@@ -224,8 +224,8 @@ export const reviewAssignmentAdmin = async (dispatch,  assessmentId, userId ) =>
 
     // console.log('the token is: ', token)
 
-    const { data } = await axios.post(
-      `${serverurl}/api/assessments/review-assessment-admin`,
+    const { data } = await api.post(
+      `${backendBaseUrl}/api/assessments/review-assessment-admin`,
       { 
         assessmentId, userId
       },

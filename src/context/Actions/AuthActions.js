@@ -1,6 +1,7 @@
 import axios from 'axios';
 // const serverurl = 'http://localhost:5000'; // check
 const serverurl = import.meta.env.VITE_SERVER_URL;
+import api from '../../utility/api';
 
 const getAuthToken = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -18,7 +19,7 @@ export const userLogin = async (user, dispatch) => {
   // console.log('Logging in user:', user);
   try {
     dispatch({type:'SET_LOADING' , payload:true})
-    const response = await axios.post(`${serverurl}/api/users/login`, user);
+    const response = await api.post(`${serverurl}/api/users/login`, user);
     const data = response.data;
     if (data.success) {
       // dispatch({ type: 'LOGIN', payload: { user: data.user } });
@@ -41,7 +42,7 @@ export const userLogin = async (user, dispatch) => {
 export const userLogout = async (dispatch) => {
   try {
     // console.log('logout in action: ', serverurl);
-    await axios.post(`${serverurl}/api/users/logout`);
+    await api.post(`${serverurl}/api/users/logout`);
     dispatch({ type: 'LOGOUT' });
     localStorage.removeItem('user');
   } catch (error) {
@@ -56,7 +57,7 @@ export const userRegister = async (user, dispatch) => {
   // console.log('Registering user:', user);
   try {
     dispatch({type:'SET_LOADING' , payload:true})
-    const response = await axios.post(`${serverurl}/api/users/register`, user);
+    const response = await api.post(`${serverurl}/api/users/register`, user);
     const data = response.data;
     if (data.success) {
       dispatch({ type: 'REGISTER', payload:  data.user });
@@ -80,7 +81,7 @@ export const enrollCourseAction = async(courseId , dispatch)=>{
    try {
     dispatch({ type: 'COURSE_LOADING', payload: true });
 
-    const response = await axios.post(
+    const response = await api.post(
       `${serverurl}/api/users/enroll-course`,
       { courseId},
       {
@@ -114,7 +115,7 @@ export const enrolledStudentsAction = async (courseId, dispatch) => {
   
   try {
     // dispatch({ type: 'SET_LOADING', payload: true });
-    const response = await axios.get(`${serverurl}/api/users/${courseId}/enrolled-employees`, {
+    const response = await api.get(`${serverurl}/api/users/${courseId}/enrolled-employees`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     

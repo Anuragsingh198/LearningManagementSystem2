@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
@@ -24,6 +24,8 @@ import CreateAssessment from './pages/admin/CreateAssesment';
 import CourseList from './components/CourseCreationComponents.jsx/CourseLIst';
 import ViewAllResultsAdmin from './pages/admin/ViewAllResultAdmin';
 import DetailedAssessmentResult from './pages/admin/DetailedAssessmentResult';
+import { useAuth } from './context/contextFiles/AuthContext';
+import { setupInterceptors } from './utility/api';
 
 const theme = createTheme({
   typography: {
@@ -43,6 +45,13 @@ const theme = createTheme({
 });
 
 function App() {
+
+  const {dispatch} = useAuth()
+
+  useEffect(() => {
+    setupInterceptors(dispatch)
+  }, [dispatch])
+
   return (
     <ThemeProvider theme={theme}>
       <Routes>
